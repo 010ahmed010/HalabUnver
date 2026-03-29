@@ -1,0 +1,41 @@
+# FILE: HomePage.desc
+# ROLE: Master Layout & Logic for HalabUnver Hub (Unified Ecosystem)
+
+## 1. VISUAL IDENTITY & SCIENTIFIC THEME
+- BRANDING: HalabUnver (Aleppo University Ecosystem).
+- THEME: Seamless Light/Dark toggle (Tailwind v4 `dark:` prefix).
+- DESIGN: Rigid 90-degree grid, white-outline boxes, high-contrast.
+- VIBE: "Scientific/Academic Dashboard" (Technical chips, Monospace data).
+- TYPOGRAPHY: Modern Arabic (RTL) + Professional Sans-Serif English.
+
+## 2. NAVIGATION & HEADER (The Hub)
+- STICKY NAV: Constant visibility.
+- UNIVERSAL SEARCH (HUD INTERFACE):
+  - TRIGGER: Clicking search input expands a "Floating HUD Overlay."
+  - BEHAVIOR: Dims/blurs the background Home Page content.
+  - UI: Floating results dropdown with "Category Icons" (Book, Gear, Job).
+  - SCOPE: Queries /api/v1/search/* (Aggregates Store, Library, Talent).
+  - OVERFLOW: A "See All Results" button links to the [Search Archive] sub-page.
+- ATTRACTION LINKS: Academy, Library, Store, Talent, GPA Tracker.
+
+## 3. DYNAMIC CONTENT SECTIONS (Admin Controlled)
+- SECTION [HERO]: Brand Identity ("Challenge Every Day").
+- SECTION [ECOSYSTEM_ANALYTICS]: High-tech "Status Board" with real-time counters.
+- SECTION [OFFERS]: Universal space for Courses, Certs, or Physical Gear.
+  - STYLE: Multi-style sections (Banners, Cards, Highlights).
+  - MEDIA: **STRICTLY URL-BASED IMAGES.**
+- SECTION [NEWS]: Journalistic/Academic feed with Monospace ISO Dates.
+- SECTION [PILLARS]: 4 high-impact cards with "Live Stats."
+
+## 4. FOOTER & UI UTILITIES
+- SOCIAL & CONTACT: Full icon set + Support Email + Academic links.
+- DEVELOPER SIGNATURE: [ Ahmed Al-Jassem ] (AMJ) High-contrast Button.
+- UTILITY: "Back to Top" 90-degree square button (Binary/Coordinate icon).
+- SYSTEM BAR: Micro-footer with `[ SYSTEM: STABLE ]` and `[ VERSION: 2026.1 ]`.
+
+## 5. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
+- **MODULARITY: Every repeatable UI element (OfferCard, NewsCard, PillarCard, 
+  SearchDropdown, AMJButton) must be a standalone component in `/src/components/`.**
+- **SECTIONS: The major layout blocks (Hero, Analytics, OffersSection) will also 
+  be components that "map" to the Home Page layout.**
+- ASSETS: SVGs for icons; optimized RTL font loading.

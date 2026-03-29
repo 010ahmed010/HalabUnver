@@ -1,0 +1,32 @@
+# FILE: SearchResults.desc
+# ROLE: Full-Page Data Archive (IDE/Terminal Interface)
+# CONTEXT: Linked to HomePage Header Universal Search
+
+## 1. HEADER-SYNC & HUD LOGIC (SYSTEM LINK)
+- **REAL-TIME MIRRORING:** The search input in the Global Header MUST stay synchronized with the Archive's internal query state.
+- **TRANSITION:** When "See All" is triggered from the Header HUD, the Archive page loads with a "System Scan" animation (Terminal-style).
+- **IDLE STATE:** If no query is present, the page displays "SYSTEM: IDLE - Waiting for Input..." in a monospaced 90-degree box.
+
+## 2. LAYOUT & GRID (Terminal Workspace)
+- **SIDEBAR [ID: FILTERS]:** Sticky Right (RTL). 1px solid border. 
+  - CATEGORY CHIPS: [ All ] [ 📚 Library ] [ 🎓 Academy ] [ 💼 Talent ] [ 🛒 Store ].
+  - SCIENTIFIC FILTERS: Date Range, Access Level (Free/Student), Technical Tags.
+- **MAIN PANEL [ID: RESULTS]:** - HEADER: Display `[ QUERY: "Keywords" ] [ STATUS: FOUND 142 ENTRIES ]`.
+  - GRID: Uses Modular Atomic Components (LibraryCard, ProductCard, JobCard).
+
+## 3. ADVANCED FUNCTIONAL FEATURES
+- **[FEATURE 1] QUICK FILTER CHIPS:** - UI: Clickable technical chips at the top (e.g., [ 🛠️ Engineering ], [ ⚖️ Law ]).
+  - BEHAVIOR: Instant re-filtering of the result array without page reload.
+- **[FEATURE 2] COMPARE MODE (THE LAB BENCH):**
+  - UI: Each card has a checkbox `[ + COMP ]`.
+  - FUNCTION: Selecting 2+ items opens a "Comparison Overlay" at the bottom to view specs side-by-side (Academic/Scientific comparison).
+
+## 4. UI VIBE & STYLING (The IDE Look)
+- **COLORS:** Deep Dark / High-Contrast Light.
+- **BORDERS:** Minimalist 1px #888 or #333.
+- **HOVER EFFECTS:** "Blueprint Glow" (Outline 1px White/Cyan).
+- **NO RESULTS:** "CRITICAL ERROR: No matches found in Database Cluster."
+
+## 5. ARCHITECTURE NOTE (MANDATORY)
+- **COMPONENTS:** The Archive Filter and Comparison Bench must be standalone components in `/src/components/`.
+- **STATE:** Use a Global State (Context/Zustand) to sync the Header Search Field with this Archive view.
