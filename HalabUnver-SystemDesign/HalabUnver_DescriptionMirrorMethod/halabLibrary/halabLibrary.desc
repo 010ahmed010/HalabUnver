@@ -1,0 +1,29 @@
+# ROLE: High-Performance Digital Archive & Research Hub
+# VIBE: Technical Repository / Scientific Library
+# LOGIC: Branch-Based Navigation + Multi-Format Filtering
+
+## 1. THE KNOWLEDGE SIDEBAR (Primary Navigation)
+- **UI:** Vertical branch list (Software, Networks, Cyber, etc.).
+- **DYNAMIC:** Admin-controlled categories mirroring Academy branches.
+- **ACTION:** On click -> Triggers `fetchByBranch` to update the Result Grid.
+
+## 2. THE MULTI-FILTER HUD (The Result Engine)
+- **MODES:** [ 📚 Full Books ] | [ 📝 Shorts/Summaries ] | [ 🎓 Uni-Exam Samples ].
+- **SEARCH:** Real-time fuzzy search (Title, Author, Year).
+- **SORT:** [ File Size | Date Added | Rating ].
+
+## 3. THE KNOWLEDGE GRID (The Entry Points)
+- **UI:** 1px border cards showing [Format: PDF/MD], [Size], [Page Count].
+- **BADGE:** Gold/Amber badge for "Aleppo University Native" materials.
+- **COMMUNITY:** "Student-Authored" badge for the **Shorts** category.
+- **ACTION:** On Click -> Redirect to `/library/viewer/:docID` (The `documentReader.desc` environment).
+
+## 4. ARCHITECTURE & SUB-PAGES
+- **LOCATION:** `/src/pages/Library/`.
+- **SUB_PAGES:** `documentReader/documentReader.jsx` (Internal viewer for study sessions).
+
+## 5. ADMIN SYNC
+- **NOTE:** Content ingestion, file hosting links, and "Shorts" verification are managed via the `adminDashboard/libraryManager.desc`.
+
+## 6. MOTIVATIONAL FOOTER
+- **SIGNATURE:** "Ahmed Al-Jassem | Knowledge is the Ultimate Challenge"

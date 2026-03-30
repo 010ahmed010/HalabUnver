@@ -1,0 +1,16 @@
+# ROLE: Internal Academic Viewer & Study Terminal
+# VIBE: distraction-free / Scientific Reader / Dark Mode
+
+## 1. DUAL-PANE LAYOUT
+- **COL_9 (The Viewer):** Integrated PDF.js or Markdown renderer with `zoom`, `search`, and `invert-colors` (Dark Mode Reading).
+- **COL_3 (The Context Hub):** - **METADATA:** Author, Branch, and "Verified" status.
+    - **RELATED_CONTENT:** Suggests 3 "Shorts" or "Courses" related to this document.
+    - **AD_ZONE:** Persistent Sidebar Ad slot from `AdConsole`.
+
+## 2. NAVIGATION HUD
+- **ACTION:** [ 📥 Download Original ] | [ ⭐ Save to Dashboard ] | [ 🔗 Share Link ].
+- **BREADCRUMB:** `Library > [Branch] > [Document Title]`.
+
+## 3. INTERACTION LOGIC
+- **PROGRESS_TRACKER:** Remembers the last page read for "Student Dashboard" sync.
+- **FEEDBACK:** "Was this Summary/Short helpful?" (Upvote/Downvote).
