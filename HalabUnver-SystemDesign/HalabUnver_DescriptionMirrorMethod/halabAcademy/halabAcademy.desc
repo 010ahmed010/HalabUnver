@@ -1,0 +1,25 @@
+# FILE: halabAcademy.desc
+# ROLE: Skill Acquisition & Discovery Hub
+# LOGIC: Catalog Navigation & Branch Filtering
+
+## 1. DYNAMIC SUB-HEADER (The Navigation Hub)
+- **UI:** Horizontal `flex overflow-x-auto` with Admin-defined Branch Links.
+- **ACTION:** `fetch` branch categories (Software, Cyber, etc.) from Backend.
+- **SIDEBAR_TRIGGER:** Toggles the advanced Filter Sidebar for specific branches.
+
+## 2. FILTER SIDEBAR (The Discovery Engine)
+- **RULES:** [Free Courses, Aleppo Uni Native, Rating, Instructor, Recommended].
+- **SCOPE:** Strictly filters only the active branch selection.
+
+## 3. THE "ROADMAP GATEWAY" (External Mapping)
+- **LOGIC:** Roadmap button redirects to `roadmap.sh` via the Admin-defined URL Map.
+- **UI:** Snapshot Preview + "Launch Live" Action (Portal/Modal logic).
+
+## 4. COURSE CATALOG GRID
+- **UI:** `grid grid-cols-1 md:grid-cols-3 gap-6`.
+- **CARDS:** Modern academic cards with **Gold Borders** for "University Native" content.
+- **ACTION:** On click -> Redirect to `courseDisplayPage.desc`.
+
+## 5. ARCHITECTURE NOTE
+- **LOCATION:** `/src/pages/Academy/`.
+- **SUB_PAGES:** `CourseDisplayPage.jsx`.

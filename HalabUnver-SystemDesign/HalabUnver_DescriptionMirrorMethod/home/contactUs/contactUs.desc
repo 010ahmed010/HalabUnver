@@ -1,0 +1,41 @@
+# FILE: ContactUs.desc
+# ROLE: System Inquiries & Platform Value Showcase
+# LANGUAGE: Arabic (Primary) / Professional Terminal Tone
+# VIBE: High-End IDE / Scientific Dashboard / Tailwind-Ready
+
+## 1. SYSTEM CAPABILITIES SHOWCASE (The "What We Provide")
+- **UI_LOGIC:** A 4-column `grid` with `border-white/10` card containers.
+- **CONTENT_STRINGS (Arabic):**
+    - [ 📚 المكتبة الرقمية ]: أرشيف شامل للمصادر الأكاديمية والملفات التخصصية، مؤرشفة بنظام ذكي يسهل عملية البحث.
+    - [ 🛒 المتجر الذكي ]: توفير المعدات والأدوات الهندسية بنظام "صفر مخزون" لضمان الجودة وأنسب سعر للطالب.
+    - [ 💼 منصة المبدعين ]: جسرك إلى سوق العمل الحر؛ نعرض مهاراتك ونربطك بمشاريع حقيقية تمنحك الخبرة والعائد.
+    - [ 🎓 الأكاديمية ]: مسارات تعليمية مكثفة وشهادات تدريبية مصممة لسد الفجوة بين الجامعة ومتطلبات السوق التقني.
+
+## 2. THE INQUIRY TERMINAL (The Form)
+- **THEME:** `bg-transparent` inputs with `border-white/20`. 
+- **FOCUS_STATE:** `ring-1 ring-cyan-500` for that "Active Terminal" glow.
+- **LABELS & PLACEHOLDERS (Arabic):**
+    - [ الاسم الكامل ]: أدخل اسمك الثلاثي لتوثيق السجل...
+    - [ بريد التواصل ]: user@example.com
+    - [ نوع الاستفسار ]: قائمة منسدلة (دعم تقني / استفسار تجاري / أكاديمية).
+    - [ تفاصيل الطلب ]: اشرح حاجتك بدقة؛ سيقوم النظام بتحويلها للقسم المختص فوراً...
+- **SUBMIT_BUTTON:** `bg-white text-black font-bold py-3 hover:bg-cyan-400` | إرسال البيانات | SEND_PROTOCOL
+
+## 3. THE GLOBAL COORDINATES (Google Maps Integration)
+- **TYPE:** Embedded iFrame in a `w-full aspect-video` container.
+- **TAILWIND_VIBE:** `grayscale invert opacity-70 contrast-125 hover:opacity-100 transition-all`.
+- **BORDER:** `border-l-2 border-cyan-500` (Technical accent).
+
+## 4. INTERACTIVE MODULES & STATUS
+- **MODULE [A]: DIRECT CHANNELS:** Flex layout `flex flex-col gap-2`.
+- **MODULE [B]: SYSTEM STATUS:** `text-xs font-mono text-green-400 animate-pulse` [ SYSTEM STATUS: OPERATIONAL / 100% ].
+- **FEEDBACK_LOGS:** `text-cyan-400 font-mono text-sm` [ SYSTEM: تم استلام البيانات بنجاح - كود التتبع #HV-2026 ].
+
+## 5. MODERN ARABIC TYPOGRAPHY & UI
+- **FONT_FAMILY:** `font-['IBM_Plex_Sans_Arabic']`.
+- **DIRECTION:** `dir="rtl"` (Strict Right-to-Left alignment).
+- **TEXT_FLOW:** `leading-relaxed` (1.8 line-height) for clean academic reading.
+
+## 6. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
+- **COMPONENTS:** ValueShowcaseGrid.jsx, ContactTerminal.jsx, MapProvider.jsx, StatusChip.jsx.
+- **SYNC:** Form submission triggers a "Terminal Success" notification overlay.

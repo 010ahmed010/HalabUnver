@@ -1,0 +1,29 @@
+# FILE: SUBRULES.desc
+# ROLE: Global System Constraints & "DMM" Protocol
+# TARGET: IDE Agents / Full-Stack Architecture
+
+## 1. THE DMM PROTOCOL (Description Mirror Method)
+- **DEFINITION:** Every feature must first exist as a `.desc` logic mirror before implementation. 
+- **DISCOVERY:** The agent MUST traverse the `HalabUnver_DescriptionMirrorMethod` tree to understand feature relationships. 
+- **FUNCTION:** This method ensures the code perfectly mirrors the architectural intent, preventing logic-drift.
+
+## 2. CORE VISUAL IDENTITY (The "Scientific" UI)
+- **AESTHETIC:** "Modern IDE" / "Pure Dark Mode" / "Scientific HUD".
+- **LAYOUT:** Rigid 90-degree grids, 1px borders (`border-white/10`).
+- **ACCENTS:** Cyan-500 for active states, Amber-500 for "University Native" nodes.
+- **TYPOGRAPHY:** Strict **IBM Plex Sans Arabic** (300 Weight for body, 700 for headers).
+- **DIRECTION:** Native RTL (Right-to-Left) with `dir="rtl"` on all main wrappers.
+
+## 3. REVENUE & PERFORMANCE LOGIC (The "Offload" Strategy)
+- **AD_ARCHITECTURE:** The platform is designed for ad-revenue. Placeholders for high-visibility Ad-Banners must be integrated into the grid without breaking the "Scientific" vibe.
+- **OFFLOADING:** Use "Zero-Inventory" logic and "External Service Exploitation" (like the Roadmap.sh mapping) to keep the backend light.
+- **ASSETS:** Offload heavy media to external CDNs; the system handles only the metadata and access-tokens.
+
+## 4. CODE & TAILWIND CONSTRAINTS
+- **FRAMEWORK:** React / MERN / Tailwind CSS v4.
+- **COMPONENTS:** High modularity. Keep components atomic and reusable (refer to the `components/` branch in DMM).
+- **STATE:** Use context-aware logic for Student vs. Admin views as defined in the RootLayouts.
+
+## 5. MOTIVATIONAL SIGNATURE
+- **RULE:** Every major page/terminal must feature the pulse-animated footer:
+  `Ahmed Al-Jassem | Challenge Every Day`
