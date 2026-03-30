@@ -1,0 +1,26 @@
+# ROLE: Global Ad-Injection & Traffic Controller
+# VIBE: Technical Switchboard / Node Management
+# LOGIC: Conditional Rendering for External & Local Ads
+
+## 1. SYSTEM TOGGLES (The Master Switches)
+- **ADS_ACTIVE:** [ Boolean: True/False ] - Global kill-switch.
+- **PROVIDER_MODE:** - [ GOOGLE_ADSENSE ]: Activate auto-inject scripts.
+    - [ LOCAL_BANNERS ]: Activate MongoDB-fetched custom ads.
+    - [ HYBRID_STREAM ]: Activate both (Zone-specific).
+
+## 2. ZONE CONFIGURATION (The UI Slots)
+- **ZONE_HEADER:** Dropdown selector [ Google | Local | Disabled ].
+- **ZONE_SIDEBAR:** Dropdown selector [ Google | Local | Disabled ].
+- **ZONE_IN_FEED:** Dropdown selector [ Google | Local | Disabled ].
+
+## 3. LOCAL AD REPOSITORY (CRUD)
+- **UPLOAD_NODE:** Image Upload (WebP) + Target Link URL.
+- **CLIENT_TAG:** Label for the local business (e.g., "Elite Cafe").
+- **EXPIRY_DATE:** Automatic deactivation date for local contracts.
+
+## 4. PERFORMANCE & OFFLOAD
+- **LAZY_LOAD:** All Ad-Nodes must use Intersection Observer to prevent page-load lag.
+- **CLEAN_DOM:** If a Zone is [Disabled], the container must be `display: none` to keep the UI clean.
+
+## 5. UI PREVIEW
+- **VIRTUAL_LAYOUT:** A small schematic map of the site showing which Zones are "Live" and which are "Dark."
