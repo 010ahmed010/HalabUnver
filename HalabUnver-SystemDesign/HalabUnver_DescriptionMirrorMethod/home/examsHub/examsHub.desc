@@ -1,0 +1,28 @@
+# FILE: ExamHub.desc
+# ROLE: High-Urgency Exam Season Command Center (Sub-Page)
+# VIBE: Dynamic Alert / Intensive Study Mode
+# LOGIC: Admin-Triggered Seasonal Override
+
+## 1. DYNAMIC HEADER TRIGGER (The Signal)
+- **UI:** The Header Action Button (الأخبار) behavior changes via Admin.
+- **LOGIC:** - `examTime === true`: Button color **CRITICAL RED** + Pulse Animation.
+  - `examTime === false`: Button color **BRAND ACCENT** (Normal Theme).
+- **ACTION:** Redirects to `/exam-hub`.
+
+## 2. THE HUB INTERFACE (Sub-Page Layout)
+- **SECTION [LIVE_TERMINAL]:** Grid for active video tutorials and crash courses with "Live" badges.
+- **SECTION [STUDY_CHATS]:** Branch-specific real-time chat rooms for peer-to-peer academic help.
+- **SECTION [PREDICTED_RESOURCES]:** One-click access to "Expected Exam Questions" and "Shorts" summaries.
+
+## 3. SEASONAL MONETIZATION & ADS
+- **EXCLUSIVE_OFFERS:** Time-limited exam-specific course discounts (Separate from public Store offers).
+- **AD_ZONES:** Targeted slots for local "Study Cafes" and stationery stores via `AdConsole`.
+
+## 4. ADMIN DASHBOARD CONTROL
+- **MASTER_TOGGLE:** `isExamSeason` [ ON / OFF ].
+- **COLOR_OVERRIDE:** Manual hex-code control for the Header Button alert state.
+- **CONTENT_MANAGEMENT:** Admin pushes live links, predicted files, and chat room topics.
+
+## 5. ARCHITECTURE NOTE
+- **LOCATION:** `/src/pages/ExamHub/ExamHub.jsx`.
+- **COMPONENT:** Utilizes Atomic `NewsCard` and `OfferCard` with "Exam" styling variants.

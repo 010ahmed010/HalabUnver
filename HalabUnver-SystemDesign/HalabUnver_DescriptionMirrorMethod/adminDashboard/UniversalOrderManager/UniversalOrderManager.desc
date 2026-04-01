@@ -1,0 +1,31 @@
+# FILE: UniversalOrderManager.desc
+# ROLE: Central Clearing House for All Payments (Digital & Physical)
+# VIBE: Professional Audit Log / Secure Admin Terminal
+
+## 1. DUAL-LOGIC QUEUE (The Order Hub)
+- **SOURCE_TAG:** Each order is labeled [ 🏠 NATIVE ] or [ 🤝 BROKER ].
+- **UNIFIED_STATUS:** 1. `Waiting_Verification` (WhatsApp Screenshot Pending).
+  2. `Payment_Confirmed` (Verified by Admin).
+  3. `In_Preparation` (Native: Packing | Broker: Ordering from Supplier | Digital: Unlocking).
+  4. `In_Transit` (With Driver/Carrier - Physical Only).
+  5. `Completed` (Received / Access Granted).
+
+## 2. THE BROKERAGE OVERLAY (Conditional)
+- **SUPPLIER_DATA:** If [BROKER], show Supplier Name, WhatsApp, and Cost Price.
+- **PROFIT_MARGIN:** Auto-calculate: `User_Price - (Supplier_Cost + Shipping) = AMJ_Net`.
+- **ACTION:** [ 📲 Notify Supplier ] -> Pre-filled WhatsApp link with student's delivery info.
+
+## 3. THE NATIVE OVERLAY (Conditional)
+- **STOCK_CONTROL:** If [NATIVE], auto-deduct from `Internal_Inventory`.
+- **ACTION:** [ 📄 Print Packing Slip ] -> Generate 90-degree grid label with Order ID.
+
+## 4. WHATSAPP GATEWAY (Offloaded Logic)
+- **VERIFICATION:** Admin matches ShamCash Ref ID from WhatsApp screenshot to the Order ID.
+- **COMMUNICATION:** One-click buttons to update the student on their status via WhatsApp.
+- **OFFLOAD:** All transaction proof (images) stays on WhatsApp servers; no server-side storage used.
+
+## 5. FINANCIAL AUDIT & DIGITAL ACTIVATION
+- **TOTAL_REVENUE:** Gross ShamCash intake across all pillars (Store, Academy, Library, Exam).
+- **OUTGOING_PAYMENTS:** Total owed to Suppliers (for Broker items).
+- **AUTO_UNLOCK:** For Digital products, clicking [ ✅ Approve ] instantly pushes item to User's `purchasedItems`.
+- **SYSTEM_HEALTH:** [ 💰 LIQUIDITY: STABLE ].

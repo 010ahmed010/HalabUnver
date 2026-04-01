@@ -10,6 +10,9 @@
 
 ## 2. NAVIGATION & HEADER (The Hub)
 - STICKY NAV: Constant visibility.
+- HEADER_ACTION: High-contrast **[ 📢 الأخبار ]** (News) button.
+  - **DYNAMICS:** Admin-controlled state. If `isExamSeason === true` -> Color: **RED** (Pulse), Action: Redirect to `/exam-hub`.
+  - **DEFAULT:** Color: Brand Accent, Action: Open News/Scroll to News Section.
 - UNIVERSAL SEARCH (HUD INTERFACE):
   - TRIGGER: Clicking search input expands a "Floating HUD Overlay."
   - BEHAVIOR: Dims/blurs the background Home Page content.
@@ -34,8 +37,6 @@
 - SYSTEM BAR: Micro-footer with `[ SYSTEM: STABLE ]` and `[ VERSION: 2026.1 ]`.
 
 ## 5. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
-- **MODULARITY: Every repeatable UI element (OfferCard, NewsCard, PillarCard, 
-  SearchDropdown, AMJButton) must be a standalone component in `/src/components/`.**
-- **SECTIONS: The major layout blocks (Hero, Analytics, OffersSection) will also 
-  be components that "map" to the Home Page layout.**
+- **MODULARITY: Every repeatable UI element (OfferCard, NewsCard, PillarCard, SearchDropdown, AMJButton) must be a standalone component in `/src/components/`.**
+- **SECTIONS: The major layout blocks (Hero, Analytics, OffersSection) will also be components that "map" to the Home Page layout.**
 - ASSETS: SVGs for icons; optimized RTL font loading.
