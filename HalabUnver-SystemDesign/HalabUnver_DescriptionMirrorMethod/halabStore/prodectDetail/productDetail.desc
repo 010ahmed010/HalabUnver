@@ -1,0 +1,26 @@
+# FILE: productDetail.desc
+# ROLE: Technical Spec-Sheet & Transaction Terminal
+# VIBE: Data-Heavy / Industrial Precision / High-Trust
+
+## A. THE HERO SPLIT (60/40 Layout)
+- **LEFT (GALLERY):** - Vertical thumbnail strip + Large Main View. 
+    - **FEATURE:** Includes "Zoom-on-Hover" to inspect hardware condition (crucial for used/broker items).
+- **RIGHT (THE BUY BOX):**
+    - **TITLE & ID:** Laptop ThinkPad X1 | #HS-102.
+    - **STATUS PULSE:** [ ✅ متوفر حالياً ] or [ ⏳ قيد التأمين ].
+    - **PRICE TERMINAL:** Large font showing the "Student Saving" amount.
+    - **PRIMARY ACTION:** [ 💳 حجز وإتمام الدفع ].
+
+## B. THE "LOGISTICS & TRUST" BENTO
+- **SOURCE BOX:** - If [ 🏠 منصة ]: "هذا المنتج مملوك للمنصة وموجود في مستودعاتنا."
+    - If [ 🤝 وسيط ]: "توفير خارجي: يتم تأمين المنتج عبر شركاء المنصة مع فحص فني كامل."
+- **DELIVERY BOX:** Admin-controlled text (e.g., "استلام من مكتب الهندسة المعمارية").
+- **WARRANTY BOX:** Terms of testing (e.g., "3 days money-back if hardware fails").
+
+## C. THE "TECHNICAL DNA" (FULL SPECS)
+- **FORMAT:** A clean, monospace table or grid.
+- **DATA:** CPU, RAM, GPU, Battery Health, Port Selection, Weight.
+- **ATTACHMENT:** Link to "Download Official Datasheet (PDF)" if available.
+
+## D. THE ADMIN OVERRIDE (STICKY)
+- **LOGIC:** If the logged-in user is `Role: Admin`, show an [ ✏️ Edit Product ] floating button that links directly to the Admin Panel for this specific ID.

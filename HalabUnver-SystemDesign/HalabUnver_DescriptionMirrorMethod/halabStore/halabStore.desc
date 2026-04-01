@@ -1,0 +1,46 @@
+# FILE: halabStore.desc
+# ROLE: High-Speed Product Catalog & Discovery Hub
+# VIBE: Scientific Marketplace / 90-Degree Grid / High-Contrast
+
+## 1. THE UNIFIED NAVIGATION SIDEBAR
+- **CATEGORIES:** [ 💻 Hardware ], [ 📐 Engineering Gear ], [ 🏥 Medical Kits ], [ 👕 Platform Merch ].
+- **FILTER HUD:**
+    - **PRICE RANGE:** Slider for SYP.
+    - **SOURCE TOGGLE:** [ 🏠 منصة ] | [ 🤝 وسيط ].
+    - **AVAILABILITY:** [ ⚡ تسليم فوري ] (Immediate) | [ 📦 طلب مسبق ] (Pre-order).
+
+## 2. THE PRODUCT CARD (GRID ITEM)
+- **TOP-LAYER BADGES:** - **Left:** [ % خصم للطالب ] (Red Background / White Text).
+    - **Right:** [ 🏠 منصة ] (Cyan) OR [ 🤝 وسيط ] (Amber).
+- **IMAGE AREA:** Transparent PNG of product; 1:1 Aspect Ratio.
+- **PRICING BLOCK:** - `Original_Price` (Strikethrough Gray).
+    - `Student_Price` (Bold White / Primary).
+- **ACTION:** [ 💳 حجز ] (Quick Reserve) | [ 💬 تفاصيل ] (Link to Subpage).
+
+## 3. THE "EMPTY SEARCH" NODE
+- **LOGIC:** If no results found, show a "Request a Product" card.
+- **ACTION:** [ 📲 Request Broker ] -> Opens WhatsApp link with pre-filled sourcing info.
+
+---
+
+# FILE: productSubPage.desc
+# ROLE: Technical Spec-Sheet & Transaction Terminal
+# VIBE: Data-Heavy / Industrial Precision / High-Trust
+
+## 1. THE HERO SPLIT (60/40 Layout)
+- **LEFT (GALLERY):** Vertical thumbnail strip + Large Main View with Hover-Zoom.
+- **RIGHT (THE ACTION HUB):**
+    - **IDENTITY:** Product Title + Unique ID (e.g., #HS-102).
+    - **SAVINGS METER:** "You save [X] SYP via HalabUnver."
+    - **PRIMARY CTA:** [ 💳 حجز وإتمام الدفع ] -> Triggers 2-hour reservation lock.
+
+## 2. THE LOGISTICS BENTO (Admin-Controlled)
+- **SOURCE STATUS:** - [ 🏠 منصة ]: "Owned by platform, in local warehouse."
+    - [ 🤝 وسيط ]: "Sourced externally, inspected by HalabUnver."
+- **PICKUP/DELIVERY:** Admin-set location (e.g., "Engineering Faculty Gate").
+- **TIMELINE:** "Immediate" vs "3-5 Business Days".
+
+## 3. THE TECHNICAL DNA (The Spec Sheet)
+- **SPEC_GRID:** Monospace table for CPU, RAM, Weight, Battery Health.
+- **ADMIN_NOTE:** Rich-text area for "Staff Review" or "Device History".
+- **DOCUMENTATION:** [ 📄 Download Official Datasheet ] (PDF Link).

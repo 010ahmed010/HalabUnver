@@ -1,6 +1,6 @@
 # FILE: halabAcademy.desc
 # ROLE: Skill Acquisition & Discovery Hub
-# LOGIC: Catalog Navigation & Branch Filtering
+# LOGIC: Catalog Navigation & Branch Filtering 
 
 ## 1. DYNAMIC SUB-HEADER (The Navigation Hub)
 - **UI:** Horizontal `flex overflow-x-auto` with Admin-defined Branch Links.
