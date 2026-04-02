@@ -1,0 +1,48 @@
+# FILE: freelancerPublicProfile.desc
+# ROLE: Talent Showcase & Professional Identity
+# VIBE: Modern Portfolio / Technical Data Sheet / High-Trust
+
+## 1. THE IDENTITY HEADER (Top 30%)
+- **AVATAR & BADGE:** High-res profile image with a **[ ✅ موثق - Verified ]** glowing badge.
+- **NAME & TITLE:** Ahmed Al-Jassem | **Full-Stack Developer (MERN)**.
+- **MOTO/BIO:** Short personal punchline (e.g., "Building the future of Syrian Web Apps").
+- **STATISTICS BAR:** - [ ⭐ 4.9 Rating ] | [ 💼 24 Projects ] | [ ⚡ 2h Response Time ]
+    - [ 🎓 Level: Pro ] (Calculated by Admin/Rating).
+
+## 2. THE SKILLS & TOOLS BENTO (Monospace)
+- **TECHNICAL DNA:** A grid of small, high-contrast tags.
+- **DISPLAY:** [ React.js ] [ Node.js ] [ MongoDB ] [ Tailwind CSS ] [ Linux Admin ].
+- **CERTIFICATIONS:** Links to verified course certificates or University ID verification.
+
+## 3. THE WORK PORTFOLIO (90-Degree Grid)
+- **LAYOUT:** 3-column masonry grid of previous projects.
+- **INTERACTION:** Each item opens a lightbox with:
+    - **IMAGE:** Screenshot of the work.
+    - **DESCRIPTION:** Brief text explaining the challenge and the solution.
+    - **CLIENT REVIEW:** A small quote from the person who bought the service.
+
+## 4. THE SERVICE CATALOG (What I Offer)
+- **LISTING:** Small cards showing specific "Fixed Price" services.
+    - [ 🌐 Build a Single Page App ] — **Price: 500,000 SYP**
+    - [ 🛠️ Bug Fixing / Consultation ] — **Price: 50,000 SYP/hr**
+- **ACTION:** [ 💳 اطلب الخدمة ] (Order Service) -> Redirects to Project Workspace.
+
+## 5. THE "HIRE ME" TERMINAL (Sticky Sidebar)
+- **STATUS:** [ 🟢 Available for Hire ] | [ 🟡 Busy with Project ].
+- **PRIMARY CTA:** **[ 💬 تواصل للعمل - Hire Me ]**
+    - **LOGIC:** This opens a direct chat or a project proposal form.
+- **ESCROW NOTE:** "Payments are secured via HalabUnver Brokerage System."
+
+## 6. THE RATINGS & FEEDBACK (Social Proof)
+- **LIST:** Chronological list of reviews from other students/clients.
+- **FORMAT:** [ ⭐⭐⭐⭐⭐ ] + "Exceptional quality, delivered before the deadline." — *User #129*.
+
+---
+
+# NEXT SUB-PAGES IN THE PIPELINE:
+2. **Service Catalog Sub-page** (The deep-dive into specific categories).
+3. **Onboarding/Join Page** (The ShamCash Payment Terminal).
+4. **Top 100 Leaderboard** (The Hall of Fame).
+5. **Project Workspace** (The private file/money exchange).
+
+**Should we proceed to the [ 2: Service Catalog Sub-page ] next?**

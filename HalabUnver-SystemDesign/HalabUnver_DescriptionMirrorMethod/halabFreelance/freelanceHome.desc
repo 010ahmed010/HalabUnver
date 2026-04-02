@@ -1,0 +1,43 @@
+# FILE: freelanceHome.desc
+# ROLE: Freelancing Hub & Talent Marketplace
+# VIBE: Professional / Challenge-Driven / High-Contrast Dashboard
+
+## 1. THE HERO TERMINAL (Upper Fold)
+- **DYNAMIC BACKGROUND:** Modern dark-mode aesthetic featuring a subtle purple/blue gradient overlay with the motto: **"Challenge Every Day"**.
+- **THE SYRIAN PROMPT (Search):**
+    - A sleek, 1px white-outline search bar.
+    - **INPUT:** "Find services or talented student freelancers..."
+    - **QUICK LINKS (Admin Controlled):** Row of minimalist buttons under the search bar for trending tags (e.g., [ 💻 MERN Dev ] [ 📐 AutoCAD ] [ ✍️ Translation ]).
+- **VIBE CHECK:** No SubHeader. The focus is purely on the transition from "Student" to "Professional Producer."
+
+## 2. MAIN DISCIPLINARIES GRID (المجالات)
+- **VISUAL STYLE:** 12 "Bento Boxes" inspired by the uploaded image.
+- **INTERACTION:** Dark-themed images with a glassmorphism blur and white centered text.
+- **CATEGORIES:**
+    - [ 💻 برمجة وتطوير ] | [ 🏗️ هندسة وعمارة ] | [ 🎨 تصميم ]
+    - [ ✍️ كتابة وترجمة ] | [ 🤖 ذكاء اصطناعي ] | [ 📈 تسويق رقمي ]
+    - [ 📊 بيانات ] | [ 🎙️ صوتيات ] | [ 🎬 فيديو وأنيميشن ]
+    - [ 💼 أعمال ] | [ 📚 تعليم عن بعد ] | [ 🏃 أسلوب حياة ]
+
+## 3. "WHY HALAB-WORK" (The Value Proposition)
+- **PILLARS OF TRUST:**
+    1. **[ 💎 أسعار طلابية ]:** High-quality results at a price that fits a student budget (Peer-to-Peer pricing).
+    2. **[ 🧠 عقول ذكية ]:** Verified university talents with scientific backgrounds.
+    3. **[ 🛡️ وساطة آمنة ]:** Your money is locked by the platform until the work is delivered (Escrow).
+    4. **[ ⚡ دعم 24/7 ]:** Local support team familiar with the Syrian market and academic needs.
+
+## 4. FEATURED TALENT (خدمات مميزة)
+- **LAYOUT:** Row of 4 High-Rating Freelancer Cards.
+- **CARD DATA:** Avatar + Name + Verified Badge + "Top Rated" Star + Start Price.
+- **PRIMARY CTA:** [ 🏆 عرض أفضل 100 مستقل ] -> Direct link to the Top 100 Leaderboard subpage.
+
+## 5. THE "JOIN THE ELITE" (Subscription Logic)
+- **ADAPTIVE PRICING BOX:**
+    - **CASE A (Paid):** Displays "$5 / Month" (or SYP equivalent) with a "Return on Investment" calculator showing potential earnings.
+    - **CASE B (Free):** Displays **[ ⚡ دخول مجاني لفترة محدودة ]** with a glowing animated border and an Admin-set countdown timer.
+- **DESCRIPTION:** "Turn your academic skills into a professional career. Access exclusive projects and build your portfolio."
+
+## 6. THE NAVIGATION SIDEBAR (Sticky)
+- **GUEST STATE:** [ 🔑 تسجيل الدخول ] | [ 📝 إنشاء حساب جديد ] (Redirects to Onboarding/Join Page).
+- **FREELANCER ONBOARDING LINK:** Includes a specific note: "New Freelancers: Payment via ShamCash QR required for verification."
+- **CATEGORY SCROLL:** Quick-jump links to the "Main Disciplinaries" section for fast navigation.

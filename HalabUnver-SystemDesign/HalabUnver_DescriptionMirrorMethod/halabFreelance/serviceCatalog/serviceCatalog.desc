@@ -1,0 +1,49 @@
+# FILE: serviceCatalog.desc
+# ROLE: Category Deep-Dive & Service Exploration
+# VIBE: Industrial Directory / Grid-Heavy / Filter-Focus
+
+## 1. DYNAMIC CATEGORY HEADER (Top 20%)
+- **VISUAL:** Large, blurred background image matching the selected "Main Disciplinary" (e.g., Code/Architecture).
+- **TITLE:** [ 💻 البرمجيات والتطوير ] (Software & Development).
+- **SUB-TITLE:** "Browse specialized services from top-tier student developers."
+- **BREADCRUMBS:** Home > Freelance > Software.
+
+## 2. ADVANCED FILTER TERMINAL (Left Sidebar/Top Bar)
+- **SEARCH FIELD:** "Search within this category..." (e.g., "React", "Python").
+- **SERVICE LEVEL:** [ 🥉 Junior ] | [ 🥈 Pro ] | [ 🥇 Elite ].
+- **PRICE FILTER:** Minimum to Maximum SYP Slider.
+- **DELIVERY TIME:** [ ⚡ Fast (24h) ] | [ 🕒 Standard ] | [ 🗓️ Custom ].
+- **SORTING:** "Highest Rated" | "Lowest Price" | "Newest Additions".
+
+## 3. THE SERVICE GRID (Main Area)
+- **LAYOUT:** 3-column grid of detailed service cards.
+- **SERVICE CARD DATA:**
+    - **IMAGE:** Cover image of the specific service (e.g., a website screenshot).
+    - **FREELANCER SNIPPET:** Small avatar + Name + **[ ✅ Verified ]**.
+    - **TITLE:** "I will build a professional MERN stack dashboard for your project."
+    - **PRICING:** Starting from **150,000 SYP**.
+    - **STATS:** [ ⭐ 5.0 (12 Reviews) ] | [ 📦 3 Orders in Queue ].
+
+## 4. THE "PROMOTED SERVICE" SLOT (Top Row)
+- **LOGIC:** The first 2 spots in the grid are "Featured" (Admin-controlled or highest rating).
+- **STYLE:** Subtle glowing border (Cyan/Purple) to highlight top-tier quality.
+
+## 5. THE SERVICE LIGHTBOX (Quick View)
+- **INTERACTION:** Clicking a card opens a popup before the full subpage.
+- **DETAILS:** - **Included:** 3 Revisions, Source Code, Documentation.
+    - **Duration:** 5 Days.
+- **ACTION:** [ 💳 اطلب الآن ] | [ 💬 استفسار ] (Direct Message).
+
+## 6. CATEGORY FOOTER (The "Can't Find It?" Node)
+- **MESSAGE:** "Looking for something custom that isn't listed here?"
+- **PRIMARY CTA:** **[ 📝 انشر طلبك الخاص - Post a Custom Task ]**
+- **LOGIC:** Redirects to a form where freelancers can bid on the client's specific needs.
+
+---
+
+# NEXT SUB-PAGES IN THE PIPELINE:
+3. **Onboarding/Join Page** (The ShamCash Payment Terminal).
+4. **Top 100 Leaderboard** (The Hall of Fame).
+5. **Project Workspace** (The private file/money exchange).
+
+**Shall we move to [ 3: Onboarding/Join Page ] with the ShamCash Terminal next?**

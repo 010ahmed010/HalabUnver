@@ -1,0 +1,38 @@
+# FILE: freelancerOnboarding.desc
+# ROLE: Gatekeeper & Talent Enrollment Terminal
+# VIBE: Registration Flow / Secure Payment / Industrial Precision
+
+## 1. THE MULTI-STEP PROGRESSION (The 3-Phase Logic)
+- **VISUAL:** A clean horizontal step-indicator at the top.
+    - **Step 1:** [ 📝 البيانات الشخصية - Bio ]
+    - **Step 2:** [ 🛠️ المهارات والمعرض - Skills ]
+    - **Step 3:** [ 💳 تفعيل الحساب - Verification ]
+
+## 2. PHASE 1: IDENTITY & BIO (The Form)
+- **FIELDS:** - Full Name (Verified via University ID scan upload).
+    - Academic Level (Year / Faculty / Department).
+    - Professional Title (e.g., UI/UX Designer, Civil Engineer).
+    - **BIO BOX:** "Write your professional 'Challenge Every Day' story."
+
+## 3. PHASE 2: SKILL MATRIX & PORTFOLIO
+- **SKILL TAGGER:** Multi-select search for categories (matches the 12 Main Disciplinaries).
+- **PORTFOLIO UPLOADER:** - Drag-and-drop zone for PDF/JPG/PNG work samples.
+    - URL field for GitHub, Behance, or personal websites.
+- **VIBE:** 90-degree aligned input boxes with 1px white borders.
+
+## 4. PHASE 3: THE SHAMCASH TERMINAL (The Gate)
+- **DYNAMIC PRICING NOTE:** - **Case A:** "Subscription Fee: 15,000 SYP / Month."
+    - **Case B (Free):** "Admin Override: $0.00 - Account verification only."
+- **THE QR NODE:** - **IMAGE:** Centered, high-contrast **ShamCash QR Code**.
+    - **INSTRUCTION:** "Scan the code and send the amount. In the 'Note/البيان' field, you **MUST** write your full name."
+- **VERIFICATION INPUT:** - **FIELD:** "Transaction ID / Reference Number."
+    - **UPLOAD:** Screenshot of the successful payment receipt.
+
+## 5. THE "SUBMIT FOR REVIEW" ACTION
+- **PRIMARY CTA:** **[ ✅ إرسال طلب الانضمام - Submit Application ]**
+- **LOGIC:** After clicking, the user sees a "Pending Terminal":
+    > "Account is under review by the HalabUnver Admin. We verify money and ID within 24-48 hours. You will receive a notification once your profile is Public."
+
+## 6. THE SUPPORT SIDEBAR
+- **HELP NODE:** "Having trouble with ShamCash? [ 💬 Contact Support ]"
+- **SECURITY PROMISE:** "Your data is encrypted and used only for professional verification within the Aleppo University ecosystem."
