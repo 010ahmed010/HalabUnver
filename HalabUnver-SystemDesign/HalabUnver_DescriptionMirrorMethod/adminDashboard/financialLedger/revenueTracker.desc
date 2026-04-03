@@ -1,0 +1,42 @@
+# FILE: .../adminDashboard/financialLedger/revenueTracker.desc
+# ROLE: The Ecosystem’s "Financial Brain"
+# VIBE: High-Security / Data-Visualized / Absolute Accuracy
+
+## 1. THE ECOSYSTEM REVENUE SNAPSHOT (Upper Fold)
+- **CASH-IN COUNTERS (Live Totals):**
+    - **[ 🛒 Store ]:** Total profit from physical hardware sales.
+    - **[ 📚 Library ]:** Revenue from "Solved Exams" or Premium PDFs (if applicable).
+    - **[ 💼 Freelance ]:** Total income from the $5 Monthly Subscriptions.
+    - **[ 🎓 Academy ]:** Total sales from Video Course enrollments.
+- **PLATFORM TAX:** A dedicated counter showing the 5-10% commission taken from Freelance projects held in Escrow.
+
+## 2. THE SHAMCASH VERIFICATION TERMINAL (The Gatekeeper)
+- **UNVERIFIED PAYMENTS QUEUE:** A list of incoming reports from users.
+- **DATA COLUMNS:** [ 👤 User Name ] | [ 🔢 Transaction ID ] | [ 💰 Reported Amount ] | [ 📑 Receipt Photo ].
+- **ADMIN ACTION:**
+    - **[ ✅ Confirm ]:** Instantly activates the Freelancer account or unlocks the Store order.
+    - **[ ❌ Fraud/Error ]:** Flags the transaction and notifies the user to contact support.
+
+## 3. SUBSCRIPTION LIFECYCLE MONITOR
+- **FREELANCE DUES:** A table tracking the $5 (or SYP equivalent) monthly fee.
+- **STATUS PILLS:** [ 🟢 Active ] | [ 🟡 Expiring in 3 days ] | [ 🔴 Expired - Profile Hidden ].
+- **WONDER FEATURE (The "Auto-Reminder"):** A button to send a WhatsApp/System notification to all users in the "Expiring" list with one click.
+
+## 4. THE ESCROW HOLDING TANK (Freelance Safety)
+- **LOGIC:** Tracks money that belongs to freelancers but is currently held by the Platform (AMJ).
+- **DISPLAY:** [ 🔒 Total Funds in Escrow ] | [ 🔓 Released Funds (This Week) ].
+- **SECURITY NOTE:** "Do not release funds until both parties in the `UniversalOrderManager` have clicked 'Complete'."
+
+## 5. DYNAMIC COSTING & OVERRIDE (Global Pricing)
+- **SUBSCRIPTION CONFIG:** Field to change the "$5" fee to any value (e.g., "$0" for a free month promotion).
+- **CURRENCY TOGGLE:** [ 🇸🇾 SYP ] | [ 💵 USD ] (For internal calculation and reporting).
+- **AD REVENUE:** Small section linked to `adConsole` to track income from promoted store banners.
+
+## 6. ANALYTICS & WITHDRAWAL LOGS
+- **PROFIT GRAPH:** A simple line chart (Last 30 days) showing revenue spikes.
+- **WITHDRAWAL REQUESTS:** For "Broker" sellers in the Store or Elite Freelancers wanting to cash out their platform wallet.
+- **EXPORT:** [ 📄 Generate Monthly Financial Report (PDF) ] — Includes all transaction IDs for legal/accounting backup.
+
+## 7. STICKY ACTION HUD
+- **GLOBAL SEARCH:** "Search by Transaction ID or Receipt Note."
+- **EMERGENCY LOCK:** [ 🛑 Pause All Payments ] (For system maintenance).

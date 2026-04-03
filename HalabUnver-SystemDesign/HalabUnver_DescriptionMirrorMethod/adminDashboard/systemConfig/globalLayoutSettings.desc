@@ -1,0 +1,39 @@
+# FILE: .../adminDashboard/systemConfig/globalLayoutSettings.desc
+# ROLE: The Platform’s "Visual & Logic Engine"
+# VIBE: Command-Line Control / Design System Hub / Master Switches
+
+## 1. HERO TERMINAL CONFIG (Home Page Control)
+- **THE DYNAMIC PROMPT:** Textarea to update the main H1 heading (e.g., "The Future of Aleppo University Students").
+- **SEARCH BUTTONS (Admin Managed):** - A dynamic list builder for the "Quick Search" buttons under the hero.
+    - **FIELDS:** [ Button Label (e.g., 📐 Engineering) ] | [ Target URL/Category ].
+- **MANTRA TOGGLE:** [ On/Off ] switch for the **"Challenge Every Day"** global scrolling ticker.
+
+## 2. THE "FREE MONTH" PROMOTION ENGINE (Subscription Logic)
+- **GLOBAL STATUS:** [ 🟢 Active Promo ] | [ ⚪ Standard Paid ].
+- **COUNTDOWN TIMER:** - **INPUT:** Date/Time picker for the promotion's end.
+    - **GLOW EFFECT:** [ Enable/Disable ] the animated "Free" badge on the `freelancerOnboarding` page.
+- **PROMO OVERRIDE:** "Set cost to $0 for all new sign-ups in the next [X] days."
+
+## 3. BANNER & BROADCAST MANAGEMENT
+- **GLOBAL ALERT BAR:** A thin sticky bar at the very top of the site for urgent news.
+    - **TEXT:** "Registration for the Elite Freelancer Program is now open!"
+    - **COLOR PICKER:** [ 🔴 Red - Alert ] | [ 🟣 Purple - Info ] | [ 🔵 Blue - Normal ].
+- **ADS & SLIDERS:** Management for the `halabStore` main carousel images (hosted externally).
+
+## 4. UI/UX DESIGN TOKENS (The "Aesthetic" Gate)
+- **DARK MODE INTENSITY:** Slider to adjust background HEX values across the site (Maintain high-contrast 90-degree look).
+- **ACCENT COLOR:** Change the primary glow color (Default: #7C3AED Purple) for all buttons and badges platform-wide.
+- **GLASSMORPHISM STRENGTH:** Slider to control the blur percentage on the "Main Disciplinary" boxes.
+
+## 5. CONTACT & EXTERNAL NODES
+- **SOCIAL LINKS:** Central management for the WhatsApp, Telegram, and Facebook links used in the `contactUs` and `footer` sections.
+- **SHAMCASH QR UPDATE:** - **UPLOADER:** Update the main QR code image used for `freelancerOnboarding` and `store` payments.
+    - **NOTE TEMPLATE:** Textarea to set the "Note/البيان" instructions shown to users.
+
+## 6. THE "MAINTENANCE" OVERRIDE
+- **SYSTEM STATUS:** [ 🟢 Online ] | [ 🛠️ Maintenance Mode ].
+- **MAINTENANCE MESSAGE:** "AMJ is hardening the system. Back in 2 hours. Challenge Every Day."
+
+## 7. STICKY ACTION HUD
+- **PREVIEW CHANGES:** [ 👁️ Open Live Preview ] (Opens site in a split-window).
+- **DEPLOY:** [ 🚀 Apply Changes Globally ].

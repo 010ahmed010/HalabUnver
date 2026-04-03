@@ -1,0 +1,39 @@
+# FILE: .../studentDashboard/marketplaceLedger/orderHistory.desc
+# ROLE: Physical Goods & Store Transaction Tracker
+# VIBE: E-Commerce Log / High-Contrast / Transparent / Security-First
+
+## 1. THE "PENDING ACTION" NOTIFIER (Top Fold)
+- **VISUAL:** A high-alert "Golden/Yellow" border box for active orders.
+- **LOGIC:** Visible only if a student has clicked "Buy" in `halabStore` but hasn't finished the process.
+- **MESSAGE:** "Order #HS-702 is awaiting ShamCash verification. Please upload your receipt."
+- **ACTION:** [ 📤 Upload Receipt ] -> Redirects to a simplified payment verification form.
+
+## 2. THE MASTER ORDER TIMELINE (The List)
+- **FORMAT:** A clean, vertical list of all `halabStore` interactions.
+- **COLUMNS / DATA:**
+    1. **ORDER ID:** #HS-702 (Unique SKU from Store).
+    2. **ITEM:** Small Thumbnail + Name (e.g., "Graphic Tablet Huion H640P").
+    3. **STATUS PILLS:** - [ 🕒 Pending ] — Waiting for Admin to check the money.
+        - [ 💳 Verified ] — Payment confirmed; item being prepared.
+        - [ 🚚 Ready ] — Pickup is ready at the specified campus node.
+        - [ ✅ Received ] — Transaction closed.
+    4. **PRICE:** "450,000 SYP".
+
+## 3. THE "PICKUP NODE" MAP & INSTRUCTIONS
+- **VISUAL:** A 90-degree 1px box showing the logistics for the **Current Order**.
+- **LOCATION:** "Informatics Engineering Bldg - 2nd Floor - Office 402."
+- **BROKER INFO:** Name of the platform broker responsible for handing over the item.
+- **WONDER FEATURE:** A **"Secure Pickup Code"** (4-digit PIN) that the student must show the broker to verify they are the rightful owner.
+
+## 4. THE SAVINGS COUNTER (Motivation)
+- **STAT BOX:** A 90-degree card titled "Total Student Savings".
+- **DATA:** "By using HalabUnver Store, you have saved **155,000 SYP** compared to market prices."
+- **MANTRA:** "Invest in your tools. Challenge Every Day."
+
+## 5. REORDER & SUPPORT TERMINAL
+- **QUICK ACTION:** [ 🔄 Buy Again ] for consumable goods (e.g., specific engineering paper or pens).
+- **DISPUTE BUTTON:** [ ⚠️ Problem with Order? ] — Opens a direct Admin chat for issues (Missing items, damaged hardware, etc.).
+
+## 6. STICKY ACTION HUD
+- **BROWSE STORE:** [ 🛒 Return to Store ] -> Redirects to `halabStore.desc`.
+- **INVOICE:** [ 📄 Download PDF Receipt ] (A clean, printable 90-degree invoice).

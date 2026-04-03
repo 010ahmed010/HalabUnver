@@ -1,38 +1,33 @@
-# FILE: freelancerOnboarding.desc
-# ROLE: Gatekeeper & Talent Enrollment Terminal
-# VIBE: Registration Flow / Secure Payment / Industrial Precision
+# FILE: .../halabFreelance/freelanceOnboarding/freelanceOnboarding.desc
+# ROLE: The Professional Entry Gate & Monetization Logic
+# VIBE: Educational / Aspiring / Legal-Technical / Step-by-Step
 
-## 1. THE MULTI-STEP PROGRESSION (The 3-Phase Logic)
-- **VISUAL:** A clean horizontal step-indicator at the top.
-    - **Step 1:** [ 📝 البيانات الشخصية - Bio ]
-    - **Step 2:** [ 🛠️ المهارات والمعرض - Skills ]
-    - **Step 3:** [ 💳 تفعيل الحساب - Verification ]
+## 1. THE "FREELANCER MANTRA" (Top Fold)
+- **VISUAL:** A high-contrast hero banner with the motto: *"Scale Your Skills. Challenge Every Day."*
+- **IDENTITY CHECK:** A small badge showing current User: **[ Ahmed Al-Jassem ]**.
+- **LOGIC:** If `isVerified` is **FALSE** in `profileDetails.desc`, show a Red Alert: "You must verify your Student ID before joining the Freelance Hub."
 
-## 2. PHASE 1: IDENTITY & BIO (The Form)
-- **FIELDS:** - Full Name (Verified via University ID scan upload).
-    - Academic Level (Year / Faculty / Department).
-    - Professional Title (e.g., UI/UX Designer, Civil Engineer).
-    - **BIO BOX:** "Write your professional 'Challenge Every Day' story."
+## 2. THE 3-STEP ONBOARDING WIZARD
+- **STEP 1 (Terms of Service):** A scrollable 90-degree box outlining commission fees (e.g., 5% to Platform).
+    - [ ✅ ] I agree to the HalabUnver Professional Code.
+- **STEP 2 (Skill Alignment):** Pulls the "Tags" from `profileDetails.desc`.
+    - **PROMPT:** "Confirm your expertises: [ MERN ] [ Pentesting ] [ Linux ]."
+- **STEP 3 (The Access Fee):** The critical monetization node.
+    - **INFO:** "Freelance Hub access requires a **$5 USD (Monthly)** platform fee."
 
-## 3. PHASE 2: SKILL MATRIX & PORTFOLIO
-- **SKILL TAGGER:** Multi-select search for categories (matches the 12 Main Disciplinaries).
-- **PORTFOLIO UPLOADER:** - Drag-and-drop zone for PDF/JPG/PNG work samples.
-    - URL field for GitHub, Behance, or personal websites.
-- **VIBE:** 90-degree aligned input boxes with 1px white borders.
+## 3. THE PAYMENT BRIDGE (The Handshake)
+- **PRIMARY ACTION:** [ 💳 Pay Subscription Fee ] -> **LINK:** Redirects to `studentDashboard/financialTerminal/walletOverview.desc`.
+- **DATA PASS:** Appends a metadata tag to the transaction: `type: "FREELANCE_SUB"`.
+- **LOGIC:** The "Submit Offer" button in `serviceCatalog` remains **DISABLED** until the `subscriptionStatus` in the DB is `active`.
 
-## 4. PHASE 3: THE SHAMCASH TERMINAL (The Gate)
-- **DYNAMIC PRICING NOTE:** - **Case A:** "Subscription Fee: 15,000 SYP / Month."
-    - **Case B (Free):** "Admin Override: $0.00 - Account verification only."
-- **THE QR NODE:** - **IMAGE:** Centered, high-contrast **ShamCash QR Code**.
-    - **INSTRUCTION:** "Scan the code and send the amount. In the 'Note/البيان' field, you **MUST** write your full name."
-- **VERIFICATION INPUT:** - **FIELD:** "Transaction ID / Reference Number."
-    - **UPLOAD:** Screenshot of the successful payment receipt.
+## 4. THE PUBLIC PROFILE PREVIEW
+- **VISUAL:** A "Live Preview" of how the freelancer will look in the `topTalentLeaderboard.desc`.
+- **EDIT BUTTON:** [ ✏️ Modify Public Bio ] -> Links to `freelancePublicProfile.desc`.
 
-## 5. THE "SUBMIT FOR REVIEW" ACTION
-- **PRIMARY CTA:** **[ ✅ إرسال طلب الانضمام - Submit Application ]**
-- **LOGIC:** After clicking, the user sees a "Pending Terminal":
-    > "Account is under review by the HalabUnver Admin. We verify money and ID within 24-48 hours. You will receive a notification once your profile is Public."
+## 5. THE ESCROW EDUCATION MODULE
+- **INFO:** A 1px border box explaining how the money is held by the Admin (AMJ) until the student approves the work.
+- **LINK:** [ 📖 Read Escrow Rules ] -> Opens a popup with the security protocol.
 
-## 6. THE SUPPORT SIDEBAR
-- **HELP NODE:** "Having trouble with ShamCash? [ 💬 Contact Support ]"
-- **SECURITY PROMISE:** "Your data is encrypted and used only for professional verification within the Aleppo University ecosystem."
+## 6. STICKY STATUS BAR (Bottom)
+- **CURRENT STATUS:** [ 🔴 Restricted Access ] — *Pay fee to unlock.*
+- **FOOTER:** "Your professional journey starts here. Secure payments powered by ShamCash."

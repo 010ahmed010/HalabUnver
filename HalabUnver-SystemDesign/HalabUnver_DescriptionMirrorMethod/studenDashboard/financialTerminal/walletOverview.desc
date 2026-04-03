@@ -1,0 +1,44 @@
+# FILE: .../studentDashboard/financialTerminal/walletOverview.desc
+# ROLE: Personal Finance & Subscription Command Center
+# VIBE: Modern Banking / High-Contrast / Data-Visualized / Monospace
+
+## 1. THE "CASH-FLOW" SUMMARY (Top Fold)
+- **VISUAL:** Three large, 90-degree bento cards showing total movement.
+- **CARD A (Total Spent):** Cumulative SYP spent on Store & Academy.
+- **CARD B (Freelance Earnings):** (Only if Freelancer Mode is ON) Total SYP earned from completed contracts.
+- **CARD C (Pending Verification):** Total SYP currently tied up in ShamCash receipts waiting for Admin approval.
+- **WONDER FEATURE:** A "Savings Badge" showing: "You've saved **45,000 SYP** through Student Discounts."
+
+## 2. THE FREELANCE SUBSCRIPTION TRACKER
+- **STATUS BOX:** A high-alert border box for the **$5 Monthly Access**.
+- **DATA:** - **Current Plan:** [ 🟢 Active ] or [ 🔴 Expired ].
+    - **Days Remaining:** "14 Days until renewal."
+    - **Next Payment Date:** April 17, 2026.
+- **ACTION:** [ 💳 Renew Now ] — Triggers the ShamCash payment modal for another 30 days of platform access.
+
+## 3. THE SHAMCASH RECEIPT LOG (Transaction History)
+- **FORMAT:** A monospace, high-density table of every payment made.
+- **COLUMNS:**
+    1. **DATE:** 2026-04-03.
+    2. **REF ID:** #TX-9901 (The ShamCash ID provided by the user).
+    3. **PURPOSE:** [ 🛒 Store ] | [ 💼 Sub ] | [ 🎓 Academy ].
+    4. **STATUS:** - [ 🕒 Checking ] - Admin is verifying.
+        - [ ✅ Success ] - Transaction confirmed.
+        - [ ❌ Rejected ] - ID mismatch/Fraud.
+    5. **AMOUNT:** 150,000 SYP.
+
+## 4. THE VIRTUAL WALLET (Platform Credit)
+- **LOGIC:** If a student cancels an order or wins a dispute, the money is returned here as "Credit" instead of a cash refund.
+- **DISPLAY:** [ 💰 Available Balance: 25,000 SYP ].
+- **USE CASE:** This balance can be applied as a discount on the next purchase in the `halabStore`.
+
+## 5. PAYMENT INSTRUCTIONS & QR TERMINAL
+- **STATIC CONTENT:** A 1px bordered box containing the **Official ShamCash QR Code**.
+- **STEPS:** 1. Scan the QR.
+    2. Pay the amount.
+    3. **CRITICAL:** Copy the Transaction ID and paste it into the "Report Payment" form.
+- **MANTRA:** "Transparent payments for a resilient ecosystem. Challenge Every Day."
+
+## 6. STICKY ACTION HUD
+- **REPORT PAYMENT:** [ 📤 Submit New Receipt ] — The main button for all financial interactions.
+- **EXPORT LOGS:** [ 📄 Download Financial Statement (PDF) ] — A clean list of all successful payments for the student's records.

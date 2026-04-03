@@ -1,0 +1,41 @@
+# FILE: .../studentDashboard/learningVault/enrolledCourses.desc
+# ROLE: The Academy Learning Terminal
+# VIBE: Educational / High-Focus / Cinematic / Progress-Driven
+
+## 1. THE "CONTINUE WATCHING" HERO (Top Fold)
+- **VISUAL:** A wide, 90-degree card featuring the last course accessed.
+- **VIDEO PREVIEW:** A blurred thumbnail of the next lesson.
+- **DATA:** Course Title: "MERN Stack Mastery" | Lesson 4: "Express Middleware".
+- **ACTION:** [ ▶️ Resume Learning ] — Big, glowing Purple button.
+- **WONDER FEATURE:** A **"Time Left"** counter: "3h 12m remaining to complete this course."
+
+## 2. THE ENROLLED COURSE INVENTORY (The List)
+- **FORMAT:** Vertical list of all purchased/enrolled Academy content.
+- **COLUMNS / ROWS:**
+    1. **THUMBNAIL:** 16:9 Aspect ratio image with a play icon overlay.
+    2. **COURSE TITLE:** e.g., "Architecture Rendering with V-Ray".
+    3. **PROGRESS METER:** A linear glow-bar (e.g., 45% Complete).
+    4. **CERTIFICATE STATUS:** [ 🔒 Locked ] until 100% completion.
+- **FILTER:** [ 🟢 Active ] | [ ✅ Completed ].
+
+## 3. THE "CURRICULUM AT A GLANCE" (Drawer)
+- **LOGIC:** Clicking a course expands a dropdown showing the full lesson list.
+- **LESSON STATUS:**
+    - `[ ✅ ] Lesson 1: Introduction`
+    - `[ ✅ ] Lesson 2: Environment Setup`
+    - `[ ⚪ ] Lesson 3: The First Project` (Current)
+- **SOURCE:** Links to the video hosted on the Academy’s external source (YouTube/Vimeo/Drive).
+
+## 4. THE SKILL ACQUISITION BADGES
+- **VISUAL:** A small sidebar of "Skill Orbs" representing what the student has learned.
+- **ORBS:** [ ⚛️ React ] [ 🌿 MongoDB ] [ 🎨 UI Design ].
+- **XP REWARD:** "Total Learning XP: **+1,400**."
+- **MILESTONE:** "2 more courses to reach 'Professional' rank."
+
+## 5. ACADEMY SUPPORT & Q&A
+- **INQUIRY BUTTON:** [ ❓ Ask Instructor ] — Opens a direct WhatsApp/Telegram link to the course creator.
+- **RESOURCE HUB:** Links to course-specific PDFs (stored in Google Drive) like "Lesson Notes" or "Source Code".
+
+## 6. STICKY ACTIONS
+- **BROWSE MORE:** [ 🎓 Find New Courses ] -> Redirects to `halabAcademy.desc`.
+- **CERTIFICATE HUB:** [ 📜 View My Certificates ] (Available only for 100% finished courses).

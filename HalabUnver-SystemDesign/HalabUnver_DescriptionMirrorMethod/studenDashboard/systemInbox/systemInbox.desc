@@ -1,0 +1,44 @@
+# FILE: .../studentDashboard/systemInbox/systemInbox.desc
+# ROLE: The Official Platform Communications Hub
+# VIBE: Direct / High-Contrast / Monospace Logs / Notification Center
+
+## 1. THE STATUS TICKER (Top Fold)
+- **VISUAL:** A horizontal, 90-degree scrolling bar for "Global Broadcasts."
+- **CONTENT:** "System Update: New solved exams for the Faculty of Architecture added to Library."
+- **MANTRA:** A small, static label: "Stay Informed. Challenge Every Day."
+
+## 2. THE UNREAD PRIORITY QUEUE (The Notification List)
+- **FORMAT:** A vertical list of message cards with 1px borders.
+- **CARD COMPONENTS:**
+    - **SENDER:** [ 🛠️ Admin ] | [ 💼 Freelancer ] | [ 🛒 Store Bot ].
+    - **TITLE:** "Payment Verified for Order #HS-702."
+    - **TIMESTAMP:** "2 mins ago" (Monospace font).
+    - **STATUS DOT:** A glowing purple dot for unread messages.
+- **WONDER FEATURE:** **"Actionable Alerts"** — If a message says "ID Rejected," it includes a direct button: [ 📤 Re-upload ID ].
+
+## 3. CATEGORY TABS (The Filter Bar)
+- **TABS:** [ 📥 All ] | [ 💳 Financial ] | [ 🎓 Academic ] | [ 📢 Announcements ].
+- **LOGIC:** - **Financial:** Only ShamCash receipts and subscription alerts.
+    - **Academic:** Library updates and Academy course milestones.
+
+## 4. THE MESSAGE DETAIL DRAWER (Expanded View)
+- **LOGIC:** Clicking a notification slides out a side panel with full details.
+- **CONTENT:** - "Your request for 'Software Engineering Summary' has been fulfilled."
+    - "Link: [ 📂 Open in Google Drive ]"
+    - "XP Awarded: +25 XP."
+- **ACTION:** [ 🗑️ Archive Message ] | [ ✅ Mark as Read ].
+
+## 5. AUTOMATED "ESCROW" ALERTS
+- **VISUAL:** High-alert Red/Yellow cards for Freelance contracts.
+- **CONTENT:** "The Freelancer has submitted files for 'Project X'. You have 48 hours to review or the Escrow will auto-release."
+- **ACTION:** [ 👁️ Review Delivery ] -> Redirects to `serviceContracts.desc`.
+
+## 6. NOTIFICATION SETTINGS (The Gear Icon)
+- **TOGGLES:**
+    - [ 👁️ Browser Push Notifications ] -> ON/OFF.
+    - [ 📱 WhatsApp Alerts ] -> ON/OFF (For urgent order status).
+    - [ 📧 Email Summary ] -> Weekly/Daily/Off.
+
+## 7. STICKY ACTION HUD
+- **CLEANUP:** [ 🧹 Mark All as Read ] | [ 🗄️ View Archived ].
+- **QUICK SEARCH:** "Find a message by ID or keyword."

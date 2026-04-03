@@ -1,31 +1,40 @@
-# FILE: UniversalOrderManager.desc
-# ROLE: Central Clearing House for All Payments (Digital & Physical)
-# VIBE: Professional Audit Log / Secure Admin Terminal
+# FILE: .../adminDashboard/UniversalOrderManager/UniversalOrderManager.desc
+# ROLE: The Financial Fulfillment & Escrow Release Hub
+# VIBE: High-Stakes / Tabular / Mission-Control / Secure
 
-## 1. DUAL-LOGIC QUEUE (The Order Hub)
-- **SOURCE_TAG:** Each order is labeled [ 🏠 NATIVE ] or [ 🤝 BROKER ].
-- **UNIFIED_STATUS:** 1. `Waiting_Verification` (WhatsApp Screenshot Pending).
-  2. `Payment_Confirmed` (Verified by Admin).
-  3. `In_Preparation` (Native: Packing | Broker: Ordering from Supplier | Digital: Unlocking).
-  4. `In_Transit` (With Driver/Carrier - Physical Only).
-  5. `Completed` (Received / Access Granted).
+## 1. THE ESCROW AUTHORIZATION QUEUE (Freelance Sync)
+- **VISUAL:** A dedicated "Action Required" section at the top with a pulsing yellow border.
+- **LOGIC:** Pulls data from `studenDashboard/marketplaceLedger/serviceContracts.desc`.
+- **COLUMNS:**
+    - **Project:** "Backend Refactor #PRJ-102".
+    - **Status:** [ 📦 Under Review ] — (Student has seen the files).
+    - **Student Action:** [ ✅ Authorized ] — (The student clicked "Release Payment").
+- **PRIMARY ACTION:** [ 💸 Finalize Payout ] — Moves ShamCash from Platform Escrow to Freelancer’s `walletOverview.desc`.
+- **SECONDARY ACTION:** [ 🛑 Freeze Funds ] — Used if a dispute is opened.
 
-## 2. THE BROKERAGE OVERLAY (Conditional)
-- **SUPPLIER_DATA:** If [BROKER], show Supplier Name, WhatsApp, and Cost Price.
-- **PROFIT_MARGIN:** Auto-calculate: `User_Price - (Supplier_Cost + Shipping) = AMJ_Net`.
-- **ACTION:** [ 📲 Notify Supplier ] -> Pre-filled WhatsApp link with student's delivery info.
+## 2. THE STORE FULFILLMENT TRACKER (Store Sync)
+- **LOGIC:** Syncs with `studenDashboard/marketplaceLedger/orderHistory.desc`.
+- **DATA POINTS:**
+    - **Order ID:** #HS-702.
+    - **Customer:** Ahmed Al-Jassem.
+    - **Verification:** [ 🟢 Payment Verified ] (Linked to `revenueTracker.desc`).
+- **THE HANDSHAKE:** A **"Secure Code Entry"** field. 
+    - **PROMPT:** "Enter Student's 4-Digit Pickup Code".
+    - **RESULT:** If code matches, status auto-updates to `[ ✅ Received ]` for both Admin and Student.
 
-## 3. THE NATIVE OVERLAY (Conditional)
-- **STOCK_CONTROL:** If [NATIVE], auto-deduct from `Internal_Inventory`.
-- **ACTION:** [ 📄 Print Packing Slip ] -> Generate 90-degree grid label with Order ID.
+## 3. PHYSICAL INVENTORY DISPATCH (Broker View)
+- **LIST:** Items ready for pickup today.
+- **BROKER ASSIGNMENT:** Dropdown to assign a specific team member to the pickup node (e.g., "Samer at IT Faculty").
+- **ACTION:** [ 📤 Notify Student ] — Sends a "Your item is ready for pickup" alert to `systemInbox.desc`.
 
-## 4. WHATSAPP GATEWAY (Offloaded Logic)
-- **VERIFICATION:** Admin matches ShamCash Ref ID from WhatsApp screenshot to the Order ID.
-- **COMMUNICATION:** One-click buttons to update the student on their status via WhatsApp.
-- **OFFLOAD:** All transaction proof (images) stays on WhatsApp servers; no server-side storage used.
+## 4. CANCELLATION & REFUND LOGIC
+- **ACTION:** [ 🗑️ Cancel Order ] — Triggers an automatic "Virtual Credit" refund to the student's `walletOverview.desc`.
+- **LOG:** All cancellations are timestamped with the reason (e.g., "Out of stock").
 
-## 5. FINANCIAL AUDIT & DIGITAL ACTIVATION
-- **TOTAL_REVENUE:** Gross ShamCash intake across all pillars (Store, Academy, Library, Exam).
-- **OUTGOING_PAYMENTS:** Total owed to Suppliers (for Broker items).
-- **AUTO_UNLOCK:** For Digital products, clicking [ ✅ Approve ] instantly pushes item to User's `purchasedItems`.
-- **SYSTEM_HEALTH:** [ 💰 LIQUIDITY: STABLE ].
+## 5. GLOBAL SEARCH & FILTER
+- **SEARCH:** By Order ID, Student UID, or Freelancer Name.
+- **FILTERS:** [ 🕒 Pending ] | [ 📦 In Transit ] | [ 💰 In Escrow ] | [ ✅ Completed ].
+
+## 6. STICKY SUMMARY HUD (Bottom)
+- **STATS:** `Total Escrow Held: 4,500,000 SYP` | `Orders Ready: 12`.
+- **MANTRA:** "Zero-Leak Economy. Challenge Every Day."

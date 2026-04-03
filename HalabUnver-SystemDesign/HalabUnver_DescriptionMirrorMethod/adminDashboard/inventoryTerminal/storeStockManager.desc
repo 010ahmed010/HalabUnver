@@ -1,0 +1,34 @@
+# FILE: .../adminDashboard/inventoryTerminal/storeStockManager.desc
+# ROLE: The Physical-to-Digital Stock Synchronization Engine
+# VIBE: Industrial / High-Density / Spreadsheet-Style / Precise
+
+## 1. THE LIVE INVENTORY MATRIX (MERN Sync)
+- **VISUAL:** A compact table with 1px borders and "Low Stock" red highlights.
+- **COLUMNS:**
+    - **Product ID:** e.g., `HS-LTP-01`.
+    - **Name:** "ThinkPad T480 - Refurbished".
+    - **Stock Count:** [ 5 ] (Integer field linked to MongoDB `stock` key).
+    - **Price:** 4,500,000 SYP.
+    - **Discount Label:** [ 🎓 Student ] (Applies the 15% reduction logic).
+- **LOGIC:** `if (StockCount === 0) { setStatus("Out of Stock") }`.
+
+## 2. THE "STOREFRONT" TOGGLE (Display Logic)
+- **ACTION:** [ 👁️ Visible in Store ] | [ 🔒 Hidden from Store ].
+- **PURPOSE:** Allows the Admin to prepare a new product (like a bundle of engineering pens) before "Publishing" it to the `halabStore.desc`.
+
+## 3. CATEGORY & TAG MANAGEMENT
+- **GROUPS:** [ 💻 Electronics ] | [ 📐 Engineering Tools ] | [ 📚 Stationery ].
+- **SYNC:** These categories must exactly match the "Filter Sidebar" in the student's Store view.
+
+## 4. THE "RESERVED" COUNTER (Order Handshake)
+- **DATA POINT:** `Reserved Items: 2`.
+- **LOGIC:** When a student uploads a receipt in `orderHistory`, the stock is "Reserved" but not "Sold."
+- **AUTO-RELEASE:** If the Admin rejects the receipt in `revenueTracker`, the item is automatically added back to the `Stock Count`.
+
+## 5. BULK PRICING UPDATES
+- **ACTION:** [ 💹 Global Price Adjustment ] — Allows the Admin to increase/decrease all prices by a percentage (to handle currency fluctuations in SYP).
+
+## 6. STICKY ACTION HUD
+- **ADD NEW:** [ ➕ Add New Product ] — Opens a form with image upload (to Cloudinary/Imgur).
+- **REPORT:** [ 📄 Export Stock Report ] — Generates a PDF of current assets.
+- **MANTRA:** "Accuracy is Professionalism. Challenge Every Day."

@@ -1,0 +1,35 @@
+# FILE: .../studentDashboard/learningVault/myBookmarks.desc
+# ROLE: The Student’s Personal Knowledge Repository
+# VIBE: Organized / High-Accessibility / Minimalist Archive
+
+## 1. THE QUICK-ACCESS HEADERS (The Filter Row)
+- **TABS:** [ 📚 All ] | [ 📝 Summaries ] | [ 🧪 Exams ] | [ 🎓 Academy Courses ].
+- **SEARCH BAR:** "Filter my saved resources..." (Real-time filtering of the list below).
+- **SORTING:** [ 📅 Recently Saved ] | [ 🔠 Alphabetical ] | [ 📂 By Faculty ].
+
+## 2. THE BOOKMARKED RESOURCE GRID
+- **VISUAL:** A 3-column grid of "Data Cards" with 1px borders.
+- **CARD COMPONENTS:**
+    - **TYPE ICON:** (e.g., PDF icon for Library, Play icon for Academy).
+    - **TITLE:** "Structural Analysis II - Solved 2025."
+    - **METADATA:** "Faculty: Civil Engineering | Year: 3".
+- **WONDER FEATURE:** **"One-Click Read"** — A button that opens the Google Drive link directly in the `documentReader.desc` without leaving the dashboard.
+
+## 3. THE "EXAM PREP" COLLECTIONS (Folders)
+- **LOGIC:** Allows the student to group bookmarks into custom "Collections."
+- **EXAMPLES:** [ ✍️ Final Exams Prep ] | [ 📖 Midterm Summaries ].
+- **INTERACTION:** Drag-and-drop resources into these folders for 90-degree organization.
+
+## 4. THE PROGRESS TRACKER (Academy Sync)
+- **FOR COURSES:** If a bookmarked item is from `halabAcademy`, show a small progress bar.
+- **LABEL:** "Progress: 65% Completed."
+- **ACTION:** [ ▶️ Resume Lesson ].
+
+## 5. THE "CONTRIBUTION" NODE (Contributor Status)
+- **LOGIC:** If the student has uploaded files that were approved by the Admin.
+- **STAT:** "You have contributed **12** resources to the community."
+- **XP REWARD:** "Total Contribution XP: **+600**."
+
+## 6. THE MANAGEMENT BAR (Bottom Sticky)
+- **ACTION:** [ 🗑️ Clear Selected ] | [ 📥 Download All Links (CSV) ].
+- **NOTE:** "Bookmarks are synced across your devices. Challenge Every Day."

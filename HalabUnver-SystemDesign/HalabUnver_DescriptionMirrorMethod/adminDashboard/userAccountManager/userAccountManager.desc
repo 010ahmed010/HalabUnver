@@ -1,0 +1,42 @@
+# FILE: .../adminDashboard/userAccountManager/userAccountManager.desc
+# ROLE: The Supreme Authority & Verification Gatekeeper
+# VIBE: Command Center / High-Security / Table-Driven / Red-Alerts
+
+## 1. THE VERIFICATION QUEUE (The Handshake Node)
+- **VISUAL:** A high-priority table at the top of the page.
+- **LOGIC:** Pulls data from `studenDashboard/academicProfile/profileDetails.desc`.
+- **COLUMNS:**
+    - **Student:** Name + UID.
+    - **Document:** [ 📄 View ID Photo ] (Opens in a Modal).
+    - **Timestamp:** "Uploaded 2h ago".
+- **ACTIONS:** - [ ✅ Approve ]: Sets `isVerified: true` in MongoDB. Triggers a purple badge on the Student Profile.
+    - [ ❌ Reject ]: Sets `isVerified: false`. Triggers a prompt in `systemInbox` for the student to re-upload.
+
+## 2. THE MASTER USER DIRECTORY
+- **FORMAT:** A searchable, filterable grid of all registered users.
+- **DATA POINTS:**
+    - **Account Type:** [ 🎓 Student ] or [ 💼 Freelancer ].
+    - **Status:** [ 🟢 Active ] | [ 🔴 Banned ] | [ 🕒 Pending ].
+    - **XP Level:** Displays current XP (e.g., Level 14).
+- **WONDER FEATURE:** **"The Shadow Login"** — A button for the Admin to view the dashboard *exactly* as that student sees it (for troubleshooting).
+
+## 3. FINANCIAL & SUBSCRIPTION OVERSIGHT
+- **LOGIC:** Syncs with `halabFreelance/freelanceOnboarding.desc`.
+- **FIELDS:**
+    - **Sub Status:** "Paid until 2026-05-01".
+    - **ShamCash Link:** Displays the transaction ID used for their $5 monthly fee.
+- **ACTION:** [ 🧊 Freeze Account ] — Disables Freelance and Store access instantly.
+
+## 4. XP & REWARDS MANUAL OVERRIDE
+- **LOGIC:** Allows the Admin to manually gift or strip XP for community behavior.
+- **INPUT:** `[ + / - ] [ Number ] [ Reason ]`.
+- **SYNC:** Updates the "Growth Engine" in `academicProfile.desc` instantly.
+
+## 5. BULK SYSTEM NOTIFICATIONS
+- **ACTION:** [ 📢 Broadcast Message ] — Sends a global alert to all `systemInbox.desc` files.
+- **TARGETING:** "All Informatics Students" or "All Verified Freelancers."
+
+## 6. STICKY SYSTEM LOGS (Bottom)
+- **LOG:** "Admin verified user #9921."
+- **LOG:** "User #1042 reached Level 20."
+- **MANTRA:** "Integrity is the Foundation. Challenge Every Day."

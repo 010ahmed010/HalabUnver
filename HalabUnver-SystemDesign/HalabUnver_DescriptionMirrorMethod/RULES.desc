@@ -1,0 +1,60 @@
+# FILE: .../HalabUnver_DescriptionMirrorM/RULES.desc
+# ROLE: The Absolute System Manifesto & Logic Gatekeeper
+# VIBE: Hard-Coded / Foundation / The Law / "Challenge Every Day"
+
+## 1. THE STACK MANDATE (MERN + Vite 8)
+- **FRONTEND:** React 19 + Vite 8. Utilize the Rolldown engine for high-speed builds and HMR.
+- **BACKEND:** Node.js + Express.js for the API layer.
+- **DATABASE:** MongoDB with Mongoose for structured schema enforcement.
+- **STYLING:** Tailwind CSS v4. Use the optimized pre-compiler for zero-runtime CSS performance.
+
+## 2. DIRECTORY STRUCTURE (The "Clean Repo" Rule)
+- **PATH: `/client`**: Contains all frontend code (React components, assets, Tailwind config).
+- **PATH: `/server`**: Contains all backend code (Routes, Models, Controllers, Middleware).
+- **RULE:** Keep client and server logic strictly separated to ensure security and facilitate independent scaling.
+
+## 3. GLOBAL PERFORMANCE PROTOCOL
+- **CODE:** Implement code-splitting via `React.lazy()` for dashboard modules to minimize initial bundle size.
+- **DATABASE:** All high-traffic queries (Leaderboards, Library Search) must use MongoDB Indexes.
+- **ASSETS:** All uploaded images (ID proofs, Product photos) must be optimized/compressed before storage.
+- **API:** Use lean queries (`.lean()`) for read-only operations to reduce CPU overhead.
+
+## 4. THE XP & GAMIFICATION CONSTITUTION (MERN Math)
+- **LOGIC:** Student actions trigger specific XP increments in MongoDB.
+- **VALUES:**
+    - **Registration:** +100 XP (Starter Bonus).
+    - **ID Verification:** +500 XP (Trust Bonus).
+    - **Library Download:** +25 XP (Knowledge Seeker).
+    - **Course Completion:** +250 XP (Academy Graduate).
+    - **First Store Order:** +100 XP (Consumer Milestone).
+- **LEVELING SCALE:** `Level = Floor(SquareRoot(TotalXP / 100))`.
+
+## 5. THE STATUS PILL PROTOCOL (UI Standardization)
+- **RULE:** All dashboards must use these exact strings and colors for status keys.
+- **DICTIONARY:**
+    - `[ 🕒 Pending ]`: Hex #FFD700 (Gold) - Action started, waiting for Admin.
+    - `[ ✅ Verified ]`: Hex #BB86FC (Purple) - Payment/ID confirmed.
+    - `[ 📦 Processing ]`: Hex #03DAC6 (Teal) - Item being prepared.
+    - `[ 🚚 Ready ]`: Hex #CF6679 (Pink/Red) - Item at Pickup Node.
+    - `[ 💎 Success ]`: Hex #4CAF50 (Green) - Transaction/Goal complete.
+
+## 6. THE "HANDSHAKE" SECURITY PROTOCOLS
+- **PROTOCOL A (The Pickup):** A student cannot mark an order as `Received` until the Admin enters the 4-digit code generated in `orderHistory.desc`.
+- **PROTOCOL B (The Freelance Gate):** No user can access `postJob` or `submitBid` routes unless `subscriptionStatus === "active"` and `isVerified === true`.
+- **PROTOCOL C (The Escrow):** Funds are moved to a "Platform Wallet" upon payment, and only moved to the "Freelancer Wallet" upon Student Release + Admin Approval.
+
+## 7. GLOBAL THEME CONSTANTS (Tailwind CSS v4)
+- **PRIMARY:** `#121212` (Deep Charcoal Background).
+- **ACCENT:** `#BB86FC` (Vibrant Purple Glow).
+- **SURFACE:** `#1E1E1E` (90-Degree Bordered Containers).
+- **TEXT:** `#E0E0E0` (High-Contrast White/Gray).
+
+## 8. REVENUE & COMMISSION LOGIC
+- **STORE:** Prices are `BaseCost + 10% Platform Fee` (Student discount applied later).
+- **FREELANCE:** `95% to Freelancer / 5% to Platform` (The Resilience Tax).
+- **SUBSCRIPTION:** Fixed `$5 USD` (Converted to SYP at the daily Admin-set rate).
+
+## 9. THE ARCHITECTURE MANTRA (System Signature)
+- **VERSION:** HalabUnver v1.0.0-Stable.
+- **CORE PRINCIPLE:** "Every click must serve the community. Every design must reflect resilience."
+- **CLOSING:** "Challenge Every Day."
