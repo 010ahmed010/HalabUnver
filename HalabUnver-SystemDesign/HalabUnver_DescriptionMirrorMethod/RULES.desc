@@ -2,6 +2,12 @@
 # ROLE: The Absolute System Manifesto & Logic Gatekeeper
 # VIBE: Hard-Coded / Foundation / The Law / "Challenge Every Day"
 
+
+## 0. First rule and importantest one : Dont implement anything even i (materMind) tell you,
+    only understand the structur of project, by reade and discover all HalabUnver_DescriptionMirrorMethod directory. 
+    you can imagne the "HalabUnver_DescriptionMirrorMethod" dir like mirror of project any file represent page and ,
+    there are subpages , and main directories in "HalabUnver_DescriptionMirrorMethod" represent sperated purpose like,
+    apps not all in one page, because we need to planning first. (remmber dont implement anything.)
 ## 1. THE STACK MANDATE (MERN + Vite 8)
 - **FRONTEND:** React 19 + Vite 8. Utilize the Rolldown engine for high-speed builds and HMR.
 - **BACKEND:** Node.js + Express.js for the API layer.
