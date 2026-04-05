@@ -18,7 +18,7 @@ export default function CourseDisplay() {
   const [liked, setLiked] = useState(null)
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-20 min-h-screen">
       <div className="grid grid-cols-12 h-[calc(100vh-64px)] overflow-hidden">
 
         {/* Player — 9 columns */}

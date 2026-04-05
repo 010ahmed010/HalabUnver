@@ -25,7 +25,7 @@ export default function Leaderboard() {
   const [period, setPeriod] = useState('monthly')
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-20 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-6">
           <span className="section-label">قائمة الشرف</span>

@@ -42,7 +42,7 @@ export default function FreelanceHome() {
   }
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-20 min-h-screen">
 
       {/* HERO */}
       <section className="relative py-16 sm:py-20 dot-bg overflow-hidden">

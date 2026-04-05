@@ -29,7 +29,7 @@ export default function FreelanceOnboarding() {
 
   if (submitted) {
     return (
-      <div className="pt-16 min-h-screen flex items-center justify-center">
+      <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="max-w-md text-center animate-fade-up px-4">
           <div className="w-24 h-24 gradient-bg rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-[#6366F1]/20">✅</div>
           <h2 className="text-2xl font-black text-[#F1F5F9] mb-2">أهلاً بك في HalabWork!</h2>
@@ -48,7 +48,7 @@ export default function FreelanceOnboarding() {
   }
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-20 min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="mb-8">
           <span className="section-label">انضم كمستقل</span>

@@ -14,7 +14,7 @@ export default function DashboardLayout() {
   const isActive = (link) => link.exact ? pathname === link.href : pathname === link.href
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-20 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex gap-5 sm:gap-6">
         {/* Sidebar */}
         <aside className="hidden md:block w-56 lg:w-60 shrink-0">
