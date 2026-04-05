@@ -38,44 +38,42 @@ export default function AdminDashboard() {
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-start sm:items-center justify-between mb-6 gap-4">
           <div>
             <span className="section-label">لوحة الإدارة</span>
-            <h1 className="text-2xl font-black text-[#F1F5F9]">⚙️ مركز التحكم</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-[#F1F5F9]">⚙️ مركز التحكم</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 bg-[#0F1828] border border-[#1E2D45] rounded-xl px-4 py-2.5">
-              <span className="text-xs text-[#94A3B8]">موسم الامتحانات</span>
-              <button
-                onClick={() => setExamSeason(!examSeason)}
-                className={`w-11 h-6 rounded-full transition-all relative ${examSeason ? 'bg-[#F43F5E]' : 'bg-[#1E2D45]'}`}
-              >
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${examSeason ? 'left-6' : 'left-1'}`} />
-              </button>
-              {examSeason && <span className="text-xs text-[#F43F5E] font-semibold animate-blink-soft">نشط</span>}
-            </div>
+          <div className="flex items-center gap-3 bg-[#0F1828] border border-[#1E2D45] rounded-xl px-3 sm:px-4 py-2.5 shrink-0">
+            <span className="text-xs text-[#94A3B8] hidden sm:inline">موسم الامتحانات</span>
+            <button
+              onClick={() => setExamSeason(!examSeason)}
+              className={`w-10 h-5 rounded-full transition-all relative flex-shrink-0 ${examSeason ? 'bg-[#F43F5E]' : 'bg-[#1E2D45]'}`}
+            >
+              <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 transition-all shadow-sm ${examSeason ? 'left-5' : 'left-0.5'}`} />
+            </button>
+            {examSeason && <span className="text-xs text-[#F43F5E] font-semibold animate-blink-soft">نشط</span>}
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           {STATS.map(s => (
             <div key={s.label} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 hover:border-[#6366F1]/20 transition-all">
-              <p className="text-2xl font-black mb-0.5" style={{ color: s.color }}>{s.val}</p>
-              <p className="text-xs text-[#94A3B8]">{s.label}</p>
+              <p className="text-xl sm:text-2xl font-black mb-1" style={{ color: s.color }}>{s.val}</p>
+              <p className="text-xs text-[#94A3B8] leading-tight">{s.label}</p>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 sm:gap-6">
 
           {/* Module nav */}
           <aside className="lg:col-span-1">
             <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-              <div className="p-3 border-b border-[#1E2D45]">
+              <div className="p-3 sm:p-4 border-b border-[#1E2D45]">
                 <p className="text-xs font-semibold text-[#F1F5F9]">الوحدات</p>
               </div>
               <nav className="p-2">
@@ -93,7 +91,7 @@ export default function AdminDashboard() {
                   <button
                     key={m.label}
                     onClick={() => setActiveModule(m.label)}
-                    className={`w-full text-right px-3 py-2.5 text-xs mb-1 rounded-xl transition-all ${
+                    className={`w-full text-right px-3 py-2 text-xs mb-1 rounded-xl transition-all ${
                       activeModule === m.label
                         ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
                         : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
@@ -112,38 +110,38 @@ export default function AdminDashboard() {
             {activeModule === 'overview' && (
               <>
                 {/* Module cards */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {ADMIN_MODULES.map(m => (
                     <button
                       key={m.label}
                       onClick={() => setActiveModule(m.label)}
                       className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 text-right hover:border-[#6366F1]/30 hover:shadow-lg transition-all"
                     >
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-2" style={{ background: m.color + '18' }}>
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl mb-2" style={{ background: m.color + '18' }}>
                         {m.icon}
                       </div>
-                      <p className="text-sm font-bold text-[#F1F5F9]">{m.label}</p>
-                      <p className="text-xs text-[#94A3B8] mt-0.5">{m.desc}</p>
+                      <p className="text-xs sm:text-sm font-bold text-[#F1F5F9] mb-0.5">{m.label}</p>
+                      <p className="text-[10px] sm:text-xs text-[#94A3B8] leading-tight">{m.desc}</p>
                     </button>
                   ))}
                 </div>
 
                 {/* Pending IDs */}
                 <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-                  <div className="px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
+                  <div className="px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
                     <p className="text-sm font-semibold text-[#F1F5F9]">هويات بانتظار التحقق</p>
                     <span className="text-xs bg-[#F43F5E] text-white px-2 py-0.5 rounded-full font-bold">{PENDING_USERS.length}</span>
                   </div>
                   {PENDING_USERS.map(u => (
-                    <div key={u.id} className="flex items-center justify-between px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
-                      <div className="flex-1">
-                        <p className="text-sm text-[#F1F5F9] font-medium">{u.name}</p>
+                    <div key={u.id} className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-[#F1F5F9] font-medium truncate">{u.name}</p>
                         <p className="text-xs text-[#4A5D78] mt-0.5">{u.id} · {u.faculty}</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         <StatusPill status="pending" />
-                        <button className="px-3 py-1.5 bg-[#10B981] text-white text-xs font-bold rounded-lg hover:bg-[#0d9f72] transition-colors">✅ قبول</button>
-                        <button className="px-3 py-1.5 bg-[#F43F5E] text-white text-xs font-bold rounded-lg hover:bg-[#e0284f] transition-colors">✕ رفض</button>
+                        <button className="px-2.5 sm:px-3 py-1.5 bg-[#10B981] text-white text-xs font-bold rounded-lg hover:bg-[#0d9f72] transition-colors">✅ قبول</button>
+                        <button className="px-2.5 sm:px-3 py-1.5 bg-[#F43F5E] text-white text-xs font-bold rounded-lg hover:bg-[#e0284f] transition-colors">✕ رفض</button>
                       </div>
                     </div>
                   ))}
@@ -151,16 +149,16 @@ export default function AdminDashboard() {
 
                 {/* Pending orders */}
                 <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-                  <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+                  <div className="px-4 sm:px-5 py-3.5 border-b border-[#1E2D45]">
                     <p className="text-sm font-semibold text-[#F1F5F9]">طلبات المتجر المعلّقة</p>
                   </div>
                   {PENDING_ORDERS.map(o => (
-                    <div key={o.id} className="flex items-center justify-between px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
-                      <div className="flex-1">
-                        <p className="text-sm text-[#F1F5F9] font-medium">{o.item}</p>
-                        <p className="text-xs text-[#4A5D78] mt-0.5">{o.id} · {o.student} · {o.amount} SYP</p>
+                    <div key={o.id} className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-[#F1F5F9] font-medium truncate">{o.item}</p>
+                        <p className="text-xs text-[#4A5D78] mt-0.5 truncate">{o.id} · {o.student} · {o.amount} SYP</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         <StatusPill status={o.status} />
                         <button className="px-3 py-1.5 rounded-lg border border-[#6366F1]/30 text-[#6366F1] text-xs hover:bg-[#6366F1]/10 transition-all">تفاصيل</button>
                       </div>
@@ -169,11 +167,11 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Exchange rate */}
-                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5">
+                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 sm:p-5">
                   <p className="text-sm font-semibold text-[#F1F5F9] mb-4">إعدادات اليوم</p>
                   <div className="flex items-center gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#94A3B8]">سعر الصرف اليومي (SYP/$):</span>
+                      <span className="text-xs text-[#94A3B8]">سعر الصرف (SYP/$):</span>
                       <input
                         defaultValue="14500"
                         className="w-24 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] px-3 py-1.5 text-sm font-mono outline-none focus:border-[#6366F1]/50 rounded-lg transition-colors"
@@ -186,11 +184,11 @@ export default function AdminDashboard() {
             )}
 
             {activeModule !== 'overview' && (
-              <div className="bg-[#0F1828] rounded-2xl border border-[#6366F1]/20 p-10 text-center">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style={{ background: (ADMIN_MODULES.find(m => m.label === activeModule)?.color || '#6366F1') + '18' }}>
+              <div className="bg-[#0F1828] rounded-2xl border border-[#6366F1]/20 p-8 sm:p-10 text-center">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mx-auto mb-4" style={{ background: (ADMIN_MODULES.find(m => m.label === activeModule)?.color || '#6366F1') + '18' }}>
                   {ADMIN_MODULES.find(m => m.label === activeModule)?.icon}
                 </div>
-                <h3 className="text-xl font-bold text-[#F1F5F9] mb-2">{activeModule}</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#F1F5F9] mb-2">{activeModule}</h3>
                 <p className="text-sm text-[#94A3B8] mb-4">{ADMIN_MODULES.find(m => m.label === activeModule)?.desc}</p>
                 <span className="text-xs text-[#4A5D78] bg-[#162032] rounded-full px-4 py-2 inline-block">قيد التطوير — متصل بـ Backend API</span>
               </div>

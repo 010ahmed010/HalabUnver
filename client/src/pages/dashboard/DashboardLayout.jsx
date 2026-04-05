@@ -15,15 +15,15 @@ export default function DashboardLayout() {
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8 flex gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex gap-5 sm:gap-6">
         {/* Sidebar */}
-        <aside className="hidden md:block w-60 shrink-0">
+        <aside className="hidden md:block w-56 lg:w-60 shrink-0">
           <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] sticky top-20 overflow-hidden">
             {/* Profile header */}
             <div className="p-5 border-b border-[#1E2D45] bg-gradient-to-br from-[#6366F1]/10 to-[#8B5CF6]/5">
-              <div className="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center text-2xl mb-3 shadow-lg shadow-[#6366F1]/20">👤</div>
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl gradient-bg flex items-center justify-center text-xl sm:text-2xl mb-3 shadow-lg shadow-[#6366F1]/20">👤</div>
               <p className="text-sm font-bold text-[#F1F5F9]">أحمد الجاسم</p>
-              <p className="text-xs text-[#94A3B8]">السنة 4 · معلوماتية</p>
+              <p className="text-xs text-[#94A3B8] mt-0.5">السنة 4 · معلوماتية</p>
               <div className="mt-3">
                 <div className="flex justify-between text-[10px] text-[#94A3B8] mb-1.5">
                   <span className="font-medium text-[#6366F1]">Level 4</span>
@@ -47,7 +47,7 @@ export default function DashboardLayout() {
                       : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
                   }`}
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2.5">
                     <span>{l.icon}</span>
                     <span>{l.label}</span>
                   </span>

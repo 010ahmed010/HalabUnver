@@ -27,10 +27,17 @@ export default function Store() {
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8 flex gap-6">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
+        <span className="section-label">المتجر</span>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#F1F5F9]">متجر حلب</h1>
+        <p className="text-sm text-[#94A3B8] mt-1">أجهزة ومعدات هندسية بأسعار طلابية مدعومة</p>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex gap-6">
 
         {/* Sidebar */}
-        <aside className="hidden md:block w-52 shrink-0">
+        <aside className="hidden md:block w-48 lg:w-52 shrink-0">
           <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 sticky top-20">
             <p className="text-xs font-semibold text-[#F1F5F9] mb-3">التصنيفات</p>
             {CATEGORIES.map(c => (
@@ -65,18 +72,18 @@ export default function Store() {
         </aside>
 
         {/* Product Grid */}
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           <p className="text-sm text-[#94A3B8] mb-5">
             <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> منتج متاح
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(p => (
               <div
                 key={p.id}
-                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] hover:border-[#F43F5E]/20 hover:shadow-lg transition-all overflow-hidden"
+                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] hover:border-[#F43F5E]/20 hover:shadow-lg transition-all overflow-hidden flex flex-col"
               >
-                <div className="relative aspect-square bg-[#162032] flex items-center justify-center">
-                  <span className="text-5xl">📦</span>
+                <div className="relative aspect-[4/3] bg-[#162032] flex items-center justify-center">
+                  <span className="text-4xl">📦</span>
                   <span className="absolute top-3 right-3 text-[10px] font-bold rounded-full bg-[#F43F5E] text-white px-2.5 py-0.5">
                     {p.discount} خصم
                   </span>
@@ -88,16 +95,16 @@ export default function Store() {
                     {p.source === 'منصة' ? '🏠 منصة' : '🤝 وسيط'}
                   </span>
                   {!p.inStock && (
-                    <div className="absolute inset-0 bg-[#070C18]/60 backdrop-blur-sm flex items-center justify-center rounded-none">
+                    <div className="absolute inset-0 bg-[#070C18]/60 backdrop-blur-sm flex items-center justify-center">
                       <span className="text-sm font-semibold text-[#94A3B8] bg-[#0F1828] rounded-full px-4 py-2 border border-[#1E2D45]">طلب مسبق</span>
                     </div>
                   )}
                 </div>
-                <div className="p-4">
-                  <h3 className="text-sm text-[#F1F5F9] font-semibold mb-2 leading-snug">{p.name}</h3>
+                <div className="p-4 flex flex-col flex-1">
+                  <h3 className="text-sm text-[#F1F5F9] font-semibold mb-2 leading-snug flex-1">{p.name}</h3>
                   <div className="mb-3">
                     <span className="text-xs text-[#4A5D78] line-through block">{p.originalPrice} SYP</span>
-                    <span className="text-base font-bold text-[#F1F5F9]">{p.studentPrice} SYP</span>
+                    <span className="text-base font-bold text-[#F1F5F9]">{p.studentPrice} <span className="text-xs text-[#94A3B8] font-normal">SYP</span></span>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -128,7 +135,7 @@ export default function Store() {
           </div>
 
           {filtered.length === 0 && (
-            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-12 text-center">
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-10 sm:p-12 text-center">
               <p className="text-[#94A3B8] text-sm mb-5">لم يتم العثور على منتجات</p>
               <a
                 href="https://wa.me/963912345678?text=أريد طلب منتج محدد"

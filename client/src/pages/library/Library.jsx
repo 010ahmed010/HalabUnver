@@ -36,10 +36,17 @@ export default function Library() {
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8 flex gap-6">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
+        <span className="section-label">المكتبة الرقمية</span>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#F1F5F9]">مكتبة حلب</h1>
+        <p className="text-sm text-[#94A3B8] mt-1">أرشيف شامل للمصادر الأكاديمية والملفات التخصصية</p>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex gap-6">
 
         {/* Sidebar */}
-        <aside className="hidden md:block w-52 shrink-0">
+        <aside className="hidden md:block w-48 lg:w-52 shrink-0">
           <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 sticky top-20">
             <p className="text-xs font-semibold text-[#F1F5F9] mb-3">الفروع</p>
             <div className="space-y-0.5">
@@ -61,14 +68,14 @@ export default function Library() {
         </aside>
 
         {/* Main */}
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           {/* Mode filter */}
           <div className="flex gap-2 mb-4 flex-wrap">
             {MODES.map(m => (
               <button
                 key={m.key}
                 onClick={() => setActiveMode(m.key)}
-                className={`px-4 py-2 text-sm rounded-full transition-all ${
+                className={`px-3.5 sm:px-4 py-2 text-xs sm:text-sm rounded-full transition-all ${
                   activeMode === m.key
                     ? 'bg-[#14B8A6] text-[#070C18] font-semibold'
                     : 'border border-[#1E2D45] text-[#94A3B8] hover:border-[#14B8A6]/40 hover:text-[#14B8A6]'
@@ -85,12 +92,12 @@ export default function Library() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="بحث بالعنوان أو المؤلف..."
-              className="flex-1 bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] px-4 py-2.5 text-sm outline-none focus:border-[#14B8A6]/50 rounded-xl transition-colors"
+              className="flex-1 min-w-0 bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] px-4 py-2.5 text-sm outline-none focus:border-[#14B8A6]/50 rounded-xl transition-colors"
             />
             <select
               value={sort}
               onChange={e => setSort(e.target.value)}
-              className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] px-4 py-2.5 text-sm outline-none rounded-xl"
+              className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] px-3 sm:px-4 py-2.5 text-sm outline-none rounded-xl shrink-0"
             >
               <option value="rating">الأعلى تقييماً</option>
               <option value="downloads">الأكثر تحميلاً</option>
@@ -101,7 +108,7 @@ export default function Library() {
             <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> نتيجة
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filtered.map(doc => (
               <Link
                 key={doc.id}
@@ -115,7 +122,7 @@ export default function Library() {
                     {doc.studentAuthored && <span className="text-[10px] text-[#14B8A6] bg-[#14B8A6]/10 rounded-full px-2 py-0.5 font-medium">طلابي</span>}
                   </div>
                 </div>
-                <h3 className="text-sm font-bold text-[#F1F5F9] mb-1 group-hover:text-[#14B8A6] transition-colors">{doc.title}</h3>
+                <h3 className="text-sm font-bold text-[#F1F5F9] mb-1 group-hover:text-[#14B8A6] transition-colors leading-snug">{doc.title}</h3>
                 <p className="text-xs text-[#4A5D78] mb-3">{doc.author}</p>
                 <div className="flex items-center justify-between text-xs text-[#4A5D78] pt-3 border-t border-[#1E2D45]">
                   <span>{doc.size} · {doc.pages} صفحة</span>
@@ -125,6 +132,12 @@ export default function Library() {
               </Link>
             ))}
           </div>
+
+          {filtered.length === 0 && (
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-12 text-center">
+              <p className="text-[#94A3B8] text-sm">لا توجد نتائج مطابقة</p>
+            </div>
+          )}
         </main>
       </div>
     </div>
