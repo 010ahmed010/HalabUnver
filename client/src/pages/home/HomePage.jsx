@@ -347,21 +347,66 @@ export default function HomePage() {
       </section>
 
       {/* ─────────────── CTA ─────────────── */}
-      <section className="py-28 sm:py-40">
-        <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-12 text-center">
-          <div className="bg-gradient-to-br from-[#6366F1]/12 to-[#8B5CF6]/6 rounded-3xl border border-[#6366F1]/25 p-10 sm:p-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#F1F5F9] mb-5">مستعد للانضمام؟</h2>
-            <p className="text-[#94A3B8] mb-10 text-base sm:text-lg leading-loose max-w-xl mx-auto">
-              انضم إلى أكثر من 1,200 طالب يبنون مستقبلهم عبر HalabUnver.
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <Link to="/dashboard" className="px-8 sm:px-10 py-4 gradient-bg text-white font-bold text-base sm:text-lg rounded-2xl hover:opacity-90 transition-opacity shadow-xl shadow-[#6366F1]/25">
-                ابدأ مجاناً
-              </Link>
-              <Link to="/contact" className="px-8 sm:px-10 py-4 border border-[#1E2D45] text-[#F1F5F9] text-base sm:text-lg rounded-2xl hover:border-[#6366F1]/50 hover:bg-[#6366F1]/5 transition-all">
-                تواصل معنا
-              </Link>
-            </div>
+      <section className="relative py-32 sm:py-44 overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/12 via-[#070C18] to-[#8B5CF6]/10 pointer-events-none" />
+        <div className="absolute inset-0 dot-bg opacity-40 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#6366F1]/8 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-[#8B5CF6]/6 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[250px] h-[250px] bg-[#14B8A6]/5 rounded-full blur-[80px] pointer-events-none" />
+
+        <div className="relative max-w-5xl mx-auto px-6 sm:px-10 lg:px-12 text-center">
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-full px-5 py-2.5 mb-8 text-sm font-semibold text-[#8B5CF6]">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-blink-soft shrink-0" />
+            التسجيل مجاني — انضم الآن
+          </div>
+
+          {/* Heading */}
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#F1F5F9] mb-6 leading-tight tracking-tight">
+            مستعد للانضمام؟
+          </h2>
+          <p className="text-[#94A3B8] mb-12 text-base sm:text-xl leading-loose max-w-2xl mx-auto">
+            انضم إلى أكثر من 1,200 طالب يبنون مستقبلهم عبر HalabUnver.
+            منصة أكاديمية متكاملة في حلب.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex gap-4 justify-center flex-wrap mb-16">
+            <Link
+              to="/dashboard"
+              className="px-10 sm:px-14 py-4 sm:py-5 gradient-bg text-white font-bold text-base sm:text-xl rounded-2xl hover:opacity-90 transition-opacity shadow-2xl shadow-[#6366F1]/35"
+            >
+              ابدأ مجاناً — انضم الآن
+            </Link>
+            <Link
+              to="/contact"
+              className="px-10 sm:px-14 py-4 sm:py-5 border border-[#1E2D45] text-[#F1F5F9] text-base sm:text-xl rounded-2xl hover:border-[#6366F1]/50 hover:bg-[#6366F1]/5 transition-all"
+            >
+              تواصل معنا
+            </Link>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <div className="h-px w-24 bg-gradient-to-l from-[#6366F1]/40 to-transparent" />
+            <span className="text-xs text-[#4A5D78] font-medium tracking-widest uppercase">إحصائيات المنصة</span>
+            <div className="h-px w-24 bg-gradient-to-r from-[#6366F1]/40 to-transparent" />
+          </div>
+
+          {/* Mini stats */}
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-xl mx-auto">
+            {[
+              { val: '1,240+', label: 'طالب مسجّل', color: '#6366F1' },
+              { val: '64+', label: 'دورة أكاديمية', color: '#8B5CF6' },
+              { val: '380+', label: 'مصدر في المكتبة', color: '#14B8A6' },
+            ].map(s => (
+              <div key={s.label} className="text-center bg-[#0F1828]/60 rounded-2xl border border-[#1E2D45] p-4 sm:p-6 hover:border-[#6366F1]/30 transition-all">
+                <div className="text-xl sm:text-3xl font-black mb-1" style={{ color: s.color }}>{s.val}</div>
+                <div className="text-xs sm:text-sm text-[#94A3B8]">{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
