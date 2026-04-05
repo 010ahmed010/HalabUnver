@@ -1,6 +1,5 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700;900&display=swap');
+@import "tailwindcss";
 
 @theme {
   --color-bg: #121212;
@@ -99,3 +98,6 @@ button {
     linear-gradient(90deg, rgba(187,134,252,0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

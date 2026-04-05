@@ -1,54 +1,124 @@
-# HalabUnver - Unified Academic Ecosystem
+# HalabUnver — منصة طلاب جامعة حلب
 
-## Overview
-HalabUnver is a system design and architecture project for a unified academic and commercial ecosystem for Aleppo University students. The repository contains detailed specification files (`.desc`) and a React frontend landing page.
+## نظرة عامة
+منصة MERN Stack أكاديمية وتجارية متكاملة لطلاب جامعة حلب. تعتمد على **Description Mirror Method (DMM)** — كل ملف `.desc` في مجلد `HalabUnver_DescriptionMirrorMethod/` هو المخطط الدقيق للصفحة المقابلة.
 
-## Project Structure
+## التقنيات المستخدمة
+- **Frontend:** React 19 + Vite 8 + React Router DOM
+- **Styling:** Tailwind CSS v4 (`@tailwindcss/vite`) — استخدم `@import "tailwindcss"` + `@theme {}` (ليس v3 directives)
+- **Backend:** Node.js + Express + MongoDB (لم يُبنَ بعد)
+- **الخط:** IBM Plex Sans Arabic + Cairo (Google Fonts)
+
+## هيكل المشروع
+
 ```
-/
-├── client/               # React 19 + Vite frontend
-│   ├── src/
-│   │   ├── App.jsx       # Main landing page component
-│   │   ├── App.css       # HalabUnver dark theme styles
-│   │   └── index.css     # Global reset styles
-│   ├── vite.config.js    # Vite config (port 5000, host 0.0.0.0)
-│   └── package.json
-├── HalabUnver-SystemDesign/   # System architecture documentation
-│   ├── HalabUnver_DescriptionMirrorMethod/  # .desc specification files
-│   │   ├── RULES.desc    # System manifesto and tech stack rules
-│   │   ├── home/         # Home page specs
-│   │   ├── halabAcademy/ # Academy module specs
-│   │   ├── halabLibrary/ # Library module specs
-│   │   ├── halabFreelance/ # Freelance marketplace specs
-│   │   ├── halabStore/   # Hardware store specs
-│   │   ├── adminDashboard/ # Admin panel specs
-│   │   └── studenDashboard/ # Student dashboard specs
-│   └── VisulizedSystemDesign/ # Architecture diagrams
-└── HalabUnver_DMM_archiveFile.tar  # Archive of system design files
+client/src/
+├── App.jsx               — React Router مع 20+ مسار lazy-loaded
+├── index.css             — Tailwind v4 + @theme + animations
+├── main.jsx
+├── components/
+│   ├── layout/
+│   │   ├── Layout.jsx    — root layout wrapper
+│   │   ├── Navbar.jsx    — sticky navbar + search HUD + mobile menu
+│   │   └── Footer.jsx
+│   └── shared/
+│       └── StatusPill.jsx — shared status badge (4 states)
+└── pages/
+    ├── home/
+    │   ├── HomePage.jsx      — hero + stats + pillars + news + XP + CTA
+    │   ├── SearchResults.jsx — IDE terminal search
+    │   ├── ExamHub.jsx       — exam season hub
+    │   ├── ContactUs.jsx
+    │   └── About.jsx         — ecosystem SVG map
+    ├── academy/
+    │   ├── Academy.jsx       — course catalog + branch filter
+    │   └── CourseDisplay.jsx — video player + curriculum sidebar
+    ├── library/
+    │   ├── Library.jsx       — document browser (books/shorts/exams)
+    │   └── DocumentReader.jsx— PDF viewer + context hub
+    ├── freelance/
+    │   ├── FreelanceHome.jsx     — marketplace hero + disciplines
+    │   ├── ServiceCatalog.jsx    — service grid + lightbox
+    │   ├── FreelanceProfile.jsx  — freelancer profile + hire me
+    │   ├── Leaderboard.jsx       — top talent ranking
+    │   └── FreelanceOnboarding.jsx — 3-step subscription wizard
+    ├── store/
+    │   ├── Store.jsx         — product catalog + reservation
+    │   └── ProductDetail.jsx — product detail + buy box
+    ├── dashboard/            — nested under DashboardLayout
+    │   ├── DashboardLayout.jsx   — sidebar nav + XP bar
+    │   ├── AcademicProfile.jsx   — student identity + XP engine
+    │   ├── EnrolledCourses.jsx   — learning progress tracker
+    │   ├── WalletOverview.jsx    — ShamCash transaction log
+    │   ├── OrderHistory.jsx      — orders + 4-digit pickup code
+    │   └── SystemInbox.jsx       — notifications + escrow alerts
+    └── admin/
+        └── AdminDashboard.jsx    — admin control center (7 modules)
 ```
 
-## Tech Stack (Planned MERN)
-- **Frontend:** React 19 + Vite 8 (Rolldown engine)
-- **Backend:** Node.js + Express.js (planned, not yet implemented)
-- **Database:** MongoDB + Mongoose (planned, not yet implemented)
-- **Styling:** Custom CSS with HalabUnver dark theme (#121212 bg, #BB86FC accent)
+## المسارات
+| المسار | الصفحة |
+|--------|---------|
+| `/` | الرئيسية |
+| `/search` | نتائج البحث |
+| `/exam-hub` | مركز الامتحانات |
+| `/contact` | اتصل بنا |
+| `/about` | عن المنصة |
+| `/academy` | الأكاديمية |
+| `/academy/course/:id` | عرض الدورة |
+| `/library` | المكتبة |
+| `/library/viewer/:id` | قارئ المستندات |
+| `/freelance` | سوق المستقلين |
+| `/freelance/catalog/:category` | كتالوج الخدمات |
+| `/freelance/profile/:id` | ملف المستقل |
+| `/freelance/leaderboard` | لوحة المتميزين |
+| `/freelance/onboarding` | تسجيل مستقل |
+| `/store` | المتجر |
+| `/store/product/:id` | تفاصيل المنتج |
+| `/dashboard` | لوحة الطالب — الملف |
+| `/dashboard/learning` | الدورات المسجّلة |
+| `/dashboard/wallet` | المحفظة |
+| `/dashboard/orders` | الطلبات |
+| `/dashboard/inbox` | الرسائل |
+| `/admin` | لوحة الإدارة |
 
-## Running the App
-The frontend runs on port 5000 via the "Start application" workflow:
-```bash
-cd client && npm run dev
-```
+## الألوان (الثيم)
+- `bg`: `#121212` — الخلفية الرئيسية
+- `surface`: `#1E1E1E` — سطح البطاقات
+- `accent`: `#BB86FC` — الأكسنت البنفسجي
+- `text`: `#E0E0E0` — النص الرئيسي
+- `muted`: `#888888` — النص الثانوي
+- `border`: `#2A2A2A` — الحدود
 
-## Design Theme
-- Background: `#121212` (Deep Charcoal)
-- Accent: `#BB86FC` (Vibrant Purple)
-- Surface: `#1E1E1E`
-- Text: `#E0E0E0`
-- 90-degree grid design, scientific/academic aesthetic
+## StatusPill الحالات
+- `pending` → أصفر / `#FFD700`
+- `active` → أخضر / `#4CAF50`
+- `processing` → سماوي / `#03DAC6`
+- `success` → أزرق / `#1E90FF`
+- `ready` → بنفسجي / `#BB86FC`
+- `failed` → أحمر / `#EF4444`
+- `verified` → أخضر مع ✅
 
-## Key Architecture Rules (from RULES.desc)
-- Frontend in `/client`, Backend in `/server` (strict separation)
-- XP gamification system for student actions
-- Escrow-based freelance payments
-- JWT stateless authentication
-- Status pills: Pending, Verified, Processing, Ready, Success
+## XP Formula
+`Level = Floor(√(XP/100))`
+- التسجيل: +100 XP
+- التحقق من الهوية: +500 XP
+- تحميل من المكتبة: +25 XP
+- إتمام دورة: +250 XP
+- أول طلب: +100 XP
+
+## الميزات التقنية المنفّذة
+- Arabic RTL بالكامل
+- Lazy loading لجميع الصفحات (Suspense + PageLoader)
+- نظام XP والمستويات في لوحة الطالب
+- بروتوكول الاستلام: رمز 4 أرقام في صفحة الطلبات
+- بروتوكول الوساطة (Escrow) في صفحات الفريلانس
+- بروتوكول الاشتراك ($5/month) في FreelanceOnboarding
+- ShamCash كمزود دفع موثق في جميع صفحات الدفع
+- موسم الامتحانات toggle في AdminDashboard
+
+## للتطوير لاحقاً
+- Backend: Node.js + Express + MongoDB (لم يُبنَ بعد)
+- Authentication: JWT-based
+- File uploads: للمكتبة ولوحة الإدارة
+- Real payment integration: ShamCash API
