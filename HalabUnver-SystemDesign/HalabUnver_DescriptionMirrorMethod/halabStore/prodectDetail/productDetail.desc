@@ -1,26 +1,40 @@
-# FILE: productDetail.desc
+# FILE: halabStore/productDetail/productDetail.desc
 # ROLE: Technical Spec-Sheet & Transaction Terminal
-# VIBE: Data-Heavy / Industrial Precision / High-Trust
+# ROUTE: /store/product/:id
+# ACCOUNT: All account types can view and purchase
+# THEME: Dark · data-heavy · industrial precision
 
-## A. THE HERO SPLIT (60/40 Layout)
-- **LEFT (GALLERY):** - Vertical thumbnail strip + Large Main View. 
-    - **FEATURE:** Includes "Zoom-on-Hover" to inspect hardware condition (crucial for used/broker items).
-- **RIGHT (THE BUY BOX):**
-    - **TITLE & ID:** Laptop ThinkPad X1 | #HS-102.
-    - **STATUS PULSE:** [ ✅ متوفر حالياً ] or [ ⏳ قيد التأمين ].
-    - **PRICE TERMINAL:** Large font showing the "Student Saving" amount.
-    - **PRIMARY ACTION:** [ 💳 حجز وإتمام الدفع ].
+## 1. HERO SPLIT (60/40)
+- LEFT (IMAGE GALLERY):
+  - Main image: large · rounded-2xl · bg-[#0F1828] · hover zoom
+  - Thumbnail strip: 4 small images below · active has border-[#6366F1]
+- RIGHT (BUY BOX):
+  - TITLE: text-2xl font-bold text-[#F1F5F9]
+  - PRODUCT ID: "#HS-102" — text-[#4A5D78] monospace text-sm
+  - STATUS: [✅ متوفر حالياً] emerald · [⏳ قيد التأمين] amber
+  - SOURCE BADGE: 🏠 منصة (teal) or 🤝 وسيط (amber) + vendor name if business account
+  - SAVINGS METER: "وفّرت X SYP عبر HalabUnver" — emerald text
+  - PRICE: gradient-text large · original price strikethrough gray
+  - PRIMARY CTA: [💳 حجز وإتمام الدفع] → 2-hour reservation lock
+  - SECONDARY: [💬 تواصل عبر واتساب]
 
-## B. THE "LOGISTICS & TRUST" BENTO
-- **SOURCE BOX:** - If [ 🏠 منصة ]: "هذا المنتج مملوك للمنصة وموجود في مستودعاتنا."
-    - If [ 🤝 وسيط ]: "توفير خارجي: يتم تأمين المنتج عبر شركاء المنصة مع فحص فني كامل."
-- **DELIVERY BOX:** Admin-controlled text (e.g., "استلام من مكتب الهندسة المعمارية").
-- **WARRANTY BOX:** Terms of testing (e.g., "3 days money-back if hardware fails").
+## 2. LOGISTICS BENTO (Admin/Vendor Controlled)
+- SOURCE NOTE:
+  - 🏠 منصة: "مملوك للمنصة — في مستودعاتنا المحلية"
+  - 🤝 وسيط: "تأمين خارجي — فُحص بالكامل من HalabUnver"
+- PICKUP LOCATION: admin/vendor text (e.g., "بوابة كلية الهندسة")
+- DELIVERY TIMELINE: "فوري" or "3-5 أيام عمل"
+- WARRANTY BOX: "3 أيام استرداد في حالة عطل الجهاز"
 
-## C. THE "TECHNICAL DNA" (FULL SPECS)
-- **FORMAT:** A clean, monospace table or grid.
-- **DATA:** CPU, RAM, GPU, Battery Health, Port Selection, Weight.
-- **ATTACHMENT:** Link to "Download Official Datasheet (PDF)" if available.
+## 3. TECHNICAL DNA (Spec Sheet)
+- MONOSPACE TABLE: border · rounded-xl · alternating row bg
+  - Columns: المعيار · القيمة (CPU · RAM · Battery · Weight etc.)
+- STAFF NOTE: rich-text visible if admin/vendor added notes
+- DATASHEET: [📄 تحميل المواصفات الرسمية (PDF)]
 
-## D. THE ADMIN OVERRIDE (STICKY)
-- **LOGIC:** If the logged-in user is `Role: Admin`, show an [ ✏️ Edit Product ] floating button that links directly to the Admin Panel for this specific ID.
+## 4. ADMIN/VENDOR OVERRIDE (Sticky)
+- accountType === 'admin': floating [✏️ تعديل المنتج] button → /admin/inventory/:id
+- businessType === 'vendor' (product owner): floating [✏️ تعديل] button → /business/products/:id
+
+## 5. RELATED PRODUCTS
+- 4-card horizontal scroll with same card style as /store catalog

@@ -1,39 +1,38 @@
-# FILE: .../studentDashboard/marketplaceLedger/orderHistory.desc
+# FILE: studentDashboard/marketplaceLedger/orderHistory.desc
 # ROLE: Physical Goods & Store Transaction Tracker
-# VIBE: E-Commerce Log / High-Contrast / Transparent / Security-First
+# ROUTE: /dashboard/orders
+# ACCOUNT: Student only
+# THEME: Dark · e-commerce log · amber alerts · status pills
 
-## 1. THE "PENDING ACTION" NOTIFIER (Top Fold)
-- **VISUAL:** A high-alert "Golden/Yellow" border box for active orders.
-- **LOGIC:** Visible only if a student has clicked "Buy" in `halabStore` but hasn't finished the process.
-- **MESSAGE:** "Order #HS-702 is awaiting ShamCash verification. Please upload your receipt."
-- **ACTION:** [ 📤 Upload Receipt ] -> Redirects to a simplified payment verification form.
+## 1. PENDING ACTION NOTIFIER (Top Fold)
+- SHOWN ONLY: if there's an order awaiting ShamCash receipt upload
+- CARD STYLE: border-[#F59E0B]/30 · bg-[#F59E0B]/5 · rounded-2xl (amber alert)
+- MESSAGE: "الطلب #HS-702 ينتظر إيصال الدفع — يُرجى الرفع الآن"
+- ACTION: [📤 رفع الإيصال] → simplified payment form
 
-## 2. THE MASTER ORDER TIMELINE (The List)
-- **FORMAT:** A clean, vertical list of all `halabStore` interactions.
-- **COLUMNS / DATA:**
-    1. **ORDER ID:** #HS-702 (Unique SKU from Store).
-    2. **ITEM:** Small Thumbnail + Name (e.g., "Graphic Tablet Huion H640P").
-    3. **STATUS PILLS:** - [ 🕒 Pending ] — Waiting for Admin to check the money.
-        - [ 💳 Verified ] — Payment confirmed; item being prepared.
-        - [ 🚚 Ready ] — Pickup is ready at the specified campus node.
-        - [ ✅ Received ] — Transaction closed.
-    4. **PRICE:** "450,000 SYP".
+## 2. MASTER ORDER TIMELINE
+- LIST STYLE: vertical stack of order rows · bg-[#0F1828] · rounded-2xl · border
+- COLUMNS:
+  - ORDER ID: "#HS-702" — monospace
+  - ITEM: small thumbnail + product name
+  - STATUS PILLS:
+    - 🕒 قيد الانتظار — muted amber
+    - 💳 مدفوع — emerald
+    - 🚚 جاهز للاستلام — indigo
+    - ✅ مُستلم — gray (closed)
+  - PRICE: "450,000 SYP"
 
-## 3. THE "PICKUP NODE" MAP & INSTRUCTIONS
-- **VISUAL:** A 90-degree 1px box showing the logistics for the **Current Order**.
-- **LOCATION:** "Informatics Engineering Bldg - 2nd Floor - Office 402."
-- **BROKER INFO:** Name of the platform broker responsible for handing over the item.
-- **WONDER FEATURE:** A **"Secure Pickup Code"** (4-digit PIN) that the student must show the broker to verify they are the rightful owner.
+## 3. PICKUP NODE INSTRUCTIONS (Active Order)
+- BORDERED BOX: shows location + broker name
+- SECURE PICKUP CODE: 4-digit PIN (shown to student · broker enters it to confirm pickup)
+- Location example: "مبنى هندسة المعلوماتية — الطابق 2 — مكتب 402"
 
-## 4. THE SAVINGS COUNTER (Motivation)
-- **STAT BOX:** A 90-degree card titled "Total Student Savings".
-- **DATA:** "By using HalabUnver Store, you have saved **155,000 SYP** compared to market prices."
-- **MANTRA:** "Invest in your tools. Challenge Every Day."
+## 4. SAVINGS COUNTER
+- CARD: "وفّرت إجمالاً 155,000 SYP مقارنة بأسعار السوق"
+- TEXT: emerald gradient-text value
 
-## 5. REORDER & SUPPORT TERMINAL
-- **QUICK ACTION:** [ 🔄 Buy Again ] for consumable goods (e.g., specific engineering paper or pens).
-- **DISPUTE BUTTON:** [ ⚠️ Problem with Order? ] — Opens a direct Admin chat for issues (Missing items, damaged hardware, etc.).
-
-## 6. STICKY ACTION HUD
-- **BROWSE STORE:** [ 🛒 Return to Store ] -> Redirects to `halabStore.desc`.
-- **INVOICE:** [ 📄 Download PDF Receipt ] (A clean, printable 90-degree invoice).
+## 5. ACTIONS
+- [🔄 شراء مجدداً] for consumables
+- [⚠️ مشكلة في الطلب؟] → admin dispute modal
+- [🛒 العودة للمتجر] → /store
+- [📄 تحميل الإيصال PDF]

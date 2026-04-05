@@ -1,42 +1,53 @@
-# FILE: .../adminDashboard/userAccountManager/userAccountManager.desc
-# ROLE: The Supreme Authority & Verification Gatekeeper
-# VIBE: Command Center / High-Security / Table-Driven / Red-Alerts
+# FILE: adminDashboard/userAccountManager/userAccountManager.desc
+# ROLE: Supreme Authority & Verification Gatekeeper for All Account Types
+# ROUTE: /admin/users
+# ACCOUNT: Admin only
+# THEME: Dark · high-density table · colored status pills · action buttons
 
-## 1. THE VERIFICATION QUEUE (The Handshake Node)
-- **VISUAL:** A high-priority table at the top of the page.
-- **LOGIC:** Pulls data from `studenDashboard/academicProfile/profileDetails.desc`.
-- **COLUMNS:**
-    - **Student:** Name + UID.
-    - **Document:** [ 📄 View ID Photo ] (Opens in a Modal).
-    - **Timestamp:** "Uploaded 2h ago".
-- **ACTIONS:** - [ ✅ Approve ]: Sets `isVerified: true` in MongoDB. Triggers a purple badge on the Student Profile.
-    - [ ❌ Reject ]: Sets `isVerified: false`. Triggers a prompt in `systemInbox` for the student to re-upload.
+## 1. VERIFICATION QUEUE (Students — Top Priority)
+- HIGH-PRIORITY TABLE: bg-[#F43F5E]/5 · border-[#F43F5E]/20 top section
+- COLUMNS: Student Name + UID · 📄 View ID Photo (modal) · Timestamp
+- ACTIONS:
+  - [✅ قبول]: sets isVerified: true → purple "موثّق" badge appears on student profile
+  - [❌ رفض]: sets isVerified: false → triggers inbox notification to re-upload
 
-## 2. THE MASTER USER DIRECTORY
-- **FORMAT:** A searchable, filterable grid of all registered users.
-- **DATA POINTS:**
-    - **Account Type:** [ 🎓 Student ] or [ 💼 Freelancer ].
-    - **Status:** [ 🟢 Active ] | [ 🔴 Banned ] | [ 🕒 Pending ].
-    - **XP Level:** Displays current XP (e.g., Level 14).
-- **WONDER FEATURE:** **"The Shadow Login"** — A button for the Admin to view the dashboard *exactly* as that student sees it (for troubleshooting).
+## 2. BUSINESS ACCOUNT APPROVAL QUEUE
+- Similar table for business accounts with status: 'pending'
+- COLUMNS: Business Name · Business Type (vendor/advertiser/freelancer) · Contact · Submitted Date
+- ACTIONS:
+  - [✅ تفعيل]: sets status: 'active' → business can access /business dashboard
+  - [❌ رفض]: sets status: 'rejected' → notifies applicant
+  - [📝 طلب معلومات إضافية]: sends inbox message requesting more details
 
-## 3. FINANCIAL & SUBSCRIPTION OVERSIGHT
-- **LOGIC:** Syncs with `halabFreelance/freelanceOnboarding.desc`.
-- **FIELDS:**
-    - **Sub Status:** "Paid until 2026-05-01".
-    - **ShamCash Link:** Displays the transaction ID used for their $5 monthly fee.
-- **ACTION:** [ 🧊 Freeze Account ] — Disables Freelance and Store access instantly.
+## 3. MASTER USER DIRECTORY
+- SEARCHABLE + FILTERABLE grid of ALL registered users
+- FILTER TABS: الكل · 🎓 طلاب · 💼 أعمال · 🔐 مشرفون
+- COLUMNS:
+  - Name + avatar
+  - Account Type badge (colored)
+  - Business Type (for business accounts): vendor/advertiser/freelancer
+  - Status: 🟢 نشط · 🔴 محظور · 🕒 قيد المراجعة
+  - XP Level (for students only)
+  - Join Date
+- WONDER FEATURE: "Shadow Login" — view the dashboard exactly as that user sees it
+- ACTIONS per row: [👁️ عرض] [🧊 تجميد] [❌ حذف]
 
-## 4. XP & REWARDS MANUAL OVERRIDE
-- **LOGIC:** Allows the Admin to manually gift or strip XP for community behavior.
-- **INPUT:** `[ + / - ] [ Number ] [ Reason ]`.
-- **SYNC:** Updates the "Growth Engine" in `academicProfile.desc` instantly.
+## 4. FINANCIAL & SUBSCRIPTION OVERSIGHT
+- For student freelancers: subscription status + ShamCash transaction ID
+- For business vendors: product listings count + revenue
+- For business advertisers: active campaigns + expiry dates
+- ACTION: [🧊 تجميد الحساب] — disables platform access instantly
 
-## 5. BULK SYSTEM NOTIFICATIONS
-- **ACTION:** [ 📢 Broadcast Message ] — Sends a global alert to all `systemInbox.desc` files.
-- **TARGETING:** "All Informatics Students" or "All Verified Freelancers."
+## 5. XP MANUAL OVERRIDE (Students)
+- Input: [+ / -] [Number] [Reason]
+- Updates student XP instantly in the Growth Engine
 
-## 6. STICKY SYSTEM LOGS (Bottom)
-- **LOG:** "Admin verified user #9921."
-- **LOG:** "User #1042 reached Level 20."
-- **MANTRA:** "Integrity is the Foundation. Challenge Every Day."
+## 6. BULK NOTIFICATIONS
+- [📢 إرسال إشعار جماعي] — targets:
+  - All Students · All Verified Students · All Business Accounts
+  - All Freelancers (student + external) · Custom segment
+
+## 7. ACTIVITY LOG (Bottom)
+- "Admin verified student #9921."
+- "Business account 'Elite Store' approved as vendor."
+- "User #1042 reached Level 20."

@@ -1,45 +1,40 @@
-# FILE: topTalentLeaderboard.desc
-# ROLE: The Hall of Fame & Competitive Ranking
-# VIBE: Gold-Standard / High-Energy / Data-Visualized
+# FILE: halabFreelance/topTalentLeaderboard/topTalentLeaderboard.desc
+# ROLE: Hall of Fame & Competitive Ranking
+# ROUTE: /freelance/leaderboard
+# ACCOUNT: All can view — logged-in freelancers see their personal rank
+# THEME: Dark · gold/silver/bronze podium · power list table
 
-## 1. THE PODIUM (Top 3 Elite)
-- **VISUAL:** A 3-column "Victory Stand" with the highest contrast.
-- **RANK 1 (CENTER):** Largest card with a glowing Gold border + [ 👑 Elitist ] badge.
-- **RANK 2 & 3 (SIDES):** Silver and Bronze themed borders.
-- **DATA:** Big Avatar + Name + "Total Jobs" + "Rating Score (e.g., 4.98)".
-- **ACTION:** [ 👤 View Full Profile ]
+## 1. PODIUM (Top 3 Elite)
+- LAYOUT: 3-col "victory stand" layout
+- RANK 1 (CENTER): largest card · gold border (border-[#F59E0B]/60) · [👑 النخبة] badge
+- RANK 2 (RIGHT): silver border (border-[#94A3B8]/40)
+- RANK 3 (LEFT): bronze border (border-[#CD7C3A]/40)
+- EACH CARD: large avatar + name + freelancer type badge + total jobs + rating score
+- ACTION: [👤 عرض الملف] → /freelance/profile/:id
 
-## 2. THE DYNAMIC FILTER BAR (Upper Fold)
-- **FILTER BY CATEGORY:** [ 💻 Software ] [ 🏗️ Engineering ] [ 🎨 Design ] ...
-- **SORTING LOGIC:** - **Most Earned:** Shows who is making the most profit.
-    - **Most Reliable:** Shows who has the fastest response/delivery time.
-    - **Top Rated:** Purely based on 5-star student reviews.
-- **TIMELINE TOGGLE:** [ 📅 This Month ] | [ 🏆 All-Time ].
+## 2. DYNAMIC FILTER BAR
+- CATEGORY FILTER: 💻 برمجة · 🏗️ هندسة · 🎨 تصميم · ✍️ كتابة ...
+- FREELANCER TYPE: [🎓 طلابي] [💼 خارجي] [الكل]
+- SORT: الأعلى ربحاً · الأسرع استجابةً · الأعلى تقييماً
+- TIMELINE: [📅 هذا الشهر] [🏆 كل الأوقات]
 
-## 3. THE "POWER LIST" (Rank 4 to 100)
-- **FORMAT:** A clean, vertical "Terminal List" with alternating dark-gray rows.
-- **COLUMNS:**
-    1. **RANK:** #4, #5, #6... (Rank 100 at the bottom).
-    2. **USER:** Small Avatar + Name + **[ ✅ Verified ]**.
-    3. **DISCIPLINARY:** e.g., "Architecture & Design".
-    4. **SCORE:** A "Power Meter" bar (0-100%) showing their overall platform standing.
-    5. **SUCCESS RATE:** "98% Job Completion".
-- **INTERACTION:** Hovering over a row highlights it in Purple/Blue gradient.
+## 3. POWER LIST (Rank 4–100)
+- STYLE: vertical list · alternating bg-[#0F1828]/bg-[#162032] rows
+- COLUMNS:
+  - RANK: #4, #5 ... monospace bold
+  - USER: avatar + name + freelancer type badge
+  - DISCIPLINE: "هندسة وعمارة"
+  - POWER METER: horizontal bar (0–100%) — indigo fill
+  - SUCCESS RATE: "98% إتمام"
+- HOVER: row bg shifts to bg-[#6366F1]/10
 
-## 4. THE "YOUR RANK" STICKY (Bottom Bar)
-- **LOGIC:** If the logged-in user is a Freelancer, show their current rank at the bottom.
-- **DISPLAY:** "Your Current Rank: **#156** — You need 4 more 5-star reviews to enter the Top 100!"
-- **CHALLENGE CTA:** [ 📈 Improve My Score ] -> Tips on how to rank higher.
+## 4. YOUR RANK (Sticky Bottom — Logged-in Freelancers Only)
+- Shown when accountType === 'student' && isFreelancer || businessType === 'freelancer'
+- DISPLAY: "ترتيبك الحالي: #156 — تحتاج 4 تقييمات إضافية لدخول أفضل 100"
+- CTA: [📈 تحسين نقاطي] → tips on how to rank higher
 
-## 5. THE "HALL OF FAME" REWARDS (Sidebar)
-- **NOTE:** "Being in the Top 100 gives you:
-    - 50% lower commission fees.
-    - [ 💎 VIP ] badge on all service listings.
-    - Priority placement in the Main Store and Catalog."
-
----
-
-# FINAL SUB-PAGE IN THE PIPELINE:
-5. **Project Workspace** (The private transaction & file exchange terminal).
-
-**Shall we proceed to the [ 5: Project Workspace ] to finish the Freelance App architecture?**s
+## 5. HALL OF FAME REWARDS (Sidebar Card)
+- Benefits of Top 100:
+  - عمولة أقل بنسبة 50%
+  - [💎 VIP] badge on all service listings
+  - Priority placement in freelance catalog

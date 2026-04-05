@@ -1,40 +1,40 @@
-# FILE: .../studentDashboard/marketplaceLedger/serviceContracts.desc
+# FILE: studentDashboard/marketplaceLedger/serviceContracts.desc
 # ROLE: Freelance Project & Escrow Management Terminal
-# VIBE: Professional / High-Trust / Milestone-Driven / 90-Degree Precision
+# ROUTE: /dashboard/contracts (future route)
+# ACCOUNT: Student only
+# THEME: Dark · milestone-driven · escrow trust visual
 
-## 1. THE "ESCROW LOCK" STATUS (Top Fold)
-- **VISUAL:** A prominent, high-contrast box showing "Funds in Security."
-- **LOGIC:** Displays the total amount of ShamCash currently held by the Platform (AMJ) for active jobs.
-- **DATA:** [ 🔒 Total Escrow: 1,200,000 SYP ] | [ 💼 Active Contracts: 3 ].
-- **MANTRA:** "Your money is safe until the work is delivered. Challenge Every Day."
+## 1. ESCROW LOCK STATUS (Top Fold)
+- CARD STYLE: bg-gradient-to-br from-[#F59E0B]/10 to-[#F59E0B]/5 · border-[#F59E0B]/25 · rounded-2xl
+- DATA: [🔒 إجمالي المحجوز: 1,200,000 SYP] | [💼 عقود نشطة: 3]
+- MANTRA: "أموالك محمية حتى تُسلَّم الخدمة — Challenge Every Day."
 
-## 2. THE ACTIVE CONTRACTS BOARD (The Project List)
-- **FORMAT:** A vertical stack of "Service Cards" with a linear timeline.
-- **CARD COMPONENTS:**
-    - **FREELANCER:** Avatar + Name (e.g., "Samer - Full Stack Developer").
-    - **PROJECT TITLE:** "Faculty Website - Backend Refactor."
-    - **STATUS PILLS:** - [ 🕒 Awaiting Payment ] - Receipt uploaded, waiting for Admin.
-        - [ ⚙️ In Progress ] - Work is being done.
-        - [ 📦 Under Review ] - Freelancer submitted the files.
-        - [ ✅ Completed ] - Funds released.
-- **DEADLINE:** "Due in: 3 Days" (Counts down in Red if overdue).
+## 2. ACTIVE CONTRACTS BOARD
+- CARD STYLE: bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl
+- CARD COMPONENTS:
+  - FREELANCER: avatar + name + type badge ("مستقل طلابي" indigo / "مستقل خارجي" amber)
+  - PROJECT TITLE: "موقع الكلية — إعادة هيكلة الـ Backend"
+  - STATUS PILLS:
+    - 🕒 انتظار الدفع
+    - ⚙️ قيد التنفيذ
+    - 📦 تحت المراجعة — amber alert (action required)
+    - ✅ مكتمل
+  - DEADLINE: countdown "متبقٍ: 3 أيام" — rose if overdue
 
-## 3. THE "MILESTONE & DELIVERY" DRAWER
-- **LOGIC:** Clicking a contract expands a detailed view.
-- **FILES ZONE:** Direct links to Google Drive folders where the freelancer has uploaded the work.
-- **APPROVAL ACTION:** A high-alert button: **[ 🔓 Release Payment ]**.
-    - **WARNING MODAL:** "By clicking this, you confirm the work is finished and the money will be sent to the Freelancer. This cannot be undone."
+## 3. MILESTONE & DELIVERY DRAWER (Expandable)
+- FILES ZONE: links to submitted work files
+- APPROVAL ACTION: [🔓 الإفراج عن الدفع] — high-alert button
+  - WARNING MODAL before confirming: "هل تأكد من إتمام العمل؟ لا يمكن التراجع."
 
-## 4. THE BID & OFFER QUEUE (Incoming Proposals)
-- **VISUAL:** A secondary list for "Custom Requests" the student has posted.
-- **DATA:** - **Offer:** "I can solve this logic set for 50k SYP."
-    - **Freelancer Rank:** [ 🌟 Elite ].
-- **ACTION:** [ ✅ Accept Offer ] - Generates a new Contract and prompts for ShamCash payment.
+## 4. BID QUEUE (Custom Task Proposals)
+- Incoming offers from freelancers for posted custom tasks
+- OFFER DATA: amount + freelancer rank + delivery time
+- ACTION: [✅ قبول العرض] → generates contract + ShamCash payment prompt
 
-## 5. DISPUTE & COMMUNICATION HUB
-- **MESSAGING:** A "Direct to Telegram/WhatsApp" button for the specific freelancer assigned to the project.
-- **DISPUTE BUTTON:** [ ⚠️ Report Issue ] - Alerts the Admin (AMJ) to freeze the Escrow and mediate the conflict if the quality is poor.
+## 5. DISPUTE & COMMUNICATION
+- [💬 تواصل مع المستقل] → WhatsApp/Telegram direct link
+- [⚠️ الإبلاغ عن مشكلة] → alerts admin to freeze escrow + mediate
 
-## 6. STICKY ACTION HUD
-- **POST NEW JOB:** [ ➕ Request a Custom Service ] -> Redirects to the Service Catalog.
-- **HISTORY:** [ 📜 View Finished Contracts ] - Archives of all successfully completed projects.
+## 6. ACTIONS
+- [➕ طلب خدمة جديدة] → /freelance
+- [📜 العقود المكتملة] → archived past contracts

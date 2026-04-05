@@ -1,41 +1,36 @@
-# FILE: .../studentDashboard/learningVault/enrolledCourses.desc
-# ROLE: The Academy Learning Terminal
-# VIBE: Educational / High-Focus / Cinematic / Progress-Driven
+# FILE: studentDashboard/learningVault/enrolledCourses.desc
+# ROLE: Academy Learning Terminal
+# ROUTE: /dashboard/learning
+# ACCOUNT: Student only
+# THEME: Dark · progress-driven · cinematic hero card
 
-## 1. THE "CONTINUE WATCHING" HERO (Top Fold)
-- **VISUAL:** A wide, 90-degree card featuring the last course accessed.
-- **VIDEO PREVIEW:** A blurred thumbnail of the next lesson.
-- **DATA:** Course Title: "MERN Stack Mastery" | Lesson 4: "Express Middleware".
-- **ACTION:** [ ▶️ Resume Learning ] — Big, glowing Purple button.
-- **WONDER FEATURE:** A **"Time Left"** counter: "3h 12m remaining to complete this course."
+## 1. CONTINUE WATCHING HERO (Top Fold)
+- CARD STYLE: bg-gradient-to-br from-[#6366F1]/12 to-[#8B5CF6]/6 · border-[#6366F1]/25 · rounded-2xl
+- THUMBNAIL: blurred lesson preview (16:9) with play button overlay
+- DATA: Course Title + current Lesson name
+- PROGRESS BAR: thin indigo bar below title (percentage text right-aligned)
+- TIME LEFT: "3س 12د لإتمام الدورة"
+- ACTION: [▶️ متابعة التعلم] — gradient-bg button
 
-## 2. THE ENROLLED COURSE INVENTORY (The List)
-- **FORMAT:** Vertical list of all purchased/enrolled Academy content.
-- **COLUMNS / ROWS:**
-    1. **THUMBNAIL:** 16:9 Aspect ratio image with a play icon overlay.
-    2. **COURSE TITLE:** e.g., "Architecture Rendering with V-Ray".
-    3. **PROGRESS METER:** A linear glow-bar (e.g., 45% Complete).
-    4. **CERTIFICATE STATUS:** [ 🔒 Locked ] until 100% completion.
-- **FILTER:** [ 🟢 Active ] | [ ✅ Completed ].
+## 2. ENROLLED COURSE INVENTORY
+- FILTER TABS: [🟢 جارية] [✅ مكتملة]
+- LIST STYLE: vertical stack of rows
+  - THUMBNAIL: 16:9 · rounded-xl · play overlay on hover
+  - TITLE: text-[#F1F5F9] font-medium
+  - PROGRESS BAR: glow-bar (width = % complete)
+  - CERT STATUS: [🔒 محجوب] until 100% · [📜 متاحة] when complete
+  - ACTION: [▶️ متابعة] → /academy/course/:id
 
-## 3. THE "CURRICULUM AT A GLANCE" (Drawer)
-- **LOGIC:** Clicking a course expands a dropdown showing the full lesson list.
-- **LESSON STATUS:**
-    - `[ ✅ ] Lesson 1: Introduction`
-    - `[ ✅ ] Lesson 2: Environment Setup`
-    - `[ ⚪ ] Lesson 3: The First Project` (Current)
-- **SOURCE:** Links to the video hosted on the Academy’s external source (YouTube/Vimeo/Drive).
+## 3. CURRICULUM DRAWER (Expandable per Course)
+- Clicking a course expands full lesson list
+- LESSON STATUS: ✅ مكتملة · ⚪ الحالي · 🔒 مقفل
+- Includes video duration + link to lesson in course page
 
-## 4. THE SKILL ACQUISITION BADGES
-- **VISUAL:** A small sidebar of "Skill Orbs" representing what the student has learned.
-- **ORBS:** [ ⚛️ React ] [ 🌿 MongoDB ] [ 🎨 UI Design ].
-- **XP REWARD:** "Total Learning XP: **+1,400**."
-- **MILESTONE:** "2 more courses to reach 'Professional' rank."
+## 4. SKILL ACQUISITION BADGES
+- Row of earned skill orbs: [⚛️ React] [🌿 MongoDB] [🎨 UI Design]
+- TOTAL XP FROM LEARNING: "+1,400 XP" — gradient-text
+- MILESTONE: "دورتان أخريان للوصول إلى مرتبة 'محترف'"
 
-## 5. ACADEMY SUPPORT & Q&A
-- **INQUIRY BUTTON:** [ ❓ Ask Instructor ] — Opens a direct WhatsApp/Telegram link to the course creator.
-- **RESOURCE HUB:** Links to course-specific PDFs (stored in Google Drive) like "Lesson Notes" or "Source Code".
-
-## 6. STICKY ACTIONS
-- **BROWSE MORE:** [ 🎓 Find New Courses ] -> Redirects to `halabAcademy.desc`.
-- **CERTIFICATE HUB:** [ 📜 View My Certificates ] (Available only for 100% finished courses).
+## 5. ACTIONS BAR
+- [🎓 تصفح دورات جديدة] → /academy
+- [📜 شهاداتي] → shows all completed course certificates

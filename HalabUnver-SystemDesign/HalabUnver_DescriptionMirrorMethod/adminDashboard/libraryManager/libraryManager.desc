@@ -1,37 +1,37 @@
-# FILE: .../adminDashboard/contentVaultControl/libraryManager.desc
+# FILE: adminDashboard/libraryManager/libraryManager.desc
 # ROLE: Digital Asset Indexer & Metadata Terminal
-# VIBE: Librarian Precision / Low-Storage Footprint / Grid-Logic
+# ROUTE: /admin/library
+# ACCOUNT: Admin only
+# THEME: Dark · link management · monospace table · bulk-check tools
 
-## 1. THE THIRD-PARTY LINK TERMINAL (External Storage)
-- **LOGIC:** Since no files are hosted locally, this is a **Link Management System**.
-- **INPUT FIELDS:** - **Google Drive ID:** Paste the unique ID from the Drive link (e.g., `1A2b3C4d...`).
-    - **Thumbnail URL:** Link to a cover image (hosted on Cloudinary or Drive).
-- **VIBE:** 90-degree 1px input borders with a "Test Link" button to verify the file is "Public/Viewable" before saving.
+## 1. EXTERNAL LINK TERMINAL (No local file hosting)
+- INPUT FIELDS:
+  - Google Drive ID: paste unique doc ID (e.g., "1A2b3C4d...")
+  - Thumbnail URL: cover image link (Cloudinary or Drive)
+  - [🔍 اختبار الرابط] button — verifies file is publicly viewable before saving
+- VALIDATION: highlights row in rose if link is broken/private
 
-## 2. THE METADATA BENTO (The Library Brain)
-- **CATEGORIES:** [ 🏗️ الهندسة ] | [ 🏥 الطب ] | [ ⚖️ الحقوق ] | [ 🎨 الفنون ].
-- **HIERARCHY TAGS:** Select Year (1st-5th) | Select Term (First/Second).
-- **DOCUMENT TYPE:** [ 📚 Textbook ] | [ 📝 Summary ] | [ 🔬 Research Paper ].
-- **DESCRIPTION BOX:** A minimalist textarea for a brief abstract or "What's inside" note.
+## 2. METADATA BENTO
+- CATEGORY: 🏗️ الهندسة · 🏥 الطب · ⚖️ الحقوق · 🎨 الفنون · 💻 التقنية
+- YEAR: dropdown (1–5 + دراسات عليا)
+- TERM: الأول / الثاني
+- TYPE: 📚 كتاب · 📝 ملخص · 🔬 بحث · 🎓 نموذج امتحان
+- DESCRIPTION: textarea for brief abstract
 
-## 3. THE "NATIVE VS. CONTRIBUTOR" TOGGLE
-- **SWITCH:** [ 🏠 منصة (Native) ] | [ 🤝 مساهم (Contributor) ].
-- **CONTRIBUTOR CREDIT:** If "Contributor," a field to input the Student's Name/ID to display their profile on the `documentReader` page.
+## 3. NATIVE VS. CONTRIBUTOR TOGGLE
+- 🏠 منصة (Native): platform-curated content
+- 🤝 مساهم (Student-contributed): shows contributor name/ID from student profile
+  - Contributor's profile linked in /library/viewer document footer
 
-## 4. THE LIVE REPOSITORY TABLE
-- **FORMAT:** A clean, monospace list of all indexed documents.
-- **COLUMNS:**
-    1. **FILE ID:** #LIB-702.
-    2. **TITLE:** "Structural Analysis II - Full Course."
-    3. **EXTERNAL SOURCE:** [ 📂 Drive Link ] (Opens in new tab).
-    4. **ACCESS COUNT:** Shows how many times the "Read" button was clicked.
-    5. **VISIBILITY:** [ 👁️ Public ] | [ 🔒 Private/Hidden ].
+## 4. LIVE REPOSITORY TABLE
+- STYLE: bg-[#0F1828] · border · rounded-2xl · monospace rows
+- COLUMNS: #LIB-ID · Title · External Link · Access Count · Visibility
+- VISIBILITY: [👁️ عام] | [🔒 مخفي] — toggle per document
 
-## 5. BULK LINK CHECKER (The "Wonder" Tool)
-- **LOGIC:** A single button: **[ 🔍 Check All Drive Links ]**.
-- **FUNCTION:** Automatically pings all Google Drive IDs in the database. 
-- **FEEDBACK:** Highlights any row in **RED** if a link is broken or access is denied, so the admin can fix it before students complain.
+## 5. BULK LINK CHECKER
+- [🔍 فحص جميع الروابط] button — pings all Drive IDs
+- Result: rose highlight on any broken/revoked link
 
-## 6. STICKY ACTIONS (Floating)
-- **ADD NEW:** [ ➕ Index New Document ].
-- **QUICK SEARCH:** Filter by Faculty or Keyword.
+## 6. ACTIONS
+- [➕ إضافة مستند جديد] — opens form
+- Quick search by faculty or keyword

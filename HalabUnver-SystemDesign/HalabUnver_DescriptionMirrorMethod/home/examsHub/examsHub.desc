@@ -1,28 +1,39 @@
-# FILE: ExamHub.desc
-# ROLE: High-Urgency Exam Season Command Center (Sub-Page)
-# VIBE: Dynamic Alert / Intensive Study Mode
-# LOGIC: Admin-Triggered Seasonal Override
+# FILE: home/examsHub/examsHub.desc
+# ROLE: High-Urgency Exam Season Command Center
+# ROUTE: /exam-hub
+# ACCOUNT: All can view — admin-triggered seasonal mode
+# THEME: Dark · rose/red alert palette · intensive study mode
 
-## 1. DYNAMIC HEADER TRIGGER (The Signal)
-- **UI:** The Header Action Button (الأخبار) behavior changes via Admin.
-- **LOGIC:** - `examTime === true`: Button color **CRITICAL RED** + Pulse Animation.
-  - `examTime === false`: Button color **BRAND ACCENT** (Normal Theme).
-- **ACTION:** Redirects to `/exam-hub`.
+## 1. HEADER TRIGGER (Admin-Controlled Signal)
+- EXAM SEASON TOGGLE in /admin/config: isExamSeason boolean
+- isExamSeason === true:
+  - Header "الأخبار" badge → CRITICAL ROSE (#F43F5E) + blinking pulse animation
+  - Clicking badge → redirects to /exam-hub
+- isExamSeason === false:
+  - Badge → normal rose/indigo style · generic news behavior
 
-## 2. THE HUB INTERFACE (Sub-Page Layout)
-- **SECTION [LIVE_TERMINAL]:** Grid for active video tutorials and crash courses with "Live" badges.
-- **SECTION [STUDY_CHATS]:** Branch-specific real-time chat rooms for peer-to-peer academic help.
-- **SECTION [PREDICTED_RESOURCES]:** One-click access to "Expected Exam Questions" and "Shorts" summaries.
+## 2. HUB PAGE LAYOUT
+- PAGE BG: dot-bg + rose radial glow overlay
+- HEADER: section-label "موسم الامتحانات" (rose) + h1 gradient-text "مركز القيادة الامتحانية"
 
-## 3. SEASONAL MONETIZATION & ADS
-- **EXCLUSIVE_OFFERS:** Time-limited exam-specific course discounts (Separate from public Store offers).
-- **AD_ZONES:** Targeted slots for local "Study Cafes" and stationery stores via `AdConsole`.
+## 3. LIVE RESOURCES TERMINAL
+- GRID: 3 columns
+  - CARD STYLE: bg-[#0F1828] · border-[#F43F5E]/20 · rounded-2xl
+  - Content: video tutorials + crash courses with "مباشر" (Live) badge
+  - Source: admin-pushed links
 
-## 4. ADMIN DASHBOARD CONTROL
-- **MASTER_TOGGLE:** `isExamSeason` [ ON / OFF ].
-- **COLOR_OVERRIDE:** Manual hex-code control for the Header Button alert state.
-- **CONTENT_MANAGEMENT:** Admin pushes live links, predicted files, and chat room topics.
+## 4. PREDICTED RESOURCES
+- One-click download cards for "نماذج امتحانات متوقعة" and Shorts summaries
+- Pulls from /library filtered by exam-tagged documents
 
-## 5. ARCHITECTURE NOTE
-- **LOCATION:** `/src/pages/ExamHub/ExamHub.jsx`.
-- **COMPONENT:** Utilizes Atomic `NewsCard` and `OfferCard` with "Exam" styling variants.
+## 5. STUDY CHAT ROOMS (Future)
+- Branch-specific real-time discussion rooms for peer help
+- Each room labeled by faculty + year
+
+## 6. EXAM-SPECIFIC OFFERS
+- Time-limited discounts on exam-prep courses
+- Ad zones: targeted local "مقاهي الدراسة" ads from business advertiser accounts
+
+## 7. ADMIN CONTROL (from /admin/config)
+- Master toggle: isExamSeason ON/OFF
+- Content management: push live links, predicted files, chat topics

@@ -1,28 +1,45 @@
-# FILE: Bio.desc
+# FILE: home/about/bio.desc
 # ROLE: Global Platform Identity & Educational Philosophy
-# LANGUAGE: Arabic (Primary) / Professional Tone
+# ROUTE: /about
+# ACCOUNT: All — no auth required
+# THEME: Dark · ecosystem visualization · Arabic philosophy
 
-## 1. VISUALIZATION: THE INTERACTIVE ECOSYSTEM MAP (HUD)
-- **TYPE:** SVG-based Interactive Map / React Component.
-- **NODES:** [Knowledge Hub] [Career Launchpad] [Marketplace] [Growth Center].
-- **HOVER BEHAVIOR:** Glassmorphism pop-ups showing how these systems benefit the student.
-- **SYNERGY:** Visual "Data Lines" showing the flow between Search and the Apps.
+## 1. PAGE HEADER
+- section-label "من نحن" + h1 gradient-text "منظومة حلب الأكاديمية"
+- Subtitle: tagline about the platform mission
+- dot-bg + indigo/teal layered glows
 
-## 2. THE SYSTEM PURPOSE (The "Access" Philosophy)
-- **HEADER:** تجربة أكاديمية بلا حدود (An Academic Experience Without Limits)
-- **CONTENT:** نحن نؤمن بأن الوصول إلى الأدوات المتطورة هو حق لكل طالب طموح. لذلك، نمنح كل مستخدم جديد "فترة تجربة مجانية" (Free Trial) لاستكشاف كامل قدرات المنصة، من المكتبة الرقمية إلى أدوات تتبع الأداء.
-- **BENEFIT FOCUS:** Discovery, full-feature access, and technical empowerment.
+## 2. ECOSYSTEM MAP (Interactive HUD)
+- SVG or React-drawn diagram of the 4 platform pillars as nodes
+- NODES: [المكتبة] [الأكاديمية] [المستقلون] [المتجر]
+- CONNECTIONS: visual data lines between nodes showing inter-platform flow
+- HOVER: glassmorphism tooltips explaining each node's benefit
+- STYLE: node circles with gradient-bg fill + labeled with emoji + title
 
-## 3. MODERN ARABIC TYPOGRAPHY & MOTION
-- **FONT:** IBM Plex Sans Arabic (Weight: 300 for Body / 700 for Headers).
-- **MOTION:** RTL Slide-in animations with subtle motion blur for Arabic headers.
-- **SPACING:** Wide line-height (1.8) for a clean, modern "Scientific" feel.
+## 3. SYSTEM PURPOSE (Philosophy Section)
+- HEADER: "تجربة أكاديمية بلا حدود" — gradient-text
+- BODY: two paragraphs explaining the platform mission in Arabic
+  - Access philosophy
+  - Free trial / open access for new users
+  - Empowerment of Syrian university students
+- STYLE: text-[#94A3B8] · leading-relaxed · max-w-2xl · mx-auto · text-center
 
-## 4. THE "CHALLENGE EVERY DAY" PHILOSOPHY
-- **CONCEPT:** تحويل التحدي اليومي إلى واقع تقني ملموس.
-- **VISUAL:** Minimalist pulse animation on the "Signature" typography.
+## 4. CHALLENGE EVERY DAY SECTION
+- Large quote block: italic gradient-text "Challenge Every Day."
+- Short explanation of the platform's competitive philosophy
+- Subtle pulse animation on the quote mark
 
-## 5. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
-- **COMPONENTS:** EcosystemMap, AccessBanner (Free Trial UI), TypographyWrapper.
-- **LOCATION:** All elements must reside in `/src/components/`.
-- **ASSETS:** Strictly URL-based images and high-stroke SVGs.
+## 5. TEAM / ORIGIN NOTE
+- Simple card or text section about the platform's origins
+- University of Aleppo connection
+- No personal names — platform-centric framing
+
+## 6. THREE ACCOUNT TYPES EXPLAINED (Simple Cards)
+- 3 cards explaining the ecosystem to new visitors:
+  - 🎓 طالب: تعلّم، تصفح، اشترِ، وانضم لسوق المستقلين
+  - 💼 أعمال: سوّق منتجاتك، أعلن، أو قدّم خدماتك المهنية
+  - 🔐 الإدارة: تُشرف على كل شيء داخل المنظومة
+
+## 7. TYPOGRAPHY
+- Font: IBM Plex Sans Arabic · Body: font-light leading-relaxed · Headers: font-black
+- Direction: RTL by default

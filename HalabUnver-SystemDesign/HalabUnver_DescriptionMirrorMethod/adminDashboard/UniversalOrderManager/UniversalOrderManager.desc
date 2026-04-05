@@ -1,40 +1,42 @@
-# FILE: .../adminDashboard/UniversalOrderManager/UniversalOrderManager.desc
-# ROLE: The Financial Fulfillment & Escrow Release Hub
-# VIBE: High-Stakes / Tabular / Mission-Control / Secure
+# FILE: adminDashboard/UniversalOrderManager/UniversalOrderManager.desc
+# ROLE: Financial Fulfillment & Escrow Release Hub
+# ROUTE: /admin/orders
+# ACCOUNT: Admin only
+# THEME: Dark · high-stakes tabular · mission-control
 
-## 1. THE ESCROW AUTHORIZATION QUEUE (Freelance Sync)
-- **VISUAL:** A dedicated "Action Required" section at the top with a pulsing yellow border.
-- **LOGIC:** Pulls data from `studenDashboard/marketplaceLedger/serviceContracts.desc`.
-- **COLUMNS:**
-    - **Project:** "Backend Refactor #PRJ-102".
-    - **Status:** [ 📦 Under Review ] — (Student has seen the files).
-    - **Student Action:** [ ✅ Authorized ] — (The student clicked "Release Payment").
-- **PRIMARY ACTION:** [ 💸 Finalize Payout ] — Moves ShamCash from Platform Escrow to Freelancer’s `walletOverview.desc`.
-- **SECONDARY ACTION:** [ 🛑 Freeze Funds ] — Used if a dispute is opened.
+## 1. ESCROW AUTHORIZATION QUEUE (Freelance — Top Priority)
+- CARD STYLE: border-[#F59E0B]/30 · bg-[#F59E0B]/5 (amber alert) — pulsing border
+- SOURCE: from /dashboard/contracts (student-side approval)
+- COLUMNS: Project Name · Freelancer Type (student/external) · Student Approval Status · Escrow Amount
+- ACTIONS:
+  - [💸 إتمام الصرف] — releases ShamCash from platform escrow to freelancer wallet
+  - [🛑 تجميد الأموال] — used when dispute is opened
 
-## 2. THE STORE FULFILLMENT TRACKER (Store Sync)
-- **LOGIC:** Syncs with `studenDashboard/marketplaceLedger/orderHistory.desc`.
-- **DATA POINTS:**
-    - **Order ID:** #HS-702.
-    - **Customer:** Ahmed Al-Jassem.
-    - **Verification:** [ 🟢 Payment Verified ] (Linked to `revenueTracker.desc`).
-- **THE HANDSHAKE:** A **"Secure Code Entry"** field. 
-    - **PROMPT:** "Enter Student's 4-Digit Pickup Code".
-    - **RESULT:** If code matches, status auto-updates to `[ ✅ Received ]` for both Admin and Student.
+## 2. STORE FULFILLMENT TRACKER
+- SOURCE: from /dashboard/orders
+- DATA: Order ID · Customer Name · Item · Verification Status · Amount
+- THE HANDSHAKE: "Secure Pickup Code" entry field
+  - Admin/broker enters student's 4-digit PIN
+  - On match: status auto-updates to ✅ مُستلم for both admin and student
 
-## 3. PHYSICAL INVENTORY DISPATCH (Broker View)
-- **LIST:** Items ready for pickup today.
-- **BROKER ASSIGNMENT:** Dropdown to assign a specific team member to the pickup node (e.g., "Samer at IT Faculty").
-- **ACTION:** [ 📤 Notify Student ] — Sends a "Your item is ready for pickup" alert to `systemInbox.desc`.
+## 3. VENDOR ORDER MANAGEMENT (Business Accounts)
+- Orders placed for products from businessType === 'vendor' accounts
+- Same columns as store tracker + Vendor Name column
+- Vendor notified via inbox when order is placed
 
-## 4. CANCELLATION & REFUND LOGIC
-- **ACTION:** [ 🗑️ Cancel Order ] — Triggers an automatic "Virtual Credit" refund to the student's `walletOverview.desc`.
-- **LOG:** All cancellations are timestamped with the reason (e.g., "Out of stock").
+## 4. PHYSICAL DISPATCH BOARD
+- Items ready for pickup today (sorted by time)
+- BROKER ASSIGNMENT: dropdown to assign team member to pickup node
+- [📤 إشعار الطالب] — sends "جاهز للاستلام" to student's system inbox
 
-## 5. GLOBAL SEARCH & FILTER
-- **SEARCH:** By Order ID, Student UID, or Freelancer Name.
-- **FILTERS:** [ 🕒 Pending ] | [ 📦 In Transit ] | [ 💰 In Escrow ] | [ ✅ Completed ].
+## 5. CANCELLATION & REFUND LOGIC
+- [🗑️ إلغاء الطلب] → auto-credits virtual wallet on student side
+- All cancellations timestamped with reason
 
-## 6. STICKY SUMMARY HUD (Bottom)
-- **STATS:** `Total Escrow Held: 4,500,000 SYP` | `Orders Ready: 12`.
-- **MANTRA:** "Zero-Leak Economy. Challenge Every Day."
+## 6. FILTER & SEARCH
+- Search by: Order ID · Student UID · Freelancer Name · Vendor Name
+- FILTERS: 🕒 قيد الانتظار · 📦 في الطريق · 💰 في الضمان · ✅ مكتمل
+
+## 7. STICKY SUMMARY HUD
+- "إجمالي الضمان: 4,500,000 SYP" | "طلبات جاهزة: 12"
+- MANTRA: "اقتصاد بلا تسرب — Challenge Every Day."

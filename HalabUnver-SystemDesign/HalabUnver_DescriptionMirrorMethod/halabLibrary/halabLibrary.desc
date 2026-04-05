@@ -1,29 +1,39 @@
+# FILE: halabLibrary/halabLibrary.desc
 # ROLE: High-Performance Digital Archive & Research Hub
-# VIBE: Technical Repository / Scientific Library
-# LOGIC: Branch-Based Navigation + Multi-Format Filtering
+# ROUTE: /library
+# ACCOUNT: All account types can browse — download open to all
+# THEME: Dark · technical repository · amber badges for university-native
 
-## 1. THE KNOWLEDGE SIDEBAR (Primary Navigation)
-- **UI:** Vertical branch list (Software, Networks, Cyber, etc.).
-- **DYNAMIC:** Admin-controlled categories mirroring Academy branches.
-- **ACTION:** On click -> Triggers `fetchByBranch` to update the Result Grid.
+## DESIGN SYSTEM
+- PAGE BG: bg-[#070C18] + subtle teal glow top-center
+- SECTION HEADERS: section-label pill + gradient-text h2
+- GRID CARDS: bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl
 
-## 2. THE MULTI-FILTER HUD (The Result Engine)
-- **MODES:** [ 📚 Full Books ] | [ 📝 Shorts/Summaries ] | [ 🎓 Uni-Exam Samples ].
-- **SEARCH:** Real-time fuzzy search (Title, Author, Year).
-- **SORT:** [ File Size | Date Added | Rating ].
+## 1. KNOWLEDGE SIDEBAR (Primary Navigation)
+- STYLE: sticky · bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl
+- BRANCH LIST: vertical, scrollable
+  - Active branch: bg-[#6366F1]/15 · border-l-2 border-[#6366F1] · text-[#818CF8]
+  - Others: text-[#94A3B8] · hover:text-[#F1F5F9]
+- BRANCHES: Admin-controlled — mirrors Academy branch categories
 
-## 3. THE KNOWLEDGE GRID (The Entry Points)
-- **UI:** 1px border cards showing [Format: PDF/MD], [Size], [Page Count].
-- **BADGE:** Gold/Amber badge for "Aleppo University Native" materials.
-- **COMMUNITY:** "Student-Authored" badge for the **Shorts** category.
-- **ACTION:** On Click -> Redirect to `/library/viewer/:docID` (The `documentReader.desc` environment).
+## 2. MULTI-FILTER HUD (Search + Type)
+- SEARCH INPUT: real-time fuzzy · bg-[#0F1828] · border-[#1E2D45] · focus:border-[#6366F1]
+- TYPE TABS: 📚 كتب كاملة · 📝 ملخصات · 🎓 نماذج امتحانات
+- SORT: حجم الملف · تاريخ الإضافة · التقييم
 
-## 4. ARCHITECTURE & SUB-PAGES
-- **LOCATION:** `/src/pages/Library/`.
-- **SUB_PAGES:** `documentReader/documentReader.jsx` (Internal viewer for study sessions).
+## 3. KNOWLEDGE GRID
+- CARD COMPONENTS:
+  - FORMAT BADGE: "PDF" or "MD" — muted pill
+  - UNIVERSITY BADGE: "🏛️ جامعة حلب" — amber/gold border card variant
+  - STUDENT-AUTHORED BADGE: "✍️ طالب" — teal badge (for Shorts category)
+  - TITLE, AUTHOR, YEAR
+  - SIZE + PAGE COUNT: text-[#4A5D78] text-sm monospace
+  - DOWNLOAD BUTTON: ghost or gradient-bg depending on access
+- ACTION: click → /library/viewer/:docId
+
+## 4. XP AWARD ON DOWNLOAD (Students)
+- When a student downloads a resource: +25 XP awarded
+- Toast notification: "حصلت على +25 XP 🎉"
 
 ## 5. ADMIN SYNC
-- **NOTE:** Content ingestion, file hosting links, and "Shorts" verification are managed via the `adminDashboard/libraryManager.desc`.
-
-## 6. MOTIVATIONAL FOOTER
-- **SIGNATURE:** "Ahmed Al-Jassem | Knowledge is the Ultimate Challenge"
+- Content, file links, and student-authored "Shorts" verification managed via /admin/library

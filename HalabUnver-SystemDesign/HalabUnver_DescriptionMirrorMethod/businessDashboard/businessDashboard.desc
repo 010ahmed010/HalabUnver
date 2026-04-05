@@ -1,0 +1,44 @@
+# FILE: businessDashboard/businessDashboard.desc
+# ROLE: Business Account Control Panel (NEW)
+# ROUTE: /business
+# ACCOUNT: Business only — students/admins redirect to their dashboards
+# THEME: Dark · bg-[#0F1828] cards · colored tabs per business type
+
+## DESIGN
+- LAYOUT: sidebar (desktop) + main area — same structure as /admin but lighter palette
+- SIDEBAR: business logo + name + businessType badge + nav links
+- TOP BAR: account status pill (🟢 نشط / 🕒 قيد المراجعة / 🔴 مجمّد)
+
+## SUB-DASHBOARDS BY BUSINESS TYPE
+
+### A. VENDOR (بائع منتجات) → businessType === 'vendor'
+- NAV: المنتجات · الطلبات · الإيرادات · الإعدادات
+- PRODUCTS TAB:
+  - Grid of listed products (same card style as /store)
+  - [+ إضافة منتج] → product upload form
+  - Product status: 🟢 منشور · 🕒 قيد المراجعة · 🔴 مرفوض (admin must approve)
+- ORDERS TAB: incoming orders table (matches Universal Order Manager)
+- REVENUE TAB: total sales · pending payouts · withdrawal request button
+
+### B. ADVERTISER (معلن محلي) → businessType === 'advertiser'
+- NAV: الحملات الإعلانية · إنشاء حملة · الأداء
+- CAMPAIGNS TAB: list of submitted/active/expired ads
+- CREATE CAMPAIGN:
+  - Upload ad image (WebP)
+  - Target URL
+  - Preferred zone (header / sidebar / in-feed)
+  - Campaign period (start + end date)
+  - [📤 إرسال للمراجعة] → goes to admin ad console queue
+- PERFORMANCE TAB: impressions · clicks · CTR per campaign
+
+### C. EXTERNAL FREELANCER (مستقل خارجي) → businessType === 'freelancer'
+- NAV: خدماتي · طلباتي · الإيرادات · الملف العام
+- Same flow as student freelancer BUT under Business account
+- Subscription: same $5/month via ShamCash
+- Profile visible in /freelance catalog same as student freelancers
+- Badge: "مستقل خارجي" (amber) vs student freelancer "مستقل طلابي" (indigo)
+
+## STATUS FLOW
+- Registration → status: 'pending' (waiting admin approval)
+- Admin approves → status: 'active' → full dashboard access
+- Admin freezes → status: 'frozen' → read-only + banner notification

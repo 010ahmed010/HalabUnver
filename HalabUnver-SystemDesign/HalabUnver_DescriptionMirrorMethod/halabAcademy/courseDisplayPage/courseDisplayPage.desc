@@ -1,26 +1,45 @@
-# FILE: courseDisplayPage.desc
+# FILE: halabAcademy/courseDisplayPage/courseDisplayPage.desc
 # ROLE: High-Focus Learning Environment
-# VIBE: Technical IDE / Scientific Video Player
+# ROUTE: /academy/course/:id
+# ACCOUNT: All types can view — enrollment requires Student or Business Freelancer account
+# THEME: Dark · IDE/player layout · minimal distractions
 
-## 1. WORKSPACE LAYOUT (The 12-Column Grid)
-- **CONTAINER:** `grid grid-cols-12 h-[calc(100vh-64px)] overflow-hidden`.
-- **COL_9 (The Player):** `relative bg-black group`.
-- **COL_3 (The Curriculum):** `border-l border-white/10 flex flex-col overflow-y-auto bg-white/[0.02]`.
+## DESIGN SYSTEM
+- FULL-SCREEN LAYOUT: h-[calc(100vh-72px)] · no outer page padding
+- BG: bg-[#070C18] for player · bg-[#0F1828] for sidebar
+- BORDER DIVIDER: border-[#1E2D45] between player and sidebar
 
-## 2. VIDEO TERMINAL (The Player Hub)
-- **UI:** Custom video controls styled with Tailwind `backdrop-blur`.
-- **OVERLAY:** `absolute top-4 left-4` showing [Lesson_ID, Duration, Status].
-- **INTERACTION:** `Like/Dislike` buttons and dynamic `Star Rating` components.
+## 1. WORKSPACE LAYOUT (12-Column Grid)
+- COL 9: Video Player area (flex-1)
+- COL 3: Curriculum Sidebar (fixed width 300px · scrollable)
 
-## 3. CURRICULUM SIDEBAR (The Roadmap)
-- **UI:** Vertical list of "Knowledge Nodes" (Lessons).
-- **LOGIC:** Active lesson highlight with `border-r-2 border-cyan-500`.
-- **METADATA:** [ 📊 المستوى, ⏳ المدة, 🌍 اللغة ] displayed at the top of the sidebar.
+## 2. VIDEO PLAYER (COL 9)
+- BG: bg-black · rounded-none (full area)
+- CUSTOM CONTROLS: backdrop-blur pill bar at bottom of video
+  - Play/Pause · Progress bar (indigo fill) · Volume · Speed · Fullscreen
+- OVERLAY TOP-LEFT: Lesson ID + Duration + 🔒 if locked (not enrolled)
+- INTERACTION: Like/Dislike + Star rating below video
 
-## 4. ACADEMIC INTERACTION (The Terminal Feed)
-- **DISCUSSION:** Tabbed section below the player for [Q&A, Resources, Notes].
-- **RESOURCES:** Downloadable PDFs or Code Snippets attached to the lesson.
+## 3. CURRICULUM SIDEBAR (COL 3)
+- COURSE META (top): Level badge + Duration + Language flag
+- LESSON LIST: vertical stack
+  - Active: border-r-2 border-[#6366F1] · bg-[#6366F1]/10 · text-[#818CF8]
+  - Completed: text-[#10B981] + checkmark icon
+  - Locked: text-[#4A5D78] + 🔒 icon
+- PROGRESS BAR: thin indigo bar across top of sidebar
 
-## 5. TYPOGRAPHY & MOTION
-- **FONT:** `font-['IBM_Plex_Sans_Arabic']`.
-- **TRANSITION:** `fade-in` on video load; `slide-in-left` for the sidebar curriculum.
+## 4. BOTTOM TABS (Below Player)
+- TABS: 💬 النقاشات · 📎 الموارد · 📝 ملاحظاتي
+- DISCUSSIONS: Q&A thread with nested replies
+- RESOURCES: PDF/code file list (download triggers +10 XP for students)
+- NOTES: private markdown scratchpad per lesson
+
+## 5. XP & COMPLETION
+- Finish lesson: +50 XP for student accounts
+- Complete full course: +200 XP + course completion badge
+
+## 6. ACCOUNT TYPE IMPACT
+- Guest: can preview first lesson only → locked CTA to enroll
+- Student: full access after enrollment
+- Business (advertiser/vendor): blocked — redirect to student path note
+- Admin: full access + floating [✏️ تعديل الدورة] button

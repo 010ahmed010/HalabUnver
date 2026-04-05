@@ -1,44 +1,37 @@
-# FILE: .../studentDashboard/systemInbox/systemInbox.desc
-# ROLE: The Official Platform Communications Hub
-# VIBE: Direct / High-Contrast / Monospace Logs / Notification Center
+# FILE: studentDashboard/systemInbox/systemInbox.desc
+# ROLE: Platform Communications Hub
+# ROUTE: /dashboard/inbox
+# ACCOUNT: Student (also Business, with business-specific message types)
+# THEME: Dark · notification cards · colored senders
 
-## 1. THE STATUS TICKER (Top Fold)
-- **VISUAL:** A horizontal, 90-degree scrolling bar for "Global Broadcasts."
-- **CONTENT:** "System Update: New solved exams for the Faculty of Architecture added to Library."
-- **MANTRA:** A small, static label: "Stay Informed. Challenge Every Day."
+## 1. CATEGORY FILTER TABS
+- STYLE: rounded-full tabs · bg-[#0F1828] base · gradient-bg when active
+- TABS: 📥 الكل · 💳 المالية · 🎓 الأكاديمية · 📢 الإعلانات · 💼 العقود
 
-## 2. THE UNREAD PRIORITY QUEUE (The Notification List)
-- **FORMAT:** A vertical list of message cards with 1px borders.
-- **CARD COMPONENTS:**
-    - **SENDER:** [ 🛠️ Admin ] | [ 💼 Freelancer ] | [ 🛒 Store Bot ].
-    - **TITLE:** "Payment Verified for Order #HS-702."
-    - **TIMESTAMP:** "2 mins ago" (Monospace font).
-    - **STATUS DOT:** A glowing purple dot for unread messages.
-- **WONDER FEATURE:** **"Actionable Alerts"** — If a message says "ID Rejected," it includes a direct button: [ 📤 Re-upload ID ].
+## 2. NOTIFICATION CARDS (List)
+- CARD STYLE: bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl · hover:border-[#6366F1]/30
+- UNREAD: glowing indigo dot + slightly brighter bg
+- COMPONENTS:
+  - SENDER BADGE: colored pill (🛠️ الإدارة · 💼 مستقل · 🛒 متجر · 🎓 أكاديمية)
+  - TITLE: text-[#F1F5F9] font-medium
+  - TIMESTAMP: text-[#4A5D78] text-sm monospace
+  - ACTION BUTTON (contextual): "📤 رفع الهوية" or "👁️ مراجعة التسليم"
 
-## 3. CATEGORY TABS (The Filter Bar)
-- **TABS:** [ 📥 All ] | [ 💳 Financial ] | [ 🎓 Academic ] | [ 📢 Announcements ].
-- **LOGIC:** - **Financial:** Only ShamCash receipts and subscription alerts.
-    - **Academic:** Library updates and Academy course milestones.
+## 3. MESSAGE DETAIL (Side Drawer or Expanded Card)
+- Slides in from end side with backdrop
+- CONTENT: full message · XP award note · action link
+- ACTIONS: [✅ تحديد كمقروء] [🗑️ أرشفة]
 
-## 4. THE MESSAGE DETAIL DRAWER (Expanded View)
-- **LOGIC:** Clicking a notification slides out a side panel with full details.
-- **CONTENT:** - "Your request for 'Software Engineering Summary' has been fulfilled."
-    - "Link: [ 📂 Open in Google Drive ]"
-    - "XP Awarded: +25 XP."
-- **ACTION:** [ 🗑️ Archive Message ] | [ ✅ Mark as Read ].
+## 4. ESCROW ALERTS (High Priority)
+- CARD STYLE: border-[#F59E0B]/30 · bg-[#F59E0B]/5 — amber themed
+- CONTENT: "قدّم المستقل الملفات — لديك 48 ساعة للمراجعة"
+- ACTION: [👁️ مراجعة التسليم] → /freelance contract view
 
-## 5. AUTOMATED "ESCROW" ALERTS
-- **VISUAL:** High-alert Red/Yellow cards for Freelance contracts.
-- **CONTENT:** "The Freelancer has submitted files for 'Project X'. You have 48 hours to review or the Escrow will auto-release."
-- **ACTION:** [ 👁️ Review Delivery ] -> Redirects to `serviceContracts.desc`.
+## 5. SETTINGS
+- Push notifications toggle
+- WhatsApp alerts toggle
+- Email summary frequency
 
-## 6. NOTIFICATION SETTINGS (The Gear Icon)
-- **TOGGLES:**
-    - [ 👁️ Browser Push Notifications ] -> ON/OFF.
-    - [ 📱 WhatsApp Alerts ] -> ON/OFF (For urgent order status).
-    - [ 📧 Email Summary ] -> Weekly/Daily/Off.
-
-## 7. STICKY ACTION HUD
-- **CLEANUP:** [ 🧹 Mark All as Read ] | [ 🗄️ View Archived ].
-- **QUICK SEARCH:** "Find a message by ID or keyword."
+## 6. ACTION BAR
+- [🧹 تحديد الكل كمقروء] [🗄️ عرض الأرشيف]
+- Quick search input by keyword or message ID

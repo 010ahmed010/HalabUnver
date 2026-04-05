@@ -1,42 +1,101 @@
 # FILE: HomePage.desc
-# ROLE: Master Layout & Logic for HalabUnver Hub (Unified Ecosystem)
+# ROLE: Master Layout & Landing Experience for HalabUnver Ecosystem
+# THEME: Dark-only — #070C18 bg · #6366F1 accent · #8B5CF6 accent2
+# STYLE: Glassmorphism cards · Gradient text · Dot-pattern bg · Fade-up animations
 
-## 1. VISUAL IDENTITY & SCIENTIFIC THEME
-- BRANDING: HalabUnver (Aleppo University Ecosystem).
-- THEME: Seamless Light/Dark toggle (Tailwind v4 `dark:` prefix).
-- DESIGN: Rigid 90-degree grid, white-outline boxes, high-contrast.
-- VIBE: "Scientific/Academic Dashboard" (Technical chips, Monospace data).
-- TYPOGRAPHY: Modern Arabic (RTL) + Professional Sans-Serif English.
+## DESIGN SYSTEM (Current)
+- BACKGROUND: #070C18 (deep navy-black) — dark only, no light/dark toggle
+- SURFACE: #0F1828 cards with 1px #1E2D45 borders and rounded-2xl/3xl
+- ACCENT: #6366F1 (indigo) + #8B5CF6 (purple) gradient
+- TYPOGRAPHY: IBM Plex Sans Arabic — RTL by default via html dir="rtl"
+- ANIMATIONS: animate-fade-up, animate-blink-soft, gradient glow on scroll
+- UTILITY CLASSES: gradient-text, gradient-bg, glass, dot-bg, section-label (Tailwind @utility)
 
-## 2. NAVIGATION & HEADER (The Hub)
-- STICKY NAV: Constant visibility.
-- HEADER_ACTION: High-contrast **[ 📢 الأخبار ]** (News) button.
-  - **DYNAMICS:** Admin-controlled state. If `isExamSeason === true` -> Color: **RED** (Pulse), Action: Redirect to `/exam-hub`.
-  - **DEFAULT:** Color: Brand Accent, Action: Open News/Scroll to News Section.
-- UNIVERSAL SEARCH (HUD INTERFACE):
-  - TRIGGER: Clicking search input expands a "Floating HUD Overlay."
-  - BEHAVIOR: Dims/blurs the background Home Page content.
-  - UI: Floating results dropdown with "Category Icons" (Book, Gear, Job).
-  - SCOPE: Queries /api/v1/search/* (Aggregates Store, Library, Talent).
-  - OVERFLOW: A "See All Results" button links to the [Search Archive] sub-page.
-- ATTRACTION LINKS: Academy, Library, Store, Talent, GPA Tracker.
+## 1. HEADER (Sticky · Full-Width · Always Visible)
+- BG: bg-[#070C18]/70 at top → bg-[#070C18]/95 + backdrop-blur-xl on scroll
+- BORDER-BOTTOM: border-[#1E2D45]/40 at top → border-[#1E2D45] on scroll
+- HEIGHT: 72px fixed
+- LOGO: "ح" icon (gradient-bg rounded-xl) + "حلب يونيفر" text (gradient-text on "يونيفر")
+- NAV LINKS (desktop): الأكاديمية · المكتبة · المستقلون · المتجر · لوحة التحكم
+  - Each link has an emoji icon prefix
+  - Active state: bg-[#6366F1]/15 + border border-[#6366F1]/25 + gradient underline dot
+  - Hover: text-[#F1F5F9] + bg-white/5
+- RIGHT ACTIONS:
+  - Search icon button → opens full-screen search modal
+  - الأخبار badge: bg-[#F43F5E]/10 · rose text · blinking dot · links to /exam-hub
+  - دخول button: ghost style with login icon
+  - انضم مجاناً: gradient-bg CTA button
+- ACCOUNT-AWARE STATE (post-auth):
+  - Guest: shows دخول + انضم مجاناً
+  - Student: shows user avatar + name + dropdown (dashboard / logout)
+  - Business: shows user avatar + "لوحة الأعمال" link + dropdown
+  - Admin: shows user avatar + "لوحة الإدارة" link with special styling
+- SEARCH MODAL: full-screen overlay bg-[#070C18]/92 + backdrop-blur-md
+  - Input: bg-[#0F1828] with focus:border-[#6366F1]
+  - Quick tag pills: المكتبة · الأكاديمية · المستقلون · المتجر
 
-## 3. DYNAMIC CONTENT SECTIONS (Admin Controlled)
-- SECTION [HERO]: Brand Identity ("Challenge Every Day").
-- SECTION [ECOSYSTEM_ANALYTICS]: High-tech "Status Board" with real-time counters.
-- SECTION [OFFERS]: Universal space for Courses, Certs, or Physical Gear.
-  - STYLE: Multi-style sections (Banners, Cards, Highlights).
-  - MEDIA: **STRICTLY URL-BASED IMAGES.**
-- SECTION [NEWS]: Journalistic/Academic feed with Monospace ISO Dates.
-- SECTION [PILLARS]: 4 high-impact cards with "Live Stats."
+## 2. HERO SECTION
+- BG: dot-bg pattern with 3 radial gradient glows (indigo · purple · teal)
+- HEIGHT: min-h-[92vh] flex items-center justify-center
+- BADGE: "المنصة الأكاديمية الأولى في حلب · إصدار 2026" — blinking green dot
+- H1: "منصتك الأكاديمية" + gradient-text line "تعلّم · اكسب · ابنِ مستقبلك"
+  - Font: font-black, text-7xl max, leading-[1.15]
+- SUBTITLE: muted text, max-w-580px centered, 2 lines + accent sub-line
+- CTAs: gradient-bg "ابدأ مجاناً" + ghost border "اعرف أكثر عن المنصة"
+- TRUST BADGES: ✓ تسجيل مجاني · ✓ محتوى أكاديمي حقيقي · ✓ دفع آمن عبر ShamCash
+- SCROLL INDICATOR: vertical gradient line + "SCROLL" text at bottom
 
-## 4. FOOTER & UI UTILITIES
-- SOCIAL & CONTACT: Full icon set + Support Email + Academic links.
-- DEVELOPER SIGNATURE: [ Ahmed Al-Jassem ] (AMJ) High-contrast Button.
-- UTILITY: "Back to Top" 90-degree square button (Binary/Coordinate icon).
-- SYSTEM BAR: Micro-footer with `[ SYSTEM: STABLE ]` and `[ VERSION: 2026.1 ]`.
+## 3. STATS SECTION
+- BG: bg-[#0F1828]/50 + border-y border-[#1E2D45]
+- CENTERED HEADER: section-label "بالأرقام" + h2 + subtitle paragraph
+- GRID: grid-cols-2 sm:grid-cols-3 md:grid-cols-5 with AnimatedCounter
+- STAT CARDS: bg-[#0F1828] · rounded-2xl · emoji icon · colored value · muted label
+- STATS: طالب مسجّل · مصدر في المكتبة · دورة أكاديمية · مستقل نشط · منتج في المتجر
 
-## 5. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
-- **MODULARITY: Every repeatable UI element (OfferCard, NewsCard, PillarCard, SearchDropdown, AMJButton) must be a standalone component in `/src/components/`.**
-- **SECTIONS: The major layout blocks (Hero, Analytics, OffersSection) will also be components that "map" to the Home Page layout.**
-- ASSETS: SVGs for icons; optimized RTL font loading.
+## 4. PILLARS SECTION (4 Platform Cards)
+- CENTERED HEADER: section-label "منصات المنظومة" + h2 + description
+- GRID: grid-cols-1 sm:grid-cols-2 with gap-6/8
+- CARD STYLE: rounded-3xl · colored bg tint · border-[#1E2D45]
+  - Hover: border-[#6366F1]/30 + shadow-2xl
+  - Each card: emoji icon box (accent bg) · title · description · stats row with accent dot
+- 4 PILLARS: أكاديمية حلب (#6366F1) · مكتبة حلب (#14B8A6) · سوق المستقلين (#F59E0B) · متجر حلب (#F43F5E)
+
+## 5. FEATURED OFFERS SECTION
+- BG: bg-[#0F1828]/60 + border-y
+- CENTERED HEADER: section-label "عروض المنصة" + h2 + description
+- GRID: grid-cols-1 md:grid-cols-3 — large course card (col-span-2) + 2 mini cards
+- LARGE CARD: from-[#6366F1]/12 to-[#8B5CF6]/6 gradient · course badge · CTA
+- MINI CARDS: store offer card + freelance CTA card
+
+## 6. NEWS SECTION
+- CENTERED HEADER: section-label "آخر الأخبار" + h2 + description
+- LIST: space-y-4 news rows — date · title · colored tag pill
+- FOOTER LINK: centered "عرض جميع الأخبار ←"
+
+## 7. XP GAMIFICATION SECTION
+- BG: bg-[#0F1828]/60 + border-y
+- CENTERED HEADER: section-label "نظام نقاط الخبرة" + h2 + formula
+- TWO-COLUMN GRID: XP actions list (left) + Profile preview card (right)
+- XP LIST: bg-[#0F1828] rows with colored XP badge per action
+- PROFILE CARD: avatar + name + level bar + 2x2 stats grid
+
+## 8. CTA SECTION (Hero-Grade)
+- FULL-BLEED: relative overflow-hidden with layered bg gradients + dot-bg + glows
+- BADGE: blinking green dot + "التسجيل مجاني — انضم الآن"
+- H2: text-7xl font-black "مستعد للانضمام؟"
+- SUBTITLE: max-w-2xl centered
+- CTAs: large gradient "ابدأ مجاناً — انضم الآن" + ghost "تواصل معنا"
+- DIVIDER: gradient lines + "إحصائيات المنصة" label
+- MINI STATS: 3-col grid of colored stats cards
+
+## 9. FOOTER
+- BG: bg-[#070C18] + border-t border-[#1E2D45]
+- GRID: 4 columns — Brand · التطبيقات · المنصة · تواصل معنا
+- BRAND COL: logo + tagline + "Challenge Every Day." italic gradient text
+- BOTTOM BAR: green system status dot + copyright
+
+## ACCOUNT TYPE IMPACT ON HOME PAGE
+- Guest: sees full page, CTAs → /auth/register
+- Student (logged in): CTAs → /dashboard
+- Business (logged in): CTAs → /business
+- Admin (logged in): special admin badge in header nav

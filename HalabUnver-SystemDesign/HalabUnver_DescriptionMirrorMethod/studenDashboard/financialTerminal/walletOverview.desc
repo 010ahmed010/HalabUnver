@@ -1,44 +1,43 @@
-# FILE: .../studentDashboard/financialTerminal/walletOverview.desc
+# FILE: studentDashboard/financialTerminal/walletOverview.desc
 # ROLE: Personal Finance & Subscription Command Center
-# VIBE: Modern Banking / High-Contrast / Data-Visualized / Monospace
+# ROUTE: /dashboard/wallet
+# ACCOUNT: Student only
+# THEME: Dark · monospace data · colored status pills
 
-## 1. THE "CASH-FLOW" SUMMARY (Top Fold)
-- **VISUAL:** Three large, 90-degree bento cards showing total movement.
-- **CARD A (Total Spent):** Cumulative SYP spent on Store & Academy.
-- **CARD B (Freelance Earnings):** (Only if Freelancer Mode is ON) Total SYP earned from completed contracts.
-- **CARD C (Pending Verification):** Total SYP currently tied up in ShamCash receipts waiting for Admin approval.
-- **WONDER FEATURE:** A "Savings Badge" showing: "You've saved **45,000 SYP** through Student Discounts."
+## 1. CASH-FLOW SUMMARY (Top Row — 3 cards)
+- CARD STYLE: bg-[#0F1828] · rounded-2xl · border · p-7 · text-center
+- CARD A: Total spent (SYP) on Store + Academy — rose color
+- CARD B: Freelance earnings (shown only if isFreelancer === true) — emerald color
+- CARD C: Pending verification amount — amber color
+- SAVINGS BADGE: "وفّرت 45,000 SYP عبر الخصومات الطلابية" — below cards
 
-## 2. THE FREELANCE SUBSCRIPTION TRACKER
-- **STATUS BOX:** A high-alert border box for the **$5 Monthly Access**.
-- **DATA:** - **Current Plan:** [ 🟢 Active ] or [ 🔴 Expired ].
-    - **Days Remaining:** "14 Days until renewal."
-    - **Next Payment Date:** April 17, 2026.
-- **ACTION:** [ 💳 Renew Now ] — Triggers the ShamCash payment modal for another 30 days of platform access.
+## 2. FREELANCE SUBSCRIPTION TRACKER (Conditional)
+- Shown only when isFreelancer === true
+- STATUS BOX: border border-[#1E2D45] · rounded-2xl
+  - 🟢 Active: border-[#10B981]/30 · text-[#10B981]
+  - 🔴 Expired: border-[#F43F5E]/30 · text-[#F43F5E]
+- DATA: plan status · days remaining · next payment date
+- ACTION: [💳 تجديد الاشتراك] → opens ShamCash payment modal
 
-## 3. THE SHAMCASH RECEIPT LOG (Transaction History)
-- **FORMAT:** A monospace, high-density table of every payment made.
-- **COLUMNS:**
-    1. **DATE:** 2026-04-03.
-    2. **REF ID:** #TX-9901 (The ShamCash ID provided by the user).
-    3. **PURPOSE:** [ 🛒 Store ] | [ 💼 Sub ] | [ 🎓 Academy ].
-    4. **STATUS:** - [ 🕒 Checking ] - Admin is verifying.
-        - [ ✅ Success ] - Transaction confirmed.
-        - [ ❌ Rejected ] - ID mismatch/Fraud.
-    5. **AMOUNT:** 150,000 SYP.
+## 3. TRANSACTION HISTORY TABLE
+- STYLE: bg-[#0F1828] · rounded-2xl · border · overflow-hidden
+- COLUMNS: التاريخ · رقم المعاملة · الغرض · الحالة · المبلغ
+- STATUS PILLS:
+  - 🕒 قيد المراجعة — amber pill
+  - ✅ مكتمل — emerald pill
+  - ❌ مرفوض — rose pill
+- PURPOSES: 🛒 متجر · 💼 اشتراك · 🎓 أكاديمية
 
-## 4. THE VIRTUAL WALLET (Platform Credit)
-- **LOGIC:** If a student cancels an order or wins a dispute, the money is returned here as "Credit" instead of a cash refund.
-- **DISPLAY:** [ 💰 Available Balance: 25,000 SYP ].
-- **USE CASE:** This balance can be applied as a discount on the next purchase in the `halabStore`.
+## 4. VIRTUAL WALLET (Platform Credit)
+- DISPLAY: [💰 الرصيد المتاح: 25,000 SYP]
+- CARD STYLE: bg-gradient-to-br from-[#6366F1]/12 to-[#8B5CF6]/6 · rounded-2xl · border-[#6366F1]/25
+- USE CASE: applied as discount on next purchase in Halab Store
+- Logic: auto-credited when an order is cancelled or a dispute is won
 
-## 5. PAYMENT INSTRUCTIONS & QR TERMINAL
-- **STATIC CONTENT:** A 1px bordered box containing the **Official ShamCash QR Code**.
-- **STEPS:** 1. Scan the QR.
-    2. Pay the amount.
-    3. **CRITICAL:** Copy the Transaction ID and paste it into the "Report Payment" form.
-- **MANTRA:** "Transparent payments for a resilient ecosystem. Challenge Every Day."
+## 5. PAYMENT INSTRUCTIONS
+- ShamCash QR code display in a bordered box
+- Step-by-step: Scan → Pay → Copy TX ID → Submit
+- SUBMIT RECEIPT BUTTON: gradient-bg · "📤 إرسال إيصال الدفع"
 
-## 6. STICKY ACTION HUD
-- **REPORT PAYMENT:** [ 📤 Submit New Receipt ] — The main button for all financial interactions.
-- **EXPORT LOGS:** [ 📄 Download Financial Statement (PDF) ] — A clean list of all successful payments for the student's records.
+## 6. EXPORT
+- [📄 تحميل كشف حساب PDF] — ghost button

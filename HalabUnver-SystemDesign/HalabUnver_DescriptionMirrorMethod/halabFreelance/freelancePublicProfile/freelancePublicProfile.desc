@@ -1,48 +1,43 @@
-# FILE: freelancerPublicProfile.desc
-# ROLE: Talent Showcase & Professional Identity
-# VIBE: Modern Portfolio / Technical Data Sheet / High-Trust
+# FILE: halabFreelance/freelancePublicProfile/freelancePublicProfile.desc
+# ROLE: Talent Showcase & Professional Identity Card
+# ROUTE: /freelance/profile/:id
+# ACCOUNT: All types can view — only freelancers have this page
+# THEME: Dark · modern portfolio · trust signals
 
-## 1. THE IDENTITY HEADER (Top 30%)
-- **AVATAR & BADGE:** High-res profile image with a **[ ✅ موثق - Verified ]** glowing badge.
-- **NAME & TITLE:** Ahmed Al-Jassem | **Full-Stack Developer (MERN)**.
-- **MOTO/BIO:** Short personal punchline (e.g., "Building the future of Syrian Web Apps").
-- **STATISTICS BAR:** - [ ⭐ 4.9 Rating ] | [ 💼 24 Projects ] | [ ⚡ 2h Response Time ]
-    - [ 🎓 Level: Pro ] (Calculated by Admin/Rating).
+## 1. IDENTITY HEADER (Top Fold)
+- AVATAR: large rounded-full · gradient-bg placeholder or user photo
+  - GLOW: shadow-[#6366F1]/30 if isVerified === true (student) or business account (auto-verified)
+- FREELANCER TYPE BADGE:
+  - "مستقل طلابي" — indigo bg/border · shown for Student accounts (isFreelancer: true)
+  - "مستقل خارجي" — amber bg/border · shown for businessType === 'freelancer'
+- VERIFIED BADGE: [✅ موثّق] if student is verified by admin
+- NAME: text-2xl font-bold text-[#F1F5F9]
+- TITLE: "مطوّر Full-Stack (MERN)"
+- BIO: short punchline in italics · muted
+- STATS BAR: ⭐ Rating · 💼 Projects · ⚡ Response Time · 🎓 Level (for students)
 
-## 2. THE SKILLS & TOOLS BENTO (Monospace)
-- **TECHNICAL DNA:** A grid of small, high-contrast tags.
-- **DISPLAY:** [ React.js ] [ Node.js ] [ MongoDB ] [ Tailwind CSS ] [ Linux Admin ].
-- **CERTIFICATIONS:** Links to verified course certificates or University ID verification.
+## 2. SKILLS & TOOLS BENTO
+- TECH TAGS: flex-wrap · rounded-full pills · bg-[#6366F1]/10 · border-[#6366F1]/20
+  - [ React.js ] [ Node.js ] [ MongoDB ] [ Tailwind ] [ Linux ]
+- CERTS: links to completed Academy course certificates
 
-## 3. THE WORK PORTFOLIO (90-Degree Grid)
-- **LAYOUT:** 3-column masonry grid of previous projects.
-- **INTERACTION:** Each item opens a lightbox with:
-    - **IMAGE:** Screenshot of the work.
-    - **DESCRIPTION:** Brief text explaining the challenge and the solution.
-    - **CLIENT REVIEW:** A small quote from the person who bought the service.
+## 3. WORK PORTFOLIO
+- GRID: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 · rounded-2xl cards
+- Each item: screenshot thumbnail → click → lightbox
+  - LIGHTBOX: image + challenge description + client review quote
 
-## 4. THE SERVICE CATALOG (What I Offer)
-- **LISTING:** Small cards showing specific "Fixed Price" services.
-    - [ 🌐 Build a Single Page App ] — **Price: 500,000 SYP**
-    - [ 🛠️ Bug Fixing / Consultation ] — **Price: 50,000 SYP/hr**
-- **ACTION:** [ 💳 اطلب الخدمة ] (Order Service) -> Redirects to Project Workspace.
+## 4. SERVICE CATALOG (What I Offer)
+- Small service cards: title + fixed price + delivery time
+- ACTION: [💳 اطلب الخدمة] → contract/project request form
 
-## 5. THE "HIRE ME" TERMINAL (Sticky Sidebar)
-- **STATUS:** [ 🟢 Available for Hire ] | [ 🟡 Busy with Project ].
-- **PRIMARY CTA:** **[ 💬 تواصل للعمل - Hire Me ]**
-    - **LOGIC:** This opens a direct chat or a project proposal form.
-- **ESCROW NOTE:** "Payments are secured via HalabUnver Brokerage System."
+## 5. HIRE ME TERMINAL (Sticky Sidebar)
+- STATUS: [🟢 متاح للعمل] | [🟡 مشغول]
+- PRIMARY CTA: [💬 تواصل للعمل] — opens project proposal form
+- ESCROW NOTE: "المدفوعات محمية عبر نظام الضمان في HalabUnver"
 
-## 6. THE RATINGS & FEEDBACK (Social Proof)
-- **LIST:** Chronological list of reviews from other students/clients.
-- **FORMAT:** [ ⭐⭐⭐⭐⭐ ] + "Exceptional quality, delivered before the deadline." — *User #129*.
+## 6. RATINGS & REVIEWS
+- Chronological list · ⭐⭐⭐⭐⭐ + review text + anonymous user
+- Average rating displayed prominently in identity header
 
----
-
-# NEXT SUB-PAGES IN THE PIPELINE:
-2. **Service Catalog Sub-page** (The deep-dive into specific categories).
-3. **Onboarding/Join Page** (The ShamCash Payment Terminal).
-4. **Top 100 Leaderboard** (The Hall of Fame).
-5. **Project Workspace** (The private file/money exchange).
-
-**Should we proceed to the [ 2: Service Catalog Sub-page ] next?**
+## 7. ADMIN OVERLAY
+- accountType === 'admin': floating [🧊 تجميد] [✅ إلغاء التجميد] buttons

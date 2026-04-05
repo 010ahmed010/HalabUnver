@@ -1,0 +1,39 @@
+# FILE: adminDashboard/adminDashboard.desc
+# ROLE: Platform Supreme Control Center
+# ROUTE: /admin
+# ACCOUNT: Admin only — all other account types get 403 redirect
+# THEME: Dark · high-density data · colored alert pills · monospace values
+
+## DESIGN SYSTEM
+- LAYOUT: full-width sidebar (240px) + main content area
+- SIDEBAR BG: bg-[#0F1828] + border-l border-[#1E2D45]
+- MAIN BG: bg-[#070C18]
+- ACCENT: gradient-bg buttons · rose for danger actions · emerald for confirmations
+- DATA TABLES: bg-[#0F1828] · rounded-2xl · border · monospace for IDs and amounts
+
+## SIDEBAR NAVIGATION
+- Admin Overview (index) → /admin
+- User Account Manager → /admin/users
+- Universal Order Manager → /admin/orders
+- Library Manager → /admin/library
+- Store Inventory → /admin/inventory
+- Revenue Tracker → /admin/revenue
+- Ad Console → /admin/ads
+- System Config → /admin/config
+
+## DASHBOARD INDEX (Overview)
+- STAT CARDS ROW: Total Users · Active Students · Active Business Accounts · Pending Verifications
+- QUICK LINKS to most-used tools
+- RECENT ACTIVITY LOG: "User #9921 verified." · "New business account pending approval." etc.
+- SYSTEM STATUS: green dot "جميع الأنظمة تعمل"
+
+## ACCOUNT TYPE MANAGEMENT
+- Admin dashboard shows ALL THREE account types:
+  - 🎓 Student accounts (with verification status)
+  - 💼 Business accounts (with businessType: vendor/advertiser/freelancer and approval status)
+  - 🔐 Admin accounts (internal only, cannot be created via public registration)
+- USER TABLE COLUMNS: Name · Account Type · Business Type (if applicable) · Status · XP · Actions
+- FILTERS: by accountType · by status · by date
+
+## KEY MANTRA
+- "Integrity is the Foundation. Challenge Every Day."

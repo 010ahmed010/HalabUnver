@@ -1,26 +1,39 @@
+# FILE: adminDashboard/adConsole/adConsole.desc
 # ROLE: Global Ad-Injection & Traffic Controller
-# VIBE: Technical Switchboard / Node Management
-# LOGIC: Conditional Rendering for External & Local Ads
+# ROUTE: /admin/ads
+# ACCOUNT: Admin only — Business (Advertiser) accounts submit ad requests, Admin approves
+# THEME: Dark · technical switchboard · zone map
 
-## 1. SYSTEM TOGGLES (The Master Switches)
-- **ADS_ACTIVE:** [ Boolean: True/False ] - Global kill-switch.
-- **PROVIDER_MODE:** - [ GOOGLE_ADSENSE ]: Activate auto-inject scripts.
-    - [ LOCAL_BANNERS ]: Activate MongoDB-fetched custom ads.
-    - [ HYBRID_STREAM ]: Activate both (Zone-specific).
+## 1. GLOBAL TOGGLES
+- ADS_ACTIVE: boolean toggle — kills all ads site-wide when false
+- PROVIDER_MODE:
+  - LOCAL_BANNERS: MongoDB-fetched custom ads from local businesses
+  - GOOGLE_ADSENSE: auto-inject scripts (future)
+  - HYBRID: both (zone-specific)
 
-## 2. ZONE CONFIGURATION (The UI Slots)
-- **ZONE_HEADER:** Dropdown selector [ Google | Local | Disabled ].
-- **ZONE_SIDEBAR:** Dropdown selector [ Google | Local | Disabled ].
-- **ZONE_IN_FEED:** Dropdown selector [ Google | Local | Disabled ].
+## 2. ZONE CONFIGURATION
+- ZONE_HEADER: Dropdown [Local | Disabled]
+- ZONE_SIDEBAR: Dropdown [Local | Disabled]
+- ZONE_IN_FEED: Dropdown [Local | Disabled]
+- VISUAL: small schematic map of the site showing which zones are "Live" (green) or "Dark" (muted)
 
-## 3. LOCAL AD REPOSITORY (CRUD)
-- **UPLOAD_NODE:** Image Upload (WebP) + Target Link URL.
-- **CLIENT_TAG:** Label for the local business (e.g., "Elite Cafe").
-- **EXPIRY_DATE:** Automatic deactivation date for local contracts.
+## 3. LOCAL AD REPOSITORY (from Business Advertisers)
+- SOURCE: Business accounts with businessType === 'advertiser' submit ad campaigns
+- COLUMNS: Business Name · Ad Image · Target URL · Campaign Period · Status
+- ADMIN ACTIONS: [✅ نشر] [❌ رفض] [📅 تمديد الفترة]
+- CRUD for manually adding platform-owned banners
 
-## 4. PERFORMANCE & OFFLOAD
-- **LAZY_LOAD:** All Ad-Nodes must use Intersection Observer to prevent page-load lag.
-- **CLEAN_DOM:** If a Zone is [Disabled], the container must be `display: none` to keep the UI clean.
+## 4. AD CARD DATA
+- Image: WebP format, displayed as preview thumbnail
+- Client Tag: "Elite Cafe" or "Halab Tech Store"
+- Expiry Date: auto-deactivates on this date
+- Clicks / Impressions counter
 
-## 5. UI PREVIEW
-- **VIRTUAL_LAYOUT:** A small schematic map of the site showing which Zones are "Live" and which are "Dark."
+## 5. PERFORMANCE
+- All ad nodes use Intersection Observer (lazy load)
+- Disabled zones: container hidden — no DOM waste
+
+## 6. CONNECTION TO BUSINESS ADVERTISER DASHBOARD
+- Business (advertiser) submits campaign via /business/ads
+- Appears here in "قيد المراجعة" queue for admin approval
+- Once approved, goes live in selected zone

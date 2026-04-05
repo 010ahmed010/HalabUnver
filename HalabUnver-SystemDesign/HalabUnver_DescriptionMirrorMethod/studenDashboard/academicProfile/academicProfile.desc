@@ -1,45 +1,52 @@
-# FILE: .../studentDashboard/academicProfile/academicProfile.desc
-# ROLE: The Student’s Digital Identity & Growth Hub
-# VIBE: Professional / Clean-Grid / Motivational (Challenge Every Day)
+# FILE: studentDashboard/academicProfile/academicProfile.desc
+# ROLE: Student Digital Identity & Growth Hub
+# ROUTE: /dashboard (index)
+# ACCOUNT: Student only — redirects Business/Admin to their respective dashboards
+# THEME: Dark · #0F1828 surface · #6366F1 accent · gradient XP bar
 
-## 1. THE IDENTITY HEADER (Top Fold)
-- **VISUAL:** A 90-degree aligned rectangular "Hero" block.
-- **AVATAR:** Large square Profile Photo with a 2px purple glow if **[ ✅ Verified ]**.
-- **IDENTITY DATA:**
-    - **Full Name:** Ahmed Al-Jassem (Source: User Account).
-    - **Academic Status:** "4th Year | Faculty of Informatics Engineering".
-    - **The Badge:** A prominent, glowing "Verified Student" badge linked to the Admin's `userAccountManager`.
-- **THE MOTTO:** A persistent subtitle: *"Challenge Every Day"* in a light-gray italic font.
+## DESIGN SYSTEM (matches current app)
+- LAYOUT: max-w-7xl mx-auto · px-6 sm:px-10 lg:px-16
+- CARDS: bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl/3xl
+- ACCENT: gradient-text on values · gradient-bg on primary buttons
 
-## 2. THE GROWTH & XP ENGINE (Gamification)
-- **VISUAL:** A sleek, horizontal "Experience Bar" (0-100%).
-- **LOGIC:** - **Current Level:** e.g., "Level 14 - Academic Researcher".
-    - **XP Points:** "1,250 / 2,000 XP to next level."
-- **WONDER FEATURE:** A small "History of Growth" tooltip showing: 
-    - `+50 XP` for downloading a Solved Exam.
-    - `+100 XP` for finishing an Academy Course.
+## 1. IDENTITY HEADER (Top Fold)
+- AVATAR: large rounded-full gradient-bg placeholder with emoji or photo
+  - GLOW: shadow-[#6366F1]/20 — increases to /40 if isVerified === true
+- NAME: text-xl font-bold text-[#F1F5F9]
+- STATUS: "السنة الرابعة · هندسة معلوماتية" — text-[#94A3B8]
+- VERIFIED BADGE: "✅ طالب موثّق" — bg-[#6366F1]/15 · border-[#6366F1]/25 · text-[#818CF8]
+  - Shown only when isVerified === true
+- PENDING BADGE: "🕒 في انتظار التحقق" — amber style — shown when isVerified === false
+- MOTTO: "Challenge Every Day." — italic gradient-text
 
-## 3. THE "ACADEMIC DNA" BENTO GRID
-- **BLOCK 1 (Department):** "Informatics Engineering - Software Dev Track."
-- **BLOCK 2 (Skills):** A tag-cloud of technical skills (e.g., MERN, Pentesting, Linux).
-- **BLOCK 3 (Achievements):** Small icons for milestones like "Top 100 Leaderboard Member" or "Resource Contributor."
-- **BLOCK 4 (Quick Stats):**
-    - `Library Downloads: 42`
-    - `Active Services: 3`
-    - `Store Orders: 1`
+## 2. XP ENGINE (Gamification Bar)
+- XP BAR: h-3 bg-[#162032] rounded-full → filled with gradient-bg
+- LABELS: "Level 4 — Academic Researcher" + "1,600 / 2,500 XP" (muted)
+- PROGRESS: calculated as (currentXP / nextLevelXP) * 100%
+- LEVEL FORMULA: Level = √(XP ÷ 100)
 
-## 4. THE PUBLIC/PRIVATE TOGGLE (Visibility)
-- **SWITCH:** [ 👁️ Public Profile ] | [ 🔒 Private Mode ].
-- **LOGIC:** If "Public," this profile becomes the `freelancePublicProfile.desc` view for others. If "Private," only the student and Admin can see the full data.
+## 3. QUICK STATS (2×2 Grid)
+- CARD STYLE: bg-[#162032] · rounded-2xl · border border-[#1E2D45] · text-center
+- STATS: تحميلات المكتبة · دورات مكتملة · طلبات المتجر · خدمات نشطة
+- VALUE: text-2xl font-black gradient-text
 
-## 5. NAVIGATION TILES (Inner Dashboard)
-- **FORMAT:** Four high-contrast 1px border boxes acting as shortcuts:
-    1. **[ 📚 My Learning ]** -> Links to `myBookmarks.desc`.
-    2. **[ 🛒 My Purchases ]** -> Links to `orderHistory.desc`.
-    3. **[ 💳 My Wallet ]** -> Links to `walletOverview.desc`.
-    4. **[ ⚙️ Settings ]** -> Links to `profileDetails.desc` for editing.
+## 4. SKILLS & TAGS
+- A flex-wrap list of skill tags: rounded-full · bg-[#6366F1]/10 · border-[#6366F1]/20 · text-[#818CF8]
+- Editable from Profile Settings
 
-## 6. THE STICKY ACTION BAR
-- **PRIMARY ACTION:** [ ✏️ Edit Profile Details ].
-- **SECONDARY ACTION:** [ 📤 Share Profile Link ] (Generates a clean URL for portfolios).
-- **PLATFORM SIGNATURE:** Small "HalabUnver System Design v1.0" in the bottom corner.
+## 5. FREELANCER MODE TOGGLE (Conditional)
+- Shown only if: accountType === 'student'
+- isFreelancer === false: shows "🚀 انضم إلى سوق المستقلين" CTA → /freelance/onboarding
+- isFreelancer === true: shows "💼 مستقل نشط" badge + quick link to service management
+
+## 6. DASHBOARD NAV TILES (Inner Sidebar / Tabs)
+- 5 navigation items (sidebar on desktop, tabs on mobile):
+  1. الملف الأكاديمي → /dashboard (index)
+  2. التعلم والدورات → /dashboard/learning
+  3. المحفظة المالية → /dashboard/wallet
+  4. سجل الطلبات → /dashboard/orders
+  5. صندوق الوارد → /dashboard/inbox
+
+## 7. ACTIONS
+- PRIMARY: [✏️ تعديل الملف الشخصي] → /dashboard/settings (future)
+- SECONDARY: [📤 مشاركة الملف] → copies public profile URL

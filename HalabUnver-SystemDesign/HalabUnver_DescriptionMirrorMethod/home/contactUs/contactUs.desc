@@ -1,41 +1,39 @@
-# FILE: ContactUs.desc
+# FILE: home/contactUs/contactUs.desc
 # ROLE: System Inquiries & Platform Value Showcase
-# LANGUAGE: Arabic (Primary) / Professional Terminal Tone
-# VIBE: High-End IDE / Scientific Dashboard / Tailwind-Ready
+# ROUTE: /contact
+# ACCOUNT: All — no auth required
+# THEME: Dark · form terminal · indigo/teal focus states
 
-## 1. SYSTEM CAPABILITIES SHOWCASE (The "What We Provide")
-- **UI_LOGIC:** A 4-column `grid` with `border-white/10` card containers.
-- **CONTENT_STRINGS (Arabic):**
-    - [ 📚 المكتبة الرقمية ]: أرشيف شامل للمصادر الأكاديمية والملفات التخصصية، مؤرشفة بنظام ذكي يسهل عملية البحث.
-    - [ 🛒 المتجر الذكي ]: توفير المعدات والأدوات الهندسية بنظام "صفر مخزون" لضمان الجودة وأنسب سعر للطالب.
-    - [ 💼 منصة المبدعين ]: جسرك إلى سوق العمل الحر؛ نعرض مهاراتك ونربطك بمشاريع حقيقية تمنحك الخبرة والعائد.
-    - [ 🎓 الأكاديمية ]: مسارات تعليمية مكثفة وشهادات تدريبية مصممة لسد الفجوة بين الجامعة ومتطلبات السوق التقني.
+## 1. PAGE HEADER
+- section-label "تواصل معنا" + h1 gradient-text + subtitle
+- dot-bg + radial glow behind header
 
-## 2. THE INQUIRY TERMINAL (The Form)
-- **THEME:** `bg-transparent` inputs with `border-white/20`. 
-- **FOCUS_STATE:** `ring-1 ring-cyan-500` for that "Active Terminal" glow.
-- **LABELS & PLACEHOLDERS (Arabic):**
-    - [ الاسم الكامل ]: أدخل اسمك الثلاثي لتوثيق السجل...
-    - [ بريد التواصل ]: user@example.com
-    - [ نوع الاستفسار ]: قائمة منسدلة (دعم تقني / استفسار تجاري / أكاديمية).
-    - [ تفاصيل الطلب ]: اشرح حاجتك بدقة؛ سيقوم النظام بتحويلها للقسم المختص فوراً...
-- **SUBMIT_BUTTON:** `bg-white text-black font-bold py-3 hover:bg-cyan-400` | إرسال البيانات | SEND_PROTOCOL
+## 2. VALUE SHOWCASE GRID (What We Provide)
+- GRID: grid-cols-2 lg:grid-cols-4 · gap-6
+- CARDS: bg-[#0F1828] · border border-[#1E2D45] · rounded-2xl
+- 4 PILLARS:
+  - 📚 المكتبة الرقمية: أرشيف شامل للمصادر الأكاديمية
+  - 🛒 المتجر: معدات وأدوات بأسعار طلابية
+  - 💼 منصة المستقلين: جسرك لسوق العمل الحر
+  - 🎓 الأكاديمية: مسارات تعليمية ومهارات تقنية
 
-## 3. THE GLOBAL COORDINATES (Google Maps Integration)
-- **TYPE:** Embedded iFrame in a `w-full aspect-video` container.
-- **TAILWIND_VIBE:** `grayscale invert opacity-70 contrast-125 hover:opacity-100 transition-all`.
-- **BORDER:** `border-l-2 border-cyan-500` (Technical accent).
+## 3. CONTACT FORM (Inquiry Terminal)
+- CARD: max-w-2xl mx-auto · bg-[#0F1828] · rounded-2xl · border · p-10
+- INPUTS:
+  - الاسم الكامل: bg-[#162032] · border-[#1E2D45] · focus:border-[#6366F1]
+  - البريد الإلكتروني: same style
+  - نوع الاستفسار: dropdown (دعم تقني · استفسار تجاري · الأكاديمية · آخر)
+  - تفاصيل الطلب: textarea (4 rows)
+- SUBMIT: gradient-bg button "إرسال الاستفسار"
+- SUCCESS: toast or inline success card "تم استلام طلبك — سنتواصل معك قريباً"
 
-## 4. INTERACTIVE MODULES & STATUS
-- **MODULE [A]: DIRECT CHANNELS:** Flex layout `flex flex-col gap-2`.
-- **MODULE [B]: SYSTEM STATUS:** `text-xs font-mono text-green-400 animate-pulse` [ SYSTEM STATUS: OPERATIONAL / 100% ].
-- **FEEDBACK_LOGS:** `text-cyan-400 font-mono text-sm` [ SYSTEM: تم استلام البيانات بنجاح - كود التتبع #HV-2026 ].
+## 4. DIRECT CHANNELS
+- WhatsApp link (admin-configured)
+- Telegram link
+- Email address
+- System status: green dot "الأنظمة تعمل بكفاءة 100%"
 
-## 5. MODERN ARABIC TYPOGRAPHY & UI
-- **FONT_FAMILY:** `font-['IBM_Plex_Sans_Arabic']`.
-- **DIRECTION:** `dir="rtl"` (Strict Right-to-Left alignment).
-- **TEXT_FLOW:** `leading-relaxed` (1.8 line-height) for clean academic reading.
-
-## 6. ARCHITECTURE NOTE (ATOMIC COMPONENTS)
-- **COMPONENTS:** ValueShowcaseGrid.jsx, ContactTerminal.jsx, MapProvider.jsx, StatusChip.jsx.
-- **SYNC:** Form submission triggers a "Terminal Success" notification overlay.
+## 5. MAP (Google Maps Embed)
+- w-full aspect-video · rounded-2xl · overflow-hidden
+- iframe with dark-style filter (grayscale + invert + opacity-70)
+- Border: border-[#1E2D45]

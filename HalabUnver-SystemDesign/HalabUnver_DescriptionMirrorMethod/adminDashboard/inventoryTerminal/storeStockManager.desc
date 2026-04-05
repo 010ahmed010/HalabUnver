@@ -1,34 +1,41 @@
-# FILE: .../adminDashboard/inventoryTerminal/storeStockManager.desc
-# ROLE: The Physical-to-Digital Stock Synchronization Engine
-# VIBE: Industrial / High-Density / Spreadsheet-Style / Precise
+# FILE: adminDashboard/inventoryTerminal/storeStockManager.desc
+# ROLE: Physical-to-Digital Stock Synchronization Engine
+# ROUTE: /admin/inventory
+# ACCOUNT: Admin only (Vendor business accounts submit items for approval here too)
+# THEME: Dark · spreadsheet-style · low-stock alerts
 
-## 1. THE LIVE INVENTORY MATRIX (MERN Sync)
-- **VISUAL:** A compact table with 1px borders and "Low Stock" red highlights.
-- **COLUMNS:**
-    - **Product ID:** e.g., `HS-LTP-01`.
-    - **Name:** "ThinkPad T480 - Refurbished".
-    - **Stock Count:** [ 5 ] (Integer field linked to MongoDB `stock` key).
-    - **Price:** 4,500,000 SYP.
-    - **Discount Label:** [ 🎓 Student ] (Applies the 15% reduction logic).
-- **LOGIC:** `if (StockCount === 0) { setStatus("Out of Stock") }`.
+## 1. LIVE INVENTORY MATRIX
+- STYLE: compact table · border-[#1E2D45] · alternating row bg
+- COLUMNS:
+  - Product ID: e.g., "HS-LTP-01" — monospace
+  - Name: "ThinkPad T480 — مجدد"
+  - Stock Count: integer · rose text when ≤ 2 (low stock alert)
+  - Price: SYP
+  - Discount Tag: 🎓 طالب (shows applied student discount %)
+  - Source: 🏠 منصة / 🤝 وسيط (vendor name if business account)
+- LOGIC: stock === 0 → status becomes "نفد المخزون" automatically
 
-## 2. THE "STOREFRONT" TOGGLE (Display Logic)
-- **ACTION:** [ 👁️ Visible in Store ] | [ 🔒 Hidden from Store ].
-- **PURPOSE:** Allows the Admin to prepare a new product (like a bundle of engineering pens) before "Publishing" it to the `halabStore.desc`.
+## 2. VENDOR PRODUCT APPROVAL QUEUE
+- Separate section: products submitted by businessType === 'vendor'
+- STATUS: 🕒 قيد المراجعة · ✅ منشور · ❌ مرفوض
+- ACTIONS: [✅ قبول ونشر] [❌ رفض مع سبب]
 
-## 3. CATEGORY & TAG MANAGEMENT
-- **GROUPS:** [ 💻 Electronics ] | [ 📐 Engineering Tools ] | [ 📚 Stationery ].
-- **SYNC:** These categories must exactly match the "Filter Sidebar" in the student's Store view.
+## 3. STOREFRONT VISIBILITY TOGGLE
+- Per product: [👁️ ظاهر في المتجر] | [🔒 مخفي]
+- Allows preparing new products before publishing
 
-## 4. THE "RESERVED" COUNTER (Order Handshake)
-- **DATA POINT:** `Reserved Items: 2`.
-- **LOGIC:** When a student uploads a receipt in `orderHistory`, the stock is "Reserved" but not "Sold."
-- **AUTO-RELEASE:** If the Admin rejects the receipt in `revenueTracker`, the item is automatically added back to the `Stock Count`.
+## 4. CATEGORY & TAG MANAGEMENT
+- Groups: 💻 إلكترونيات · 📐 أدوات هندسية · 📚 قرطاسية
+- Must match filter sidebar in /store exactly
 
-## 5. BULK PRICING UPDATES
-- **ACTION:** [ 💹 Global Price Adjustment ] — Allows the Admin to increase/decrease all prices by a percentage (to handle currency fluctuations in SYP).
+## 5. RESERVED COUNTER
+- Shows how many units are "reserved" (receipt uploaded but not confirmed)
+- Auto-releases back to stock if admin rejects the receipt in revenue tracker
 
-## 6. STICKY ACTION HUD
-- **ADD NEW:** [ ➕ Add New Product ] — Opens a form with image upload (to Cloudinary/Imgur).
-- **REPORT:** [ 📄 Export Stock Report ] — Generates a PDF of current assets.
-- **MANTRA:** "Accuracy is Professionalism. Challenge Every Day."
+## 6. BULK PRICING
+- [💹 تعديل الأسعار العامة] — adjust all prices by % (handles SYP fluctuations)
+
+## 7. ACTIONS
+- [➕ إضافة منتج جديد] — opens form with image upload field (Cloudinary/Imgur)
+- [📄 تصدير تقرير المخزون (PDF)]
+- MANTRA: "الدقة هي الاحترافية — Challenge Every Day."

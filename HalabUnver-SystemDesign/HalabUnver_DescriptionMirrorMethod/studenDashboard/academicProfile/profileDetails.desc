@@ -1,42 +1,47 @@
-# FILE: .../studentDashboard/academicProfile/profileDetails.desc
-# ROLE: The Data-Entry & Personalization Engine
-# VIBE: Technical / Precise / Form-Focused / Interactive
+# FILE: studentDashboard/academicProfile/profileDetails.desc
+# ROLE: Data-Entry & Personalization Engine
+# ROUTE: /dashboard/settings
+# ACCOUNT: Student only
+# THEME: Dark · form-focused · live preview · two-column grid
 
-## 1. THE CORE IDENTITY FORM (Edit Mode)
-- **VISUAL:** A 2-column grid with 1px white borders and dark-gray input backgrounds.
-- **FIELDS:**
-    - **Display Name:** Text input (Ahmed Al-Jassem).
-    - **Faculty Select:** Dropdown (Informatics, Architecture, Medicine, etc.).
-    - **Academic Year:** Slider or Radio (1st through 5th + Graduate).
-    - **Personal Bio:** A Markdown-supported textarea for the "Challenge Every Day" personal story.
-- **WONDER FEATURE:** A "Live Preview" card on the right that updates in real-time as the student types.
+## 1. CORE IDENTITY FORM
+- LAYOUT: 2-column grid · left = form · right = live preview card
+- FIELDS:
+  - Display Name: text input · bg-[#162032] · border-[#1E2D45]
+  - Faculty: dropdown (هندسة معلوماتية · هندسة مدنية · طب · قانون...)
+  - Academic Year: radio/slider (1–5 + دراسات عليا)
+  - Personal Bio: textarea with markdown support · placeholder: "اكتب قصتك الأكاديمية..."
+- LIVE PREVIEW: right card updates in real-time as student types
 
-## 2. THE SKILL & DISCIPLINE SELECTOR (Multi-Tag)
-- **LOGIC:** Links directly to the "12 Main Disciplines" found in the `freelanceHome.desc`.
-- **INPUT:** A searchable tag-cloud where students can select their expertise (e.g., Programming, AI, Design).
-- **FREELANCE TOGGLE:** A prominent switch: **[ 💼 Enable Freelancer Mode ]**. 
-    - *Note:* If toggled ON, it triggers the requirement for the $5 subscription and ShamCash verification.
+## 2. SKILLS & DISCIPLINE SELECTOR
+- Tag cloud linked to the 12 freelance disciplines
+- Searchable + multi-select
+- FREELANCER MODE TOGGLE (Student only):
+  - [💼 تفعيل وضع المستقل] switch
+  - If toggled ON → redirects to /freelance/onboarding (subscription required)
+  - Current status shown: isFreelancer: true → green "مستقل نشط" badge
 
-## 3. THE SOCIAL & PROFESSIONAL NODES
-- **EXTERNAL LINKS:** Input fields for connecting the profile to the outside world.
-    - [ 💻 GitHub ] | [ 🔗 LinkedIn ] | [ 📸 Portfolio/Drive ].
-    - [ 📱 WhatsApp ] (For direct client/student communication).
-- **VALIDATION:** Checks for "https://" to ensure the links are functional before saving.
+## 3. SOCIAL & PROFESSIONAL LINKS
+- Input fields: GitHub · LinkedIn · Portfolio/Drive · WhatsApp
+- URL validation: must start with https://
+- These appear on the public freelance profile if enabled
 
-## 4. ACCOUNT SECURITY & PRIVACY SETTINGS
-- **PASSWORD RESET:** A secure section to update credentials with "Strength Meter" (0-100%).
-- **DATA VISIBILITY:** Individual toggles for each data point:
-    - [ 👁️ Show my GPA/Grades? ] -> ON/OFF.
-    - [ 👁️ Show my Email? ] -> ON/OFF.
-    - [ 👁️ Show my XP Level? ] -> ON/OFF.
+## 4. SECURITY & PRIVACY
+- PASSWORD RESET: current + new + confirm · strength meter bar
+- VISIBILITY TOGGLES:
+  - 👁️ إظهار مستوى XP؟ → ON/OFF
+  - 👁️ إظهار البريد الإلكتروني؟ → ON/OFF
+  - 👁️ الملف العام (للمستقلين)? → ON/OFF
 
-## 5. DOCUMENT & ID UPLOAD (The Verification Step)
-- **FILE ZONE:** A drag-and-drop terminal specifically for the **University Student ID**.
-- **STATUS INDICATOR:** - `[ ⏳ Pending ]`: If recently uploaded.
-    - `[ ✅ Verified ]`: If the Admin approved it via `userAccountManager.desc`.
-- **GUIDE:** "Upload a clear photo of your ID to unlock the [ ✅ ] badge and Freelance Hub."
+## 5. UNIVERSITY ID UPLOAD (Verification)
+- DRAG-AND-DROP ZONE: bg-[#162032] · border-dashed border-[#1E2D45] · rounded-2xl
+- STATUS:
+  - ⏳ قيد المراجعة — amber pill (just uploaded)
+  - ✅ موثّق — emerald pill (admin approved)
+  - ❌ مرفوض — rose pill (re-upload required)
+- GUIDE: "ارفع صورة واضحة لبطاقتك الجامعية لفتح شارة التوثيق والوصول لسوق المستقلين"
 
-## 6. THE STICKY SUBMIT HUD (Bottom)
-- **PRIMARY ACTION:** [ 💾 Save Changes ] — Triggers a "Success" pulse animation.
-- **SECONDARY ACTION:** [ 🗑️ Reset to Default ] — Clears all unsaved edits.
-- **FOOTER NOTE:** "Changes to your Faculty or ID may require re-verification by the HalabUnver Admin."
+## 6. SUBMIT HUD (Sticky Bottom)
+- [💾 حفظ التغييرات] — gradient-bg · success pulse animation on save
+- [🗑️ إلغاء التغييرات] — ghost button
+- NOTE: "التغييرات على الكلية أو الهوية قد تتطلب إعادة التحقق من الإدارة"

@@ -1,49 +1,41 @@
-# FILE: serviceCatalog.desc
+# FILE: halabFreelance/serviceCatalog/serviceCatalog.desc
 # ROLE: Category Deep-Dive & Service Exploration
-# VIBE: Industrial Directory / Grid-Heavy / Filter-Focus
+# ROUTE: /freelance/catalog/:category
+# ACCOUNT: All types can browse — hiring open to all registered users
+# THEME: Dark · grid-heavy · filter-focus
 
-## 1. DYNAMIC CATEGORY HEADER (Top 20%)
-- **VISUAL:** Large, blurred background image matching the selected "Main Disciplinary" (e.g., Code/Architecture).
-- **TITLE:** [ 💻 البرمجيات والتطوير ] (Software & Development).
-- **SUB-TITLE:** "Browse specialized services from top-tier student developers."
-- **BREADCRUMBS:** Home > Freelance > Software.
+## 1. CATEGORY HEADER (Top Fold)
+- BG: blurred dark image matching category + indigo/purple gradient overlay
+- BREADCRUMB: الرئيسية > المستقلون > [Category]
+- TITLE: emoji + Arabic category name (gradient-text on keyword)
+- SUBTITLE: "اكتشف خدمات متخصصة من أفضل المواهب الأكاديمية"
 
-## 2. ADVANCED FILTER TERMINAL (Left Sidebar/Top Bar)
-- **SEARCH FIELD:** "Search within this category..." (e.g., "React", "Python").
-- **SERVICE LEVEL:** [ 🥉 Junior ] | [ 🥈 Pro ] | [ 🥇 Elite ].
-- **PRICE FILTER:** Minimum to Maximum SYP Slider.
-- **DELIVERY TIME:** [ ⚡ Fast (24h) ] | [ 🕒 Standard ] | [ 🗓️ Custom ].
-- **SORTING:** "Highest Rated" | "Lowest Price" | "Newest Additions".
+## 2. FILTER SIDEBAR / TOP BAR
+- SEARCH: within-category search input
+- FREELANCER TYPE: [🎓 طلابي] [💼 خارجي] [الكل]
+  - Shows student freelancers (isFreelancer: true) vs external (businessType: 'freelancer')
+- SERVICE LEVEL: [🥉 مبتدئ] [🥈 محترف] [🥇 نخبة]
+- PRICE RANGE: SYP slider
+- DELIVERY TIME: [⚡ سريع 24س] [🕒 قياسي] [🗓️ مخصص]
+- SORT: الأعلى تقييماً · الأقل سعراً · الأحدث
 
-## 3. THE SERVICE GRID (Main Area)
-- **LAYOUT:** 3-column grid of detailed service cards.
-- **SERVICE CARD DATA:**
-    - **IMAGE:** Cover image of the specific service (e.g., a website screenshot).
-    - **FREELANCER SNIPPET:** Small avatar + Name + **[ ✅ Verified ]**.
-    - **TITLE:** "I will build a professional MERN stack dashboard for your project."
-    - **PRICING:** Starting from **150,000 SYP**.
-    - **STATS:** [ ⭐ 5.0 (12 Reviews) ] | [ 📦 3 Orders in Queue ].
+## 3. SERVICE GRID
+- GRID: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 · gap-6
+- SERVICE CARD:
+  - COVER IMAGE: service thumbnail · aspect-video · rounded-xl
+  - FREELANCER ROW: avatar + name + verified badge + TYPE badge
+    - "مستقل طلابي" — indigo pill
+    - "مستقل خارجي" — amber pill
+  - TITLE: text-[#F1F5F9] font-medium
+  - PRICE: "يبدأ من 150,000 SYP"
+  - STATS: ⭐ rating (count) · 📦 orders in queue
+- PROMOTED SLOTS: first 2 cards get border-[#6366F1]/40 + subtle glow
 
-## 4. THE "PROMOTED SERVICE" SLOT (Top Row)
-- **LOGIC:** The first 2 spots in the grid are "Featured" (Admin-controlled or highest rating).
-- **STYLE:** Subtle glowing border (Cyan/Purple) to highlight top-tier quality.
+## 4. SERVICE LIGHTBOX (Quick View Modal)
+- Clicking a card → modal with full details before navigating to service page
+- INCLUDES: revisions count · delivery days · source code included?
+- ACTIONS: [💳 اطلب الآن] [💬 استفسار]
 
-## 5. THE SERVICE LIGHTBOX (Quick View)
-- **INTERACTION:** Clicking a card opens a popup before the full subpage.
-- **DETAILS:** - **Included:** 3 Revisions, Source Code, Documentation.
-    - **Duration:** 5 Days.
-- **ACTION:** [ 💳 اطلب الآن ] | [ 💬 استفسار ] (Direct Message).
-
-## 6. CATEGORY FOOTER (The "Can't Find It?" Node)
-- **MESSAGE:** "Looking for something custom that isn't listed here?"
-- **PRIMARY CTA:** **[ 📝 انشر طلبك الخاص - Post a Custom Task ]**
-- **LOGIC:** Redirects to a form where freelancers can bid on the client's specific needs.
-
----
-
-# NEXT SUB-PAGES IN THE PIPELINE:
-3. **Onboarding/Join Page** (The ShamCash Payment Terminal).
-4. **Top 100 Leaderboard** (The Hall of Fame).
-5. **Project Workspace** (The private file/money exchange).
-
-**Shall we move to [ 3: Onboarding/Join Page ] with the ShamCash Terminal next?**
+## 5. FOOTER (Can't Find It?)
+- CTA: [📝 انشر طلبك الخاص] → custom task posting form
+  - Freelancers can bid on client's specific requirements

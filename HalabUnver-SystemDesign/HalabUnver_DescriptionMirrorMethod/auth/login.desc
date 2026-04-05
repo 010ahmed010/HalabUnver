@@ -1,0 +1,28 @@
+# FILE: auth/login.desc
+# ROLE: Unified Authentication Entry Gate
+# ROUTE: /auth/login
+# THEME: Dark · centered card · gradient accent
+
+## DESIGN
+- PAGE BG: dot-bg + radial glow behind card
+- CARD: max-w-md mx-auto · bg-[#0F1828] · rounded-3xl · border border-[#1E2D45] · p-10
+- LOGO: centered "ح" icon + "حلب يونيفر" at top of card
+
+## 1. LOGIN FORM
+- EMAIL INPUT: bg-[#162032] · border-[#1E2D45] · focus:border-[#6366F1] · text-[#F1F5F9]
+- PASSWORD INPUT: same style + show/hide toggle
+- REMEMBER ME: checkbox (styled with accent color)
+- SUBMIT: full-width gradient-bg button "تسجيل الدخول"
+
+## 2. ACCOUNT TYPE ROUTING (Post-Login)
+- accountType === 'admin'    → redirect to /admin
+- accountType === 'business' → redirect to /business
+- accountType === 'student'  → redirect to /dashboard
+
+## 3. BOTTOM LINKS
+- "ليس لديك حساب؟" → /auth/register
+- "نسيت كلمة المرور؟" → /auth/forgot-password
+
+## 4. AUTH CONTEXT
+- On successful login: populate AuthContext with { id, name, email, accountType, businessType?, isVerified, isFreelancer, xp, level, status }
+- Store token in localStorage / sessionStorage

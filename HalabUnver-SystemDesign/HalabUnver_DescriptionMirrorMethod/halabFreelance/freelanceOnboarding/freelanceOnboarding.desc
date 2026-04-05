@@ -1,33 +1,47 @@
-# FILE: .../halabFreelance/freelanceOnboarding/freelanceOnboarding.desc
-# ROLE: The Professional Entry Gate & Monetization Logic
-# VIBE: Educational / Aspiring / Legal-Technical / Step-by-Step
+# FILE: halabFreelance/freelanceOnboarding/freelanceOnboarding.desc
+# ROLE: Professional Entry Gate & Monetization Logic
+# ROUTE: /freelance/onboarding
+# ACCOUNT: Student only — Business freelancers register via /auth/register → businessType: 'freelancer'
+# THEME: Dark · step wizard · gradient progress indicator
 
-## 1. THE "FREELANCER MANTRA" (Top Fold)
-- **VISUAL:** A high-contrast hero banner with the motto: *"Scale Your Skills. Challenge Every Day."*
-- **IDENTITY CHECK:** A small badge showing current User: **[ Ahmed Al-Jassem ]**.
-- **LOGIC:** If `isVerified` is **FALSE** in `profileDetails.desc`, show a Red Alert: "You must verify your Student ID before joining the Freelance Hub."
+## ROUTING LOGIC
+- If accountType === 'student' AND isFreelancer === false → show this onboarding
+- If accountType === 'business' AND businessType === 'freelancer' → redirect to /business (already have access)
+- If not logged in → redirect to /auth/login
 
-## 2. THE 3-STEP ONBOARDING WIZARD
-- **STEP 1 (Terms of Service):** A scrollable 90-degree box outlining commission fees (e.g., 5% to Platform).
-    - [ ✅ ] I agree to the HalabUnver Professional Code.
-- **STEP 2 (Skill Alignment):** Pulls the "Tags" from `profileDetails.desc`.
-    - **PROMPT:** "Confirm your expertises: [ MERN ] [ Pentesting ] [ Linux ]."
-- **STEP 3 (The Access Fee):** The critical monetization node.
-    - **INFO:** "Freelance Hub access requires a **$5 USD (Monthly)** platform fee."
+## 1. HERO (Top Fold)
+- HEADLINE: "حوّل مهاراتك الأكاديمية إلى مصدر دخل"
+- SUBTEXT: "Challenge Every Day." — italic gradient-text
+- IDENTITY CHECK: small card showing current user name + "مستقل طلابي" badge preview
+- ALERT (if !isVerified): rose warning — "يجب التحقق من هويتك الجامعية أولاً" + [رفع الهوية] button
 
-## 3. THE PAYMENT BRIDGE (The Handshake)
-- **PRIMARY ACTION:** [ 💳 Pay Subscription Fee ] -> **LINK:** Redirects to `studentDashboard/financialTerminal/walletOverview.desc`.
-- **DATA PASS:** Appends a metadata tag to the transaction: `type: "FREELANCE_SUB"`.
-- **LOGIC:** The "Submit Offer" button in `serviceCatalog` remains **DISABLED** until the `subscriptionStatus` in the DB is `active`.
+## 2. STEP WIZARD (3 Steps)
+- PROGRESS: 3 dots connected by line · active = gradient-bg dot
 
-## 4. THE PUBLIC PROFILE PREVIEW
-- **VISUAL:** A "Live Preview" of how the freelancer will look in the `topTalentLeaderboard.desc`.
-- **EDIT BUTTON:** [ ✏️ Modify Public Bio ] -> Links to `freelancePublicProfile.desc`.
+- STEP 1: TERMS OF SERVICE
+  - Scrollable bordered box with platform terms
+  - Commission fee: 5% to HalabUnver
+  - Checkbox: [✅ أوافق على ميثاق HalabUnver المهني]
 
-## 5. THE ESCROW EDUCATION MODULE
-- **INFO:** A 1px border box explaining how the money is held by the Admin (AMJ) until the student approves the work.
-- **LINK:** [ 📖 Read Escrow Rules ] -> Opens a popup with the security protocol.
+- STEP 2: SKILL ALIGNMENT
+  - Shows tags pulled from student's academic profile
+  - Editable tag confirmation: [MERN] [Linux] [Pentesting]
+  - Add/remove skills before publishing
 
-## 6. STICKY STATUS BAR (Bottom)
-- **CURRENT STATUS:** [ 🔴 Restricted Access ] — *Pay fee to unlock.*
-- **FOOTER:** "Your professional journey starts here. Secure payments powered by ShamCash."
+- STEP 3: SUBSCRIPTION FEE
+  - "وصول مركز المستقلين: 5 دولار / شهر (أو ما يعادله بالليرة)"
+  - ShamCash payment instructions
+  - [💳 انتقل إلى المحفظة لإتمام الدفع] → /dashboard/wallet with metadata tag type: "FREELANCE_SUB"
+
+## 3. PUBLIC PROFILE PREVIEW
+- Live preview of how freelancer will appear in /freelance/leaderboard
+- [✏️ تعديل النبذة العامة] → /freelance/profile/me
+
+## 4. ESCROW EDUCATION
+- Bordered info box explaining escrow logic
+- [📖 قواعد الضمان المالي] → popup with security protocol
+
+## 5. STICKY STATUS BAR
+- PRE-PAYMENT: 🔴 "وصول محدود — أكمل الدفع لفتح الإمكانيات الكاملة"
+- POST-PAYMENT (pending admin confirm): 🟡 "قيد التفعيل — جاري التحقق من دفعتك"
+- POST-CONFIRM: 🟢 "مرحباً بك في سوق المستقلين!" → sets isFreelancer: true
