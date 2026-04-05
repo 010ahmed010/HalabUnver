@@ -18,7 +18,7 @@ const PILLARS = [
     desc: 'دورات أكاديمية مكثفة وشهادات تدريبية مصمّمة لسد الفجوة بين الجامعة ومتطلبات السوق التقني.',
     stats: '64 دورة · 1,200+ طالب',
     href: '/academy',
-    color: '#BB86FC',
+    cls: 'text-[#BB86FC]',
   },
   {
     key: 'library',
@@ -28,7 +28,7 @@ const PILLARS = [
     desc: 'أرشيف شامل للمصادر الأكاديمية والملفات التخصصية مؤرشفة بنظام ذكي يسهّل عملية البحث.',
     stats: '380+ ملف · 12 فرع',
     href: '/library',
-    color: '#03DAC6',
+    cls: 'text-[#03DAC6]',
   },
   {
     key: 'freelance',
@@ -38,7 +38,7 @@ const PILLARS = [
     desc: 'جسرك إلى سوق العمل الحر. نعرض مهاراتك ونربطك بمشاريع حقيقية تمنحك الخبرة والعائد.',
     stats: '97 مستقل · 12 مجال',
     href: '/freelance',
-    color: '#FFD700',
+    cls: 'text-[#FFD700]',
   },
   {
     key: 'store',
@@ -48,7 +48,7 @@ const PILLARS = [
     desc: 'توفير المعدات والأدوات الهندسية بنظام "صفر مخزون" لضمان الجودة وأنسب سعر للطالب.',
     stats: '210+ منتج · خصم طلابي',
     href: '/store',
-    color: '#CF6679',
+    cls: 'text-[#CF6679]',
   },
 ]
 
@@ -188,7 +188,7 @@ export default function HomePage() {
                   <span className="text-[#555] group-hover:text-[#BB86FC] transition-colors text-xl">←</span>
                 </div>
                 <p className="text-sm text-[#888] leading-relaxed mb-4">{p.desc}</p>
-                <div className="text-xs font-mono border-t border-[#2A2A2A] pt-3 mt-3" style={{ color: p.color }}>
+                <div className={`text-xs font-mono border-t border-[#2A2A2A] pt-3 mt-3 ${p.cls}`}>
                   {p.stats}
                 </div>
               </Link>
@@ -271,15 +271,15 @@ export default function HomePage() {
               </p>
               <div className="space-y-3">
                 {[
-                  { action: 'التسجيل في المنصة', xp: '+100 XP', color: '#4CAF50' },
-                  { action: 'توثيق الهوية الجامعية', xp: '+500 XP', color: '#BB86FC' },
-                  { action: 'تحميل ملف من المكتبة', xp: '+25 XP', color: '#03DAC6' },
-                  { action: 'إتمام دورة أكاديمية', xp: '+250 XP', color: '#FFD700' },
-                  { action: 'أول طلب من المتجر', xp: '+100 XP', color: '#CF6679' },
+                  { action: 'التسجيل في المنصة', xp: '+100 XP', cls: 'text-[#4CAF50]' },
+                  { action: 'توثيق الهوية الجامعية', xp: '+500 XP', cls: 'text-[#BB86FC]' },
+                  { action: 'تحميل ملف من المكتبة', xp: '+25 XP', cls: 'text-[#03DAC6]' },
+                  { action: 'إتمام دورة أكاديمية', xp: '+250 XP', cls: 'text-[#FFD700]' },
+                  { action: 'أول طلب من المتجر', xp: '+100 XP', cls: 'text-[#CF6679]' },
                 ].map((item) => (
                   <div key={item.action} className="flex items-center justify-between border border-[#2A2A2A] px-4 py-3">
                     <span className="text-sm text-[#E0E0E0]">{item.action}</span>
-                    <span className="text-sm font-mono font-bold" style={{ color: item.color }}>{item.xp}</span>
+                    <span className={`text-sm font-mono font-bold ${item.cls}`}>{item.xp}</span>
                   </div>
                 ))}
               </div>
@@ -296,7 +296,7 @@ export default function HomePage() {
                   <span>1,600 / 2,500 XP</span>
                 </div>
                 <div className="h-2 bg-[#2A2A2A]">
-                  <div className="h-2 bg-[#BB86FC] transition-all" style={{ width: '64%' }} />
+                  <div className="h-2 bg-[#BB86FC] transition-all w-[64%]" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 text-center text-xs">

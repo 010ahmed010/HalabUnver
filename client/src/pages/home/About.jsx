@@ -23,8 +23,8 @@ export default function About() {
               {NODES.map(node => (
                 <div
                   key={node.id}
-                  className="absolute group"
-                  style={{ left: `${node.x}%`, top: `${node.y}%`, transform: 'translate(-50%, -50%)' }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                  style={{ left: `${node.x}%`, top: `${node.y}%` }}
                 >
                   <div className="w-20 h-20 border-2 border-[#BB86FC]/40 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#BB86FC] hover:bg-[#BB86FC]/10 transition-all">
                     <span className="text-2xl">{node.icon}</span>
@@ -35,8 +35,8 @@ export default function About() {
                   </div>
                 </div>
               ))}
-              {/* Data lines */}
-              <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+              {/* Data lines — SVG doesn't support Tailwind pointer-events, use className */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none">
                 <line x1="25%" y1="25%" x2="75%" y2="25%" stroke="#BB86FC22" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="25%" y1="75%" x2="75%" y2="75%" stroke="#BB86FC22" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="25%" y1="25%" x2="25%" y2="75%" stroke="#BB86FC22" strokeWidth="1" strokeDasharray="4 4" />

@@ -119,7 +119,7 @@ export default function CourseDisplay() {
                 <span>2 / 8</span>
               </div>
               <div className="h-1.5 bg-[#2A2A2A]">
-                <div className="h-1.5 bg-[#BB86FC]" style={{ width: '25%' }} />
+                <div className="h-1.5 bg-[#BB86FC] w-1/4" />
               </div>
             </div>
           </div>

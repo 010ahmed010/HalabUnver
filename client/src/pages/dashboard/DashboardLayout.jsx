@@ -25,7 +25,7 @@ export default function DashboardLayout() {
                   <span>Level 4</span><span>1,600 XP</span>
                 </div>
                 <div className="h-1 bg-[#2A2A2A]">
-                  <div className="h-1 bg-[#BB86FC]" style={{ width: '64%' }} />
+                  <div className="h-1 bg-[#BB86FC] w-[64%]" />
                 </div>
               </div>
             </div>

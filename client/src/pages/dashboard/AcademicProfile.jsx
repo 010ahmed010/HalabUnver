@@ -67,7 +67,7 @@ export default function AcademicProfile() {
           <span>2,500 XP (Level 5)</span>
         </div>
         <div className="h-3 bg-[#2A2A2A] mb-3">
-          <div className="h-3 bg-gradient-to-r from-[#BB86FC] to-[#a06cdc] transition-all" style={{ width: '64%' }} />
+          <div className="h-3 bg-gradient-to-r from-[#BB86FC] to-[#a06cdc] transition-all w-[64%]" />
         </div>
         {showXPHistory && (
           <div className="space-y-2 mt-3 border-t border-[#2A2A2A] pt-3 animate-fade-up">
