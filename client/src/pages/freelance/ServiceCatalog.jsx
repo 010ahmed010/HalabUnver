@@ -3,138 +3,137 @@ import { useParams, Link } from 'react-router-dom'
 
 const SERVICES = [
   { id: 's1', title: 'سأبني لك لوحة تحكم MERN Stack احترافية', freelancer: 'أحمد الجاسم', rating: 5.0, reviews: 12, price: '150,000', level: 'Elite', queue: 3, verified: true, promoted: true },
-  { id: 's2', title: 'تطوير تطبيق React.js مع API Node.js', freelancer: 'كريم سعيد', rating: 4.8, reviews: 8, price: '90,000', level: 'Pro', queue: 1, verified: true, promoted: true },
-  { id: 's3', title: 'إصلاح أخطاء برمجية واستشارات تقنية', freelancer: 'ليلى عمر', rating: 4.7, reviews: 21, price: '50,000/hr', level: 'Pro', queue: 0, verified: true, promoted: false },
-  { id: 's4', title: 'بناء REST API بـ Express وMongoDB', freelancer: 'سامر محمد', rating: 4.6, reviews: 5, price: '75,000', level: 'Junior', queue: 2, verified: false, promoted: false },
-  { id: 's5', title: 'إعداد سيرفر Linux ونشر تطبيقات', freelancer: 'علي حسن', rating: 4.9, reviews: 15, price: '120,000', level: 'Elite', queue: 0, verified: true, promoted: false },
-  { id: 's6', title: 'تصميم قاعدة بيانات MongoDB محسّنة', freelancer: 'رنا إبراهيم', rating: 4.5, reviews: 3, price: '40,000', level: 'Junior', queue: 0, verified: false, promoted: false },
+  { id: 's2', title: 'سأصمم لك واجهة مستخدم UI/UX بتجربة استثنائية', freelancer: 'ليلى عمر', rating: 4.8, reviews: 8, price: '80,000', level: 'Pro', queue: 1, verified: true, promoted: false },
+  { id: 's3', title: 'سأجهّز مشروع AutoCAD كاملاً حسب مواصفاتك', freelancer: 'كريم إبراهيم', rating: 4.7, reviews: 15, price: '60,000', level: 'Pro', queue: 2, verified: true, promoted: false },
+  { id: 's4', title: 'سأطوّر نموذج AI لتصنيف البيانات', freelancer: 'سامر خالد', rating: 4.9, reviews: 6, price: '200,000', level: 'Elite', queue: 1, verified: true, promoted: true },
+  { id: 's5', title: 'سأترجم لك وثائق تقنية بدقة عالية', freelancer: 'نورة سليمان', rating: 4.6, reviews: 20, price: '30,000', level: 'Rising', queue: 0, verified: true, promoted: false },
 ]
 
-const LEVELS = ['الكل', '🥇 Elite', '🥈 Pro', '🥉 Junior']
-const DELIVERY = ['الكل', '⚡ Fast (24h)', '🕒 Standard', '🗓️ Custom']
+const SORT_OPTIONS = [
+  { value: 'rating', label: 'الأعلى تقييماً' },
+  { value: 'price_asc', label: 'الأقل سعراً' },
+  { value: 'price_desc', label: 'الأعلى سعراً' },
+]
+
+const LEVEL_COLORS = {
+  Elite: { color: '#F59E0B', bg: '#F59E0B15' },
+  Pro: { color: '#6366F1', bg: '#6366F115' },
+  Rising: { color: '#14B8A6', bg: '#14B8A615' },
+}
 
 export default function ServiceCatalog() {
-  const { category } = useParams()
-  const [activeLevel, setActiveLevel] = useState('الكل')
-  const [activeDelivery, setActiveDelivery] = useState('الكل')
+  const { discipline } = useParams()
   const [sort, setSort] = useState('rating')
-  const [lightbox, setLightbox] = useState(null)
+  const [verified, setVerified] = useState(false)
+  const [promoted, setPromoted] = useState(false)
+  const [search, setSearch] = useState('')
 
-  const filtered = SERVICES.filter(s =>
-    activeLevel === 'الكل' || s.level === activeLevel.replace(/^\S+\s/, '')
-  ).sort((a, b) => {
-    if (sort === 'rating') return b.rating - a.rating
-    if (sort === 'price') return parseInt(a.price) - parseInt(b.price)
-    return 0
-  })
+  const sorted = [...SERVICES]
+    .filter(s => {
+      if (verified && !s.verified) return false
+      if (promoted && !s.promoted) return false
+      if (search && !s.title.includes(search) && !s.freelancer.includes(search)) return false
+      return true
+    })
+    .sort((a, b) => {
+      if (sort === 'rating') return b.rating - a.rating
+      const aPrice = parseInt(a.price.replace(',', ''))
+      const bPrice = parseInt(b.price.replace(',', ''))
+      return sort === 'price_asc' ? aPrice - bPrice : bPrice - aPrice
+    })
 
   return (
     <div className="pt-16 min-h-screen">
-      {/* Category header */}
-      <div className="relative py-12 overflow-hidden border-b border-[#2A2A2A]">
-        <div className="absolute inset-0 bg-[#BB86FC]/5" />
-        <div className="absolute inset-0 grid-bg" />
-        <div className="relative max-w-7xl mx-auto px-4">
-          <p className="text-xs font-mono text-[#888] mb-1">
-            <Link to="/" className="hover:text-[#BB86FC]">الرئيسية</Link> › 
-            <Link to="/freelance" className="hover:text-[#BB86FC]"> مستقلون</Link> › 
-            <span className="text-[#E0E0E0]"> برمجة وتطوير</span>
-          </p>
-          <h1 className="text-3xl font-black text-[#E0E0E0] mt-2">💻 البرمجيات والتطوير</h1>
-          <p className="text-sm text-[#888] mt-1">تصفّح خدمات متخصصة من أفضل المطوّرين الطلابيين</p>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 items-center mb-6">
-          <div className="flex gap-1">
-            {LEVELS.map(l => (
-              <button key={l} onClick={() => setActiveLevel(l)}
-                className={`px-3 py-1.5 text-xs transition-colors ${activeLevel === l ? 'bg-[#BB86FC] text-[#121212] font-bold' : 'border border-[#2A2A2A] text-[#888] hover:border-[#BB86FC]'}`}>
-                {l}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-1">
-            {DELIVERY.map(d => (
-              <button key={d} onClick={() => setActiveDelivery(d)}
-                className={`px-3 py-1.5 text-xs transition-colors ${activeDelivery === d ? 'bg-[#03DAC6]/20 text-[#03DAC6] border border-[#03DAC6]/40' : 'border border-[#2A2A2A] text-[#888] hover:border-[#03DAC6]'}`}>
-                {d}
-              </button>
-            ))}
-          </div>
-          <select value={sort} onChange={e => setSort(e.target.value)}
-            className="mr-auto bg-[#1E1E1E] border border-[#2A2A2A] text-[#888] px-3 py-1.5 text-xs outline-none">
-            <option value="rating">الأعلى تقييماً</option>
-            <option value="price">أقل سعراً</option>
+        <div className="mb-6">
+          <span className="section-label">المستقلون</span>
+          <h1 className="text-2xl font-black text-[#F1F5F9]">خدمات {discipline || 'برمجة وتطوير'}</h1>
+        </div>
+
+        {/* Search + Sort */}
+        <div className="flex gap-3 mb-4 flex-wrap">
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="ابحث في الخدمات..."
+            className="flex-1 min-w-[200px] bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] px-4 py-2.5 text-sm outline-none focus:border-[#F59E0B]/50 rounded-xl transition-colors"
+          />
+          <select
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+            className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] px-4 py-2.5 text-sm outline-none rounded-xl"
+          >
+            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {filtered.map(s => (
-            <div key={s.id} className={`bg-[#1E1E1E] border transition-colors cursor-pointer ${s.promoted ? 'border-[#BB86FC]/40' : 'border-[#2A2A2A]'} hover:border-[#BB86FC]/60`}
-              onClick={() => setLightbox(s)}>
-              {/* Image area */}
-              <div className="aspect-video bg-[#252525] relative flex items-center justify-center">
-                <span className="text-4xl">💻</span>
-                {s.promoted && <span className="absolute top-2 right-2 text-[10px] font-mono border border-[#BB86FC]/60 px-1.5 py-0.5 text-[#BB86FC] bg-[#121212]/80">مميّز</span>}
-                <span className="absolute bottom-2 left-2 text-[10px] font-mono border border-[#2A2A2A] px-1.5 py-0.5 text-[#888] bg-[#121212]/80">{s.level}</span>
-              </div>
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-[#252525] border border-[#2A2A2A] flex items-center justify-center text-xs">👤</div>
-                  <span className="text-xs text-[#888]">{s.freelancer}</span>
-                  {s.verified && <span className="text-[10px] text-[#BB86FC]">✅</span>}
-                </div>
-                <h3 className="text-sm text-[#E0E0E0] mb-3 leading-snug">{s.title}</h3>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-[#FFD700]">
-                    ★ {s.rating}
-                    <span className="text-[#555]">({s.reviews})</span>
-                    {s.queue > 0 && <span className="text-[#03DAC6]">📦 {s.queue} قيد التنفيذ</span>}
-                  </div>
-                  <span className="font-mono text-[#BB86FC]">من {s.price} SYP</span>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Filters */}
+        <div className="flex gap-3 mb-6 flex-wrap">
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-[#94A3B8] hover:text-[#F1F5F9]">
+            <input type="checkbox" checked={verified} onChange={e => setVerified(e.target.checked)} className="accent-[#F59E0B] rounded" />
+            موثّقون فقط
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-[#94A3B8] hover:text-[#F1F5F9]">
+            <input type="checkbox" checked={promoted} onChange={e => setPromoted(e.target.checked)} className="accent-[#F59E0B] rounded" />
+            مميزون فقط
+          </label>
+          <span className="mr-auto text-sm text-[#94A3B8]">
+            <span className="text-[#F1F5F9] font-semibold">{sorted.length}</span> خدمة
+          </span>
         </div>
 
-        {/* Footer CTA */}
-        <div className="mt-10 border border-[#2A2A2A] p-6 text-center">
-          <p className="text-sm text-[#888] mb-3">تبحث عن شيء غير مدرج هنا؟</p>
-          <button className="px-6 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm hover:bg-[#a06cdc] transition-colors">
-            📝 انشر طلبك الخاص — Post a Custom Task
-          </button>
+        <div className="space-y-3">
+          {sorted.map(s => {
+            const lc = LEVEL_COLORS[s.level] || { color: '#94A3B8', bg: '#94A3B810' }
+            return (
+              <div
+                key={s.id}
+                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 hover:border-[#F59E0B]/20 hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#162032] flex items-center justify-center text-2xl shrink-0">👤</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-1">
+                      <h3 className="text-sm font-bold text-[#F1F5F9] leading-snug">{s.title}</h3>
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <span className="text-base font-black text-[#F59E0B] font-mono whitespace-nowrap">{s.price} SYP</span>
+                        {s.promoted && (
+                          <span className="text-[10px] bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B] rounded-full px-2 py-0.5">⭐ مميّز</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="text-[#94A3B8]">{s.freelancer}</span>
+                      {s.verified && <span className="text-[#6366F1] font-medium">✅ موثّق</span>}
+                      <span className="text-[#F59E0B] font-medium">★ {s.rating} ({s.reviews})</span>
+                      <span
+                        className="rounded-full px-2 py-0.5 font-medium"
+                        style={{ color: lc.color, background: lc.bg }}
+                      >
+                        {s.level}
+                      </span>
+                      {s.queue > 0 && (
+                        <span className="text-[#4A5D78]">⏳ طابور: {s.queue}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-4 pt-4 border-t border-[#1E2D45]">
+                  <button className="px-5 py-2.5 bg-[#F59E0B] text-[#070C18] font-bold text-xs rounded-xl hover:bg-[#FBBF24] transition-colors">
+                    💬 طلب هذه الخدمة
+                  </button>
+                  <Link
+                    to="/freelance/profile/ahmed"
+                    className="px-4 py-2.5 rounded-xl border border-[#1E2D45] text-[#94A3B8] text-xs hover:border-[#F59E0B]/30 hover:text-[#F59E0B] transition-all"
+                  >
+                    عرض الملف
+                  </Link>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div className="fixed inset-0 z-50 bg-[#121212]/90 backdrop-blur-sm flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setLightbox(null)}>
-          <div className="bg-[#1E1E1E] border border-[#BB86FC]/40 p-6 max-w-lg w-full animate-fade-up">
-            <h3 className="text-[#E0E0E0] font-bold mb-2">{lightbox.title}</h3>
-            <p className="text-xs text-[#888] mb-4">{lightbox.freelancer} · ★ {lightbox.rating}</p>
-            <div className="border border-[#2A2A2A] p-4 mb-4 text-xs text-[#888] space-y-1">
-              <p>✓ 3 مراجعات مجانية</p>
-              <p>✓ الكود المصدري كامل</p>
-              <p>✓ توثيق شامل</p>
-              <p>⏱ مدة التسليم: 5 أيام</p>
-            </div>
-            <div className="flex gap-3">
-              <Link to="/freelance/profile/ahmed" className="flex-1 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm text-center hover:bg-[#a06cdc] transition-colors">
-                💳 اطلب الآن
-              </Link>
-              <button className="flex-1 py-2.5 border border-[#2A2A2A] text-[#888] text-sm hover:border-[#BB86FC] transition-colors">
-                💬 استفسار
-              </button>
-              <button onClick={() => setLightbox(null)} className="px-4 py-2.5 border border-[#2A2A2A] text-[#555] text-sm">✕</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

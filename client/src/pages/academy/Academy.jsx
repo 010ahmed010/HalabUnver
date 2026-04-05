@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom'
 const BRANCHES = ['الكل', 'برمجة وتطوير', 'شبكات', 'أمن سيبراني', 'ذكاء اصطناعي', 'تصميم', 'هندسة معمارية', 'ميكانيك']
 
 const COURSES = [
-  { id: 'mern-001', title: 'MERN Stack الشاملة', instructor: 'أحمد الجاسم', hours: 42, rating: 4.9, students: 312, price: 'مجاني للمسجلين', branch: 'برمجة وتطوير', native: true, level: 'متقدم' },
-  { id: 'net-002', title: 'شبكات الحاسوب — من الصفر', instructor: 'محمد حسن', hours: 28, rating: 4.7, students: 189, price: '75,000 SYP', branch: 'شبكات', native: true, level: 'مبتدئ' },
-  { id: 'sec-003', title: 'أساسيات الأمن السيبراني وCTF', instructor: 'سامر خالد', hours: 18, rating: 4.8, students: 97, price: '50,000 SYP', branch: 'أمن سيبراني', native: false, level: 'متوسط' },
-  { id: 'ai-004', title: 'Python للذكاء الاصطناعي', instructor: 'رنا أحمد', hours: 35, rating: 4.6, students: 244, price: '90,000 SYP', branch: 'ذكاء اصطناعي', native: false, level: 'متوسط' },
-  { id: 'ui-005', title: 'تصميم واجهات المستخدم — UI/UX', instructor: 'لينا مصطفى', hours: 22, rating: 4.9, students: 156, price: '60,000 SYP', branch: 'تصميم', native: false, level: 'مبتدئ' },
-  { id: 'arch-006', title: 'AutoCAD للمبتدئين', instructor: 'كريم إبراهيم', hours: 16, rating: 4.5, students: 203, price: '40,000 SYP', branch: 'هندسة معمارية', native: true, level: 'مبتدئ' },
+  { id: 'mern-001', title: 'MERN Stack الشاملة', instructor: 'أحمد الجاسم', hours: 42, rating: 4.9, students: 312, price: 'مجاني للمسجلين', branch: 'برمجة وتطوير', native: true, level: 'متقدم', levelColor: '#F43F5E' },
+  { id: 'net-002', title: 'شبكات الحاسوب — من الصفر', instructor: 'محمد حسن', hours: 28, rating: 4.7, students: 189, price: '75,000 SYP', branch: 'شبكات', native: true, level: 'مبتدئ', levelColor: '#10B981' },
+  { id: 'sec-003', title: 'أساسيات الأمن السيبراني وCTF', instructor: 'سامر خالد', hours: 18, rating: 4.8, students: 97, price: '50,000 SYP', branch: 'أمن سيبراني', native: false, level: 'متوسط', levelColor: '#F59E0B' },
+  { id: 'ai-004', title: 'Python للذكاء الاصطناعي', instructor: 'رنا أحمد', hours: 35, rating: 4.6, students: 244, price: '90,000 SYP', branch: 'ذكاء اصطناعي', native: false, level: 'متوسط', levelColor: '#F59E0B' },
+  { id: 'ui-005', title: 'تصميم واجهات المستخدم — UI/UX', instructor: 'لينا مصطفى', hours: 22, rating: 4.9, students: 156, price: '60,000 SYP', branch: 'تصميم', native: false, level: 'مبتدئ', levelColor: '#10B981' },
+  { id: 'arch-006', title: 'AutoCAD للمبتدئين', instructor: 'كريم إبراهيم', hours: 16, rating: 4.5, students: 203, price: '40,000 SYP', branch: 'هندسة معمارية', native: true, level: 'مبتدئ', levelColor: '#10B981' },
 ]
 
 export default function Academy() {
@@ -28,18 +28,18 @@ export default function Academy() {
   return (
     <div className="pt-16 min-h-screen">
 
-      {/* Sub-header branches */}
-      <div className="border-b border-[#2A2A2A] bg-[#0E0E0E] sticky top-16 z-30">
+      {/* Branch filter bar */}
+      <div className="border-b border-[#1E2D45] bg-[#070C18] sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto py-3 no-scrollbar">
+          <div className="flex items-center gap-2 overflow-x-auto py-3 no-scrollbar">
             {BRANCHES.map(b => (
               <button
                 key={b}
                 onClick={() => setActiveBranch(b)}
-                className={`shrink-0 px-4 py-1.5 text-sm transition-colors ${
+                className={`shrink-0 px-4 py-1.5 text-sm rounded-full transition-all ${
                   activeBranch === b
-                    ? 'bg-[#BB86FC] text-[#121212] font-bold'
-                    : 'text-[#888] hover:text-[#E0E0E0] border border-[#2A2A2A]'
+                    ? 'gradient-bg text-white font-semibold shadow-md shadow-[#6366F1]/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] border border-[#1E2D45] hover:border-[#6366F1]/30'
                 }`}
               >
                 {b}
@@ -47,7 +47,7 @@ export default function Academy() {
             ))}
             <button
               onClick={() => setFilterOpen(!filterOpen)}
-              className="shrink-0 mr-auto px-3 py-1.5 text-xs border border-[#2A2A2A] text-[#888] hover:border-[#BB86FC] transition-colors"
+              className="shrink-0 mr-auto px-3 py-1.5 text-xs rounded-lg border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all"
             >
               ⚙ فلترة
             </button>
@@ -61,26 +61,26 @@ export default function Academy() {
           {/* Filter Sidebar */}
           {filterOpen && (
             <aside className="w-56 shrink-0">
-              <div className="border border-[#2A2A2A] p-4 sticky top-32">
-                <p className="text-xs font-mono text-[#888] mb-3">[ FILTERS ]</p>
+              <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 sticky top-32">
+                <p className="text-xs font-semibold text-[#F1F5F9] mb-4">خيارات الفلتر</p>
                 <div className="space-y-3 text-sm">
-                  <label className="flex items-center gap-2 cursor-pointer text-[#888] hover:text-[#E0E0E0]">
-                    <input type="checkbox" checked={filters.free} onChange={e => setFilters({...filters, free: e.target.checked})} className="accent-[#BB86FC]" />
+                  <label className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9]">
+                    <input type="checkbox" checked={filters.free} onChange={e => setFilters({...filters, free: e.target.checked})} className="accent-[#6366F1] rounded" />
                     دورات مجانية فقط
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-[#888] hover:text-[#E0E0E0]">
-                    <input type="checkbox" checked={filters.native} onChange={e => setFilters({...filters, native: e.target.checked})} className="accent-[#BB86FC]" />
+                  <label className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9]">
+                    <input type="checkbox" checked={filters.native} onChange={e => setFilters({...filters, native: e.target.checked})} className="accent-[#6366F1] rounded" />
                     جامعية أصيلة فقط
                   </label>
-                  <div>
-                    <p className="text-xs text-[#555] mb-1 font-mono">المستوى</p>
+                  <div className="pt-2 border-t border-[#1E2D45]">
+                    <p className="text-xs font-medium text-[#94A3B8] mb-2">المستوى</p>
                     {['مبتدئ', 'متوسط', 'متقدم'].map(l => (
-                      <label key={l} className="flex items-center gap-2 cursor-pointer text-[#888] hover:text-[#E0E0E0] mb-1">
-                        <input type="radio" name="level" value={l} checked={filters.level === l} onChange={e => setFilters({...filters, level: e.target.value})} className="accent-[#BB86FC]" />
+                      <label key={l} className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9] mb-2">
+                        <input type="radio" name="level" value={l} checked={filters.level === l} onChange={e => setFilters({...filters, level: e.target.value})} className="accent-[#6366F1]" />
                         {l}
                       </label>
                     ))}
-                    {filters.level && <button onClick={() => setFilters({...filters, level: ''})} className="text-xs text-[#BB86FC] mt-1">إلغاء</button>}
+                    {filters.level && <button onClick={() => setFilters({...filters, level: ''})} className="text-xs text-[#6366F1] hover:underline">إلغاء الفلتر</button>}
                   </div>
                 </div>
               </div>
@@ -90,38 +90,45 @@ export default function Academy() {
           {/* Course Grid */}
           <main className="flex-1">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-xs font-mono text-[#888]">
-                [ {filtered.length} دورة ] — {activeBranch}
+              <p className="text-sm text-[#94A3B8]">
+                <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> دورة — {activeBranch}
               </p>
               <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"
-                className="px-4 py-1.5 text-xs border border-[#03DAC6]/40 text-[#03DAC6] hover:bg-[#03DAC6]/10 transition-colors">
-                🗺 خريطة التعلم (roadmap.sh) ←
+                className="px-4 py-2 text-xs rounded-lg border border-[#14B8A6]/30 text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
+                🗺 خريطة التعلم ←
               </a>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {filtered.map(course => (
-                <Link key={course.id} to={`/academy/course/${course.id}`} className="bg-[#1E1E1E] border border-[#2A2A2A] hover:border-[#BB86FC]/50 transition-colors block group">
-                  <div className="aspect-video bg-[#252525] relative flex items-center justify-center">
+                <Link
+                  key={course.id}
+                  to={`/academy/course/${course.id}`}
+                  className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] hover:border-[#6366F1]/30 hover:shadow-lg transition-all block group overflow-hidden"
+                >
+                  <div className="aspect-video bg-[#162032] relative flex items-center justify-center">
                     <span className="text-4xl">🎓</span>
                     {course.native && (
-                      <span className="absolute top-2 right-2 text-[10px] font-mono border border-[#FFD700]/60 px-1.5 py-0.5 text-[#FFD700]">
+                      <span className="absolute top-3 right-3 text-[10px] font-semibold rounded-full bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30 px-2 py-0.5">
                         جامعي أصيل
                       </span>
                     )}
-                    <span className="absolute bottom-2 left-2 text-[10px] font-mono border border-[#2A2A2A] px-1.5 py-0.5 text-[#888]">
+                    <span
+                      className="absolute bottom-3 left-3 text-[10px] font-semibold rounded-full px-2 py-0.5"
+                      style={{ color: course.levelColor, background: course.levelColor + '18' }}
+                    >
                       {course.level}
                     </span>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-sm font-bold text-[#E0E0E0] mb-1 group-hover:text-[#BB86FC] transition-colors">{course.title}</h3>
-                    <p className="text-xs text-[#555] mb-3">{course.instructor} · {course.hours}h</p>
+                    <h3 className="text-sm font-bold text-[#F1F5F9] mb-1 group-hover:text-[#6366F1] transition-colors">{course.title}</h3>
+                    <p className="text-xs text-[#4A5D78] mb-3">{course.instructor} · {course.hours} ساعة</p>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-xs text-[#FFD700]">
+                      <div className="flex items-center gap-1 text-xs text-[#F59E0B]">
                         ★ {course.rating}
-                        <span className="text-[#555] mr-1">({course.students})</span>
+                        <span className="text-[#4A5D78] mr-1">({course.students})</span>
                       </div>
-                      <span className="text-xs font-mono text-[#BB86FC]">{course.price}</span>
+                      <span className="text-xs font-semibold text-[#6366F1]">{course.price}</span>
                     </div>
                   </div>
                 </Link>

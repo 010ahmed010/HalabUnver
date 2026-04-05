@@ -4,149 +4,113 @@ import { useSearchParams, Link } from 'react-router-dom'
 const CATEGORIES = ['الكل', '📚 مكتبة', '🎓 أكاديمية', '💼 مستقلون', '🛒 متجر']
 const TAGS = ['🛠️ هندسة', '⚖️ قانون', '💊 طب', '🏗️ معمار', '💻 برمجة', '🤖 ذكاء اصطناعي']
 
-const MOCK_RESULTS = [
-  { id: 1, type: 'library', title: 'ملخص هندسة البرمجيات — الفصل الدراسي الثاني', meta: 'PDF · 2.4MB · 48 صفحة', tag: '📚 مكتبة', badge: 'جامعي أصيل' },
-  { id: 2, type: 'academy', title: 'دورة React.js من الصفر إلى الاحتراف', meta: '42 ساعة · 8 مشاريع · عربي', tag: '🎓 أكاديمية', badge: '' },
-  { id: 3, type: 'freelance', title: 'أحمد الجاسم — مطوّر Full-Stack MERN', meta: 'تقييم 4.9 · 24 مشروع مكتمل', tag: '💼 مستقلون', badge: '✅ موثّق' },
-  { id: 4, type: 'store', title: 'لوحة رسم Huion H640P', meta: '450,000 SYP · متوفر فوراً', tag: '🛒 متجر', badge: 'خصم طلابي 15%' },
-  { id: 5, type: 'library', title: 'أسئلة امتحانات شبكات الحاسوب — 2024/2025', meta: 'PDF · 1.1MB · 12 صفحة', tag: '📚 مكتبة', badge: 'نماذج امتحان' },
-  { id: 6, type: 'academy', title: 'أساسيات الأمن السيبراني وCTF', meta: '18 ساعة · مستوى متوسط', tag: '🎓 أكاديمية', badge: '' },
+const RESULTS = [
+  { type: 'library', icon: '📄', title: 'مبادئ هندسة البرمجيات', subtitle: 'المكتبة · PDF · 320 صفحة', href: '/library/viewer/doc-001', badge: 'مكتبة', badgeColor: '#14B8A6' },
+  { type: 'academy', icon: '🎓', title: 'MERN Stack الشاملة', subtitle: 'أكاديمية · 42 ساعة · أحمد الجاسم', href: '/academy/course/mern-001', badge: 'دورة', badgeColor: '#6366F1' },
+  { type: 'freelance', icon: '💼', title: 'سأبني لك موقعاً MERN كاملاً', subtitle: 'مستقل · أحمد الجاسم · ★ 5.0', href: '/freelance/profile/ahmed', badge: 'خدمة', badgeColor: '#F59E0B' },
+  { type: 'store', icon: '🛒', title: 'Raspberry Pi 4 — 4GB', subtitle: 'متجر · 155,000 SYP · طلب مسبق', href: '/store', badge: 'منتج', badgeColor: '#F43F5E' },
+  { type: 'library', icon: '📝', title: 'ملخص قواعد البيانات — نظري وعملي', subtitle: 'المكتبة · ملخص · 28 صفحة', href: '/library/viewer/doc-002', badge: 'ملخص', badgeColor: '#14B8A6' },
+  { type: 'academy', icon: '🎓', title: 'Python للذكاء الاصطناعي', subtitle: 'أكاديمية · 35 ساعة · رنا أحمد', href: '/academy/course/ai-004', badge: 'دورة', badgeColor: '#6366F1' },
 ]
 
 export default function SearchResults() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const q = searchParams.get('q') || ''
+  const [searchParams] = useSearchParams()
+  const query = searchParams.get('q') || ''
   const [activeCategory, setActiveCategory] = useState('الكل')
-  const [compareList, setCompareList] = useState([])
-  const [localQ, setLocalQ] = useState(q)
+  const [activeTag, setActiveTag] = useState(null)
 
-  const filtered = MOCK_RESULTS.filter(r =>
-    (activeCategory === 'الكل' || r.tag.includes(activeCategory.replace(/^\S+\s/, '')))
-  )
-
-  const toggleCompare = (id) => {
-    setCompareList(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : prev.length < 4 ? [...prev, id] : prev
-    )
-  }
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setSearchParams({ q: localQ })
-  }
+  const filtered = RESULTS.filter(r => {
+    if (activeCategory === '📚 مكتبة' && r.type !== 'library') return false
+    if (activeCategory === '🎓 أكاديمية' && r.type !== 'academy') return false
+    if (activeCategory === '💼 مستقلون' && r.type !== 'freelance') return false
+    if (activeCategory === '🛒 متجر' && r.type !== 'store') return false
+    return true
+  })
 
   return (
     <div className="pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-
-        {/* Header */}
-        <div className="mb-6 border border-[#2A2A2A] p-4 font-mono text-xs text-[#888] flex flex-wrap gap-4 items-center">
-          <span className="text-[#BB86FC]">[ QUERY: "{q || 'IDLE'}" ]</span>
-          <span>[ STATUS: {q ? `FOUND ${filtered.length} ENTRIES` : 'SYSTEM: IDLE — Waiting for Input...'} ]</span>
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <span className="section-label">نتائج البحث</span>
+          <h1 className="text-2xl font-black text-[#F1F5F9]">
+            {query ? (
+              <>نتائج: <span className="gradient-text">"{query}"</span></>
+            ) : 'استكشاف المحتوى'}
+          </h1>
+          <p className="text-sm text-[#94A3B8] mt-1">
+            <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> نتيجة عبر جميع المنصات
+          </p>
         </div>
 
-        {/* Search bar */}
-        <form onSubmit={handleSearch} className="flex gap-2 mb-6">
-          <input
-            value={localQ}
-            onChange={e => setLocalQ(e.target.value)}
-            placeholder="ابحث في الأرشيف..."
-            className="flex-1 bg-[#1E1E1E] border border-[#2A2A2A] text-[#E0E0E0] placeholder-[#555] px-4 py-2.5 text-sm outline-none focus:border-[#BB86FC] transition-colors"
-          />
-          <button type="submit" className="px-5 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm hover:bg-[#a06cdc] transition-colors">
-            بحث
-          </button>
-        </form>
+        {/* Category filter */}
+        <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
+          {CATEGORIES.map(c => (
+            <button
+              key={c}
+              onClick={() => setActiveCategory(c)}
+              className={`shrink-0 px-4 py-1.5 text-sm rounded-full transition-all ${
+                activeCategory === c
+                  ? 'gradient-bg text-white font-semibold'
+                  : 'border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1]'
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        {/* Tag filters */}
+        <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar">
           {TAGS.map(t => (
-            <button key={t} className="px-3 py-1 text-xs border border-[#2A2A2A] text-[#888] hover:border-[#03DAC6] hover:text-[#03DAC6] transition-colors">
+            <button
+              key={t}
+              onClick={() => setActiveTag(activeTag === t ? null : t)}
+              className={`shrink-0 px-3 py-1 text-xs rounded-full transition-all ${
+                activeTag === t
+                  ? 'bg-[#6366F1]/20 text-[#6366F1] border border-[#6366F1]/40 font-semibold'
+                  : 'border border-[#1E2D45] text-[#4A5D78] hover:border-[#6366F1]/30 hover:text-[#94A3B8]'
+              }`}
+            >
               {t}
             </button>
           ))}
         </div>
 
-        <div className="flex gap-6">
-          {/* Sidebar */}
-          <aside className="hidden md:block w-56 shrink-0">
-            <div className="border border-[#2A2A2A] p-4 sticky top-20">
-              <p className="text-xs font-mono text-[#888] mb-3">[ FILTERS ]</p>
-              <div className="space-y-1">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`w-full text-right px-3 py-2 text-sm transition-colors ${
-                      activeCategory === cat
-                        ? 'bg-[#BB86FC]/10 text-[#BB86FC] border-r-2 border-[#BB86FC]'
-                        : 'text-[#888] hover:text-[#E0E0E0]'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+        {/* Results */}
+        <div className="space-y-3">
+          {filtered.map((r, i) => (
+            <Link
+              key={i}
+              to={r.href}
+              className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 flex items-center gap-4 hover:border-[#6366F1]/30 hover:shadow-lg transition-all block group"
+            >
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0"
+                style={{ background: r.badgeColor + '15' }}
+              >
+                {r.icon}
               </div>
-              <div className="border-t border-[#2A2A2A] mt-4 pt-4 space-y-2 text-xs text-[#888]">
-                <p className="font-mono">مستوى الوصول</p>
-                {['الكل', 'مجاني', 'طلابي فقط'].map(l => (
-                  <label key={l} className="flex items-center gap-2 cursor-pointer hover:text-[#E0E0E0]">
-                    <input type="radio" name="level" className="accent-[#BB86FC]" /> {l}
-                  </label>
-                ))}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-[#F1F5F9] group-hover:text-[#6366F1] transition-colors truncate">{r.title}</h3>
+                <p className="text-xs text-[#4A5D78] mt-0.5">{r.subtitle}</p>
               </div>
-            </div>
-          </aside>
-
-          {/* Results */}
-          <main className="flex-1">
-            {filtered.length === 0 ? (
-              <div className="border border-[#EF4444]/30 p-8 text-center text-[#EF4444] font-mono text-sm">
-                CRITICAL ERROR: No matches found in Database Cluster.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filtered.map(r => (
-                  <div key={r.id} className="bg-[#1E1E1E] border border-[#2A2A2A] p-5 hover:border-[#BB86FC]/40 transition-colors">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs border border-[#2A2A2A] px-2 py-0.5 text-[#888]">{r.tag}</span>
-                          {r.badge && <span className="text-xs text-[#FFD700]">{r.badge}</span>}
-                        </div>
-                        <h3 className="text-[#E0E0E0] font-medium mb-1 hover:text-[#BB86FC] cursor-pointer transition-colors">
-                          {r.title}
-                        </h3>
-                        <p className="text-xs font-mono text-[#555]">{r.meta}</p>
-                      </div>
-                      <label className="flex items-center gap-1.5 text-xs text-[#888] cursor-pointer shrink-0">
-                        <input
-                          type="checkbox"
-                          checked={compareList.includes(r.id)}
-                          onChange={() => toggleCompare(r.id)}
-                          className="accent-[#BB86FC]"
-                        />
-                        <span>+ COMP</span>
-                      </label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </main>
+              <span
+                className="text-[10px] font-semibold rounded-full px-2.5 py-1 shrink-0"
+                style={{ color: r.badgeColor, background: r.badgeColor + '15' }}
+              >
+                {r.badge}
+              </span>
+            </Link>
+          ))}
         </div>
 
-        {/* Compare bench */}
-        {compareList.length >= 2 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t border-[#BB86FC]/40 p-4">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
-              <span className="text-sm text-[#E0E0E0] font-mono">
-                [ LAB BENCH ] — مقارنة {compareList.length} عناصر
-              </span>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 bg-[#BB86FC] text-[#121212] text-sm font-bold">عرض المقارنة</button>
-                <button onClick={() => setCompareList([])} className="px-4 py-2 border border-[#2A2A2A] text-[#888] text-sm">إلغاء</button>
-              </div>
+        {filtered.length === 0 && (
+          <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-12 text-center">
+            <div className="text-4xl mb-3">🔍</div>
+            <p className="text-[#94A3B8] mb-5">لم نجد نتائج مطابقة</p>
+            <div className="flex gap-2 justify-center flex-wrap">
+              <Link to="/library" className="px-4 py-2 text-xs rounded-xl border border-[#14B8A6]/30 text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">تصفح المكتبة</Link>
+              <Link to="/academy" className="px-4 py-2 text-xs rounded-xl border border-[#6366F1]/30 text-[#6366F1] hover:bg-[#6366F1]/10 transition-all">تصفح الأكاديمية</Link>
             </div>
           </div>
         )}

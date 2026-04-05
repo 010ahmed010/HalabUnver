@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const XP_HISTORY = [
-  { action: 'تحميل ملخص هندسة البرمجيات', xp: '+25 XP', time: 'منذ يوم' },
-  { action: 'إتمام دورة React.js', xp: '+250 XP', time: 'منذ 3 أيام' },
-  { action: 'توثيق الهوية الجامعية', xp: '+500 XP', time: 'منذ أسبوع' },
-  { action: 'التسجيل في المنصة', xp: '+100 XP', time: 'منذ شهر' },
+  { action: 'تحميل ملخص هندسة البرمجيات', xp: '+25 XP', time: 'منذ يوم', color: '#14B8A6' },
+  { action: 'إتمام دورة React.js', xp: '+250 XP', time: 'منذ 3 أيام', color: '#6366F1' },
+  { action: 'توثيق الهوية الجامعية', xp: '+500 XP', time: 'منذ أسبوع', color: '#8B5CF6' },
+  { action: 'التسجيل في المنصة', xp: '+100 XP', time: 'منذ شهر', color: '#10B981' },
 ]
 
 const ACHIEVEMENTS = [
@@ -16,10 +16,10 @@ const ACHIEVEMENTS = [
 ]
 
 const QUICK_STATS = [
-  { label: 'تحميلات المكتبة', val: '42', icon: '📚' },
-  { label: 'خدمات نشطة', val: '3', icon: '💼' },
-  { label: 'طلبات المتجر', val: '1', icon: '🛒' },
-  { label: 'دورات مكتملة', val: '3', icon: '🎓' },
+  { label: 'تحميلات المكتبة', val: '42', icon: '📚', color: '#14B8A6' },
+  { label: 'خدمات نشطة', val: '3', icon: '💼', color: '#F59E0B' },
+  { label: 'طلبات المتجر', val: '1', icon: '🛒', color: '#F43F5E' },
+  { label: 'دورات مكتملة', val: '3', icon: '🎓', color: '#6366F1' },
 ]
 
 export default function AcademicProfile() {
@@ -29,54 +29,54 @@ export default function AcademicProfile() {
   return (
     <div className="space-y-4 animate-fade-up">
       {/* Identity Header */}
-      <div className="bg-[#1E1E1E] border border-[#2A2A2A] p-6">
+      <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-6">
         <div className="flex items-start gap-5">
-          <div className="w-20 h-20 border-2 border-[#BB86FC] flex items-center justify-center text-3xl shrink-0 animate-pulse-glow">👤</div>
+          <div className="w-20 h-20 rounded-2xl gradient-bg flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-[#6366F1]/20">👤</div>
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-mono text-[#BB86FC] border border-[#BB86FC]/40 px-2 py-0.5">✅ Verified Student</span>
-            </div>
-            <h1 className="text-2xl font-black text-[#E0E0E0]">أحمد الجاسم</h1>
-            <p className="text-sm text-[#888]">السنة الرابعة · كلية الهندسة المعلوماتية</p>
-            <p className="text-xs text-[#555] italic mt-1">"Challenge Every Day"</p>
+            <span className="text-xs font-medium text-[#6366F1] bg-[#6366F1]/10 rounded-full px-2.5 py-0.5 inline-block mb-2">✅ Verified Student</span>
+            <h1 className="text-2xl font-black text-[#F1F5F9]">أحمد الجاسم</h1>
+            <p className="text-sm text-[#94A3B8]">السنة الرابعة · كلية الهندسة المعلوماتية</p>
+            <p className="text-xs text-[#4A5D78] italic mt-1">"Challenge Every Day"</p>
           </div>
-          <div className="flex gap-2 items-center">
-            <span className="text-xs text-[#888]">عام</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[#94A3B8]">عام</span>
             <button
               onClick={() => setIsPublic(!isPublic)}
-              className={`w-10 h-5 rounded-full transition-colors relative ${isPublic ? 'bg-[#BB86FC]' : 'bg-[#2A2A2A]'}`}
+              className={`w-11 h-6 rounded-full transition-all relative ${isPublic ? 'bg-[#6366F1]' : 'bg-[#1E2D45]'}`}
             >
-              <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${isPublic ? 'left-5' : 'left-0.5'}`} />
+              <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${isPublic ? 'left-6' : 'left-1'}`} />
             </button>
-            <span className="text-xs text-[#888]">خاص</span>
+            <span className="text-xs text-[#94A3B8]">خاص</span>
           </div>
         </div>
       </div>
 
       {/* XP Engine */}
-      <div className="bg-[#1E1E1E] border border-[#2A2A2A] p-6">
-        <p className="text-xs font-mono text-[#888] mb-3">[ GROWTH & XP ENGINE ]</p>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-[#E0E0E0] font-bold">Level 4 — Academic Researcher</span>
-          <button onClick={() => setShowXPHistory(!showXPHistory)} className="text-xs text-[#BB86FC] hover:underline">
-            سجل النمو ↓
+      <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-6">
+        <div className="flex items-center justify-between mb-3">
+          <span className="section-label">نظام XP</span>
+          <button onClick={() => setShowXPHistory(!showXPHistory)} className="text-xs text-[#6366F1] hover:underline font-medium">
+            سجل النمو {showXPHistory ? '↑' : '↓'}
           </button>
         </div>
-        <div className="flex justify-between text-xs font-mono text-[#888] mb-1">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-[#F1F5F9] font-bold">Level 4 — Academic Researcher</span>
+        </div>
+        <div className="flex justify-between text-xs text-[#94A3B8] mb-2">
           <span>1,600 XP</span>
           <span>2,500 XP (Level 5)</span>
         </div>
-        <div className="h-3 bg-[#2A2A2A] mb-3">
-          <div className="h-3 bg-gradient-to-r from-[#BB86FC] to-[#a06cdc] transition-all w-[64%]" />
+        <div className="h-3 bg-[#162032] rounded-full overflow-hidden mb-3">
+          <div className="h-3 gradient-bg rounded-full transition-all w-[64%]" />
         </div>
         {showXPHistory && (
-          <div className="space-y-2 mt-3 border-t border-[#2A2A2A] pt-3 animate-fade-up">
+          <div className="space-y-2.5 mt-4 border-t border-[#1E2D45] pt-4 animate-fade-up">
             {XP_HISTORY.map((h, i) => (
               <div key={i} className="flex items-center justify-between text-xs">
-                <span className="text-[#888]">{h.action}</span>
+                <span className="text-[#94A3B8]">{h.action}</span>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-[#4CAF50]">{h.xp}</span>
-                  <span className="text-[#555]">{h.time}</span>
+                  <span className="font-bold font-mono" style={{ color: h.color }}>{h.xp}</span>
+                  <span className="text-[#4A5D78]">{h.time}</span>
                 </div>
               </div>
             ))}
@@ -84,37 +84,37 @@ export default function AcademicProfile() {
         )}
       </div>
 
-      {/* Academic DNA Bento */}
-      <div className="bg-[#1E1E1E] border border-[#2A2A2A] p-6">
-        <p className="text-xs font-mono text-[#888] mb-3">[ ACADEMIC_DNA ]</p>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="border border-[#2A2A2A] p-4">
-            <p className="text-[10px] text-[#555] font-mono mb-1">التخصص</p>
-            <p className="text-sm text-[#E0E0E0]">هندسة معلوماتية — برمجيات</p>
+      {/* Academic DNA */}
+      <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-6">
+        <span className="section-label">الملف الأكاديمي</span>
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="bg-[#162032] rounded-xl border border-[#1E2D45] p-4">
+            <p className="text-[10px] text-[#4A5D78] font-medium mb-1">التخصص</p>
+            <p className="text-sm text-[#F1F5F9] font-medium">هندسة معلوماتية — برمجيات</p>
           </div>
-          <div className="border border-[#2A2A2A] p-4">
-            <p className="text-[10px] text-[#555] font-mono mb-1">المهارات</p>
+          <div className="bg-[#162032] rounded-xl border border-[#1E2D45] p-4">
+            <p className="text-[10px] text-[#4A5D78] font-medium mb-1">المهارات</p>
             <div className="flex flex-wrap gap-1">
               {['MERN', 'Linux', 'Pentesting'].map(s => (
-                <span key={s} className="text-[10px] border border-[#2A2A2A] px-1.5 py-0.5 text-[#888]">{s}</span>
+                <span key={s} className="text-[10px] bg-[#0F1828] rounded-full px-2 py-0.5 text-[#94A3B8] border border-[#1E2D45]">{s}</span>
               ))}
             </div>
           </div>
-          <div className="border border-[#2A2A2A] p-4">
-            <p className="text-[10px] text-[#555] font-mono mb-1">الإنجازات</p>
-            <div className="flex gap-1">
+          <div className="bg-[#162032] rounded-xl border border-[#1E2D45] p-4">
+            <p className="text-[10px] text-[#4A5D78] font-medium mb-1">الإنجازات</p>
+            <div className="flex gap-1.5">
               {ACHIEVEMENTS.slice(0, 3).map(a => (
                 <span key={a.icon} title={a.label} className="text-base cursor-help">{a.icon}</span>
               ))}
             </div>
           </div>
-          <div className="border border-[#2A2A2A] p-4">
-            <p className="text-[10px] text-[#555] font-mono mb-1">الإحصائيات</p>
-            <div className="space-y-0.5">
+          <div className="bg-[#162032] rounded-xl border border-[#1E2D45] p-4">
+            <p className="text-[10px] text-[#4A5D78] font-medium mb-1">الإحصائيات</p>
+            <div className="space-y-1">
               {QUICK_STATS.slice(0, 2).map(s => (
                 <div key={s.label} className="flex justify-between text-xs">
-                  <span className="text-[#888]">{s.label}</span>
-                  <span className="text-[#E0E0E0] font-bold">{s.val}</span>
+                  <span className="text-[#94A3B8]">{s.label}</span>
+                  <span className="text-[#F1F5F9] font-bold">{s.val}</span>
                 </div>
               ))}
             </div>
@@ -125,10 +125,13 @@ export default function AcademicProfile() {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {QUICK_STATS.map(s => (
-          <div key={s.label} className="bg-[#1E1E1E] border border-[#2A2A2A] p-4 text-center hover:border-[#BB86FC]/40 transition-colors">
+          <div
+            key={s.label}
+            className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 text-center hover:border-[#6366F1]/20 transition-all"
+          >
             <span className="text-xl block mb-1">{s.icon}</span>
-            <span className="text-2xl font-black text-[#BB86FC]">{s.val}</span>
-            <p className="text-xs text-[#888] mt-0.5">{s.label}</p>
+            <span className="text-2xl font-black" style={{ color: s.color }}>{s.val}</span>
+            <p className="text-xs text-[#94A3B8] mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
@@ -136,29 +139,32 @@ export default function AcademicProfile() {
       {/* Navigation Tiles */}
       <div className="grid grid-cols-2 gap-3">
         {[
-          { label: '📚 دوراتي', desc: 'المقررات المسجّل بها', href: '/dashboard/learning' },
-          { label: '🛒 طلباتي', desc: 'مشتريات المتجر', href: '/dashboard/orders' },
-          { label: '💳 محفظتي', desc: 'المدفوعات والاشتراك', href: '/dashboard/wallet' },
-          { label: '📥 الرسائل', desc: '3 رسائل غير مقروءة', href: '/dashboard/inbox' },
+          { label: 'دوراتي', icon: '📚', desc: 'المقررات المسجّل بها', href: '/dashboard/learning' },
+          { label: 'طلباتي', icon: '🛒', desc: 'مشتريات المتجر', href: '/dashboard/orders' },
+          { label: 'محفظتي', icon: '💳', desc: 'المدفوعات والاشتراك', href: '/dashboard/wallet' },
+          { label: 'الرسائل', icon: '📥', desc: '3 رسائل غير مقروءة', href: '/dashboard/inbox' },
         ].map(t => (
-          <Link key={t.href} to={t.href} className="bg-[#1E1E1E] border border-[#2A2A2A] p-4 hover:border-[#BB86FC]/50 transition-colors">
-            <p className="text-sm font-bold text-[#E0E0E0]">{t.label}</p>
-            <p className="text-xs text-[#888] mt-0.5">{t.desc}</p>
+          <Link
+            key={t.href}
+            to={t.href}
+            className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 hover:border-[#6366F1]/30 hover:bg-[#6366F1]/5 transition-all"
+          >
+            <span className="text-xl block mb-1">{t.icon}</span>
+            <p className="text-sm font-bold text-[#F1F5F9]">{t.label}</p>
+            <p className="text-xs text-[#94A3B8] mt-0.5">{t.desc}</p>
           </Link>
         ))}
       </div>
 
-      {/* Sticky actions */}
+      {/* Actions */}
       <div className="flex gap-3">
-        <button className="flex-1 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm hover:bg-[#a06cdc] transition-colors">
+        <button className="flex-1 py-3 gradient-bg text-white font-bold text-sm rounded-xl hover:opacity-90 transition-opacity">
           ✏️ تعديل الملف الشخصي
         </button>
-        <button className="px-5 py-2.5 border border-[#2A2A2A] text-[#888] text-sm hover:border-[#BB86FC] transition-colors">
-          📤 مشاركة الرابط
+        <button className="px-5 py-3 border border-[#1E2D45] text-[#94A3B8] text-sm rounded-xl hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all">
+          📤 مشاركة
         </button>
       </div>
-
-      <p className="text-[10px] font-mono text-[#555] text-center">HalabUnver System Design v1.0</p>
     </div>
   )
 }

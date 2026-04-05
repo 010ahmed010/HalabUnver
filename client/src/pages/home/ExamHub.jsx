@@ -1,110 +1,125 @@
 import { Link } from 'react-router-dom'
 
 const LIVE_RESOURCES = [
-  { title: 'مراجعة شاملة — هندسة البرمجيات', duration: '2:15:00', type: 'LIVE', branch: 'معلوماتية' },
-  { title: 'Crash Course — قواعد البيانات', duration: '1:45:00', type: 'VIDEO', branch: 'معلوماتية' },
-  { title: 'مراجعة مكثفة — ميكانيكا الموائع', duration: '3:00:00', type: 'LIVE', branch: 'ميكانيك' },
-  { title: 'Shorts — تحليل الدوائر الكهربائية', duration: '0:28:00', type: 'SHORT', branch: 'كهربائية' },
+  { title: 'مراجعة شاملة — هندسة البرمجيات', duration: '2:15:00', type: 'LIVE', branch: 'معلوماتية', color: '#F43F5E' },
+  { title: 'Crash Course — قواعد البيانات', duration: '1:45:00', type: 'VIDEO', branch: 'معلوماتية', color: '#6366F1' },
+  { title: 'ملخص سريع — الإلكترونيات', duration: '0:55:00', type: 'PDF', branch: 'كهربائية', color: '#14B8A6' },
+  { title: 'حل نماذج — رياضيات هندسية', duration: '1:30:00', type: 'VIDEO', branch: 'عامة', color: '#F59E0B' },
 ]
 
-const PREDICTED = [
-  { title: 'أسئلة متوقعة — هندسة البرمجيات 2026', branch: 'معلوماتية', downloads: 342 },
-  { title: 'نماذج امتحانات شبكات الحاسوب', branch: 'معلوماتية', downloads: 218 },
-  { title: 'ملخص Shorts — تحليل الدوائر', branch: 'كهربائية', downloads: 156 },
-  { title: 'أسئلة متوقعة — رياضيات هندسية 2', branch: 'عامة', downloads: 401 },
+const LIBRARY_PICKS = [
+  { title: 'ملخص هندسة البرمجيات', branch: 'معلوماتية', downloads: 2100 },
+  { title: 'نماذج امتحانات قواعد البيانات 2025', branch: 'معلوماتية', downloads: 1860 },
+  { title: 'مراجعة شاملة — إلكترونيات 3', branch: 'كهربائية', downloads: 1540 },
+  { title: 'مسائل رياضيات هندسية محلولة', branch: 'عامة', downloads: 1320 },
+]
+
+const ANNOUNCEMENTS = [
+  { date: '5 أبريل', text: 'امتحانات السنة الرابعة تبدأ في 14 أبريل 2026 — جدول كامل في الموقع الرسمي', urgent: true },
+  { date: '3 أبريل', text: 'تمت إضافة 14 ملخصاً جديداً لكلية الهندسة المعمارية', urgent: false },
+  { date: '2 أبريل', text: 'Crash Course مجاني: قواعد البيانات — 5 أبريل الساعة 7م', urgent: false },
+  { date: '1 أبريل', text: 'بدء التسجيل في امتحانات اللحاق — الكلية الفنية الهندسية', urgent: false },
 ]
 
 export default function ExamHub() {
   return (
     <div className="pt-16 min-h-screen">
-      {/* Hero */}
-      <div className="bg-[#EF4444]/8 border-b border-[#EF4444]/30 py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="w-3 h-3 rounded-full bg-[#EF4444] animate-blink-red" />
-            <span className="text-xs font-mono text-[#EF4444]">[ EXAM SEASON ACTIVE ]</span>
-          </div>
-          <h1 className="text-3xl font-black text-[#E0E0E0]">🚨 مركز الامتحانات</h1>
-          <p className="text-[#888] text-sm mt-1">موسم الامتحانات نشط — كل الموارد متاحة للطلاب</p>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 py-8">
+
+        <div className="mb-8">
+          <span className="section-label">موسم الامتحانات</span>
+          <h1 className="text-2xl font-black text-[#F1F5F9]">مركز الامتحانات والأخبار</h1>
+        </div>
+
+        {/* Season alert */}
+        <div className="bg-[#F43F5E]/5 rounded-2xl border border-[#F43F5E]/30 p-5 mb-6 flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F43F5E] animate-blink-soft" />
+            <span className="text-[#F43F5E] font-bold text-sm">موسم الامتحانات نشط الآن</span>
+          </div>
+          <p className="text-sm text-[#94A3B8]">استعد جيداً — كل الموارد متاحة مجاناً لفترة محدودة</p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Live Terminal */}
-          <div className="lg:col-span-2">
-            <div className="mb-4">
-              <span className="text-xs font-mono text-[#888]">[ LIVE_TERMINAL ] — دروس ومراجعات مباشرة</span>
-            </div>
-            <div className="space-y-3">
+          {/* Main content */}
+          <div className="lg:col-span-2 space-y-5">
+
+            {/* Live sessions */}
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#1E2D45] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#F43F5E] animate-blink-soft" />
+                <p className="text-sm font-semibold text-[#F1F5F9]">المراجعات والبث المباشر</p>
+              </div>
               {LIVE_RESOURCES.map((r, i) => (
-                <div key={i} className="bg-[#1E1E1E] border border-[#2A2A2A] p-5 flex items-center justify-between gap-4 hover:border-[#EF4444]/40 transition-colors cursor-pointer">
+                <div
+                  key={i}
+                  className="flex items-center justify-between px-5 py-4 border-b border-[#1E2D45] last:border-0 hover:bg-[#162032] transition-colors cursor-pointer"
+                >
                   <div className="flex items-center gap-3">
-                    <span className={`text-xs font-mono px-2 py-0.5 ${
-                      r.type === 'LIVE' ? 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40 animate-blink-red' :
-                      r.type === 'SHORT' ? 'bg-[#03DAC6]/20 text-[#03DAC6] border border-[#03DAC6]/40' :
-                      'bg-[#BB86FC]/20 text-[#BB86FC] border border-[#BB86FC]/40'
-                    }`}>
+                    <span
+                      className="text-[10px] font-bold rounded-full px-2.5 py-1 shrink-0"
+                      style={{ color: r.color, background: r.color + '18' }}
+                    >
                       {r.type}
                     </span>
                     <div>
-                      <p className="text-[#E0E0E0] text-sm font-medium">{r.title}</p>
-                      <p className="text-xs font-mono text-[#555]">{r.duration} · {r.branch}</p>
+                      <p className="text-sm text-[#F1F5F9] font-medium">{r.title}</p>
+                      <p className="text-xs text-[#4A5D78] mt-0.5">{r.branch} · {r.duration}</p>
                     </div>
                   </div>
-                  <button className="px-3 py-1.5 border border-[#2A2A2A] text-[#888] text-xs hover:border-[#BB86FC] hover:text-[#BB86FC] transition-colors shrink-0">
-                    ▶ شاهد
+                  <button className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] border border-[#1E2D45] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all shrink-0">
+                    {r.type === 'LIVE' ? '▶ انضم' : '▶ شاهد'}
                   </button>
                 </div>
               ))}
             </div>
 
-            {/* Study Chats */}
-            <div className="mt-8">
-              <span className="text-xs font-mono text-[#888]">[ STUDY_CHATS ] — غرف الدراسة المباشرة</span>
-              <div className="grid grid-cols-2 gap-3 mt-4">
-                {['معلوماتية', 'كهربائية', 'ميكانيك', 'معمار'].map(branch => (
-                  <button key={branch} className="bg-[#1E1E1E] border border-[#2A2A2A] p-4 text-right hover:border-[#BB86FC]/40 transition-colors">
-                    <p className="text-sm text-[#E0E0E0] font-medium"># {branch}</p>
-                    <p className="text-xs text-[#555] font-mono mt-1">غرفة دراسة نشطة</p>
-                  </button>
-                ))}
+            {/* Library picks */}
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
+                <p className="text-sm font-semibold text-[#F1F5F9]">📚 أبرز ملفات المكتبة</p>
+                <Link to="/library" className="text-xs text-[#14B8A6] hover:underline">عرض الكل →</Link>
               </div>
+              {LIBRARY_PICKS.map((p, i) => (
+                <Link
+                  key={i}
+                  to="/library"
+                  className="flex items-center justify-between px-5 py-3.5 border-b border-[#1E2D45] last:border-0 hover:bg-[#162032] transition-colors"
+                >
+                  <div>
+                    <p className="text-sm text-[#F1F5F9]">{p.title}</p>
+                    <p className="text-xs text-[#4A5D78] mt-0.5">{p.branch}</p>
+                  </div>
+                  <span className="text-xs text-[#14B8A6] font-medium shrink-0">↓ {p.downloads.toLocaleString('ar')}</span>
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="border border-[#2A2A2A] p-4">
-              <p className="text-xs font-mono text-[#888] mb-3">[ PREDICTED_RESOURCES ]</p>
-              <div className="space-y-3">
-                {PREDICTED.map((p, i) => (
-                  <Link key={i} to="/library" className="block border-b border-[#2A2A2A] pb-3 last:border-0 last:pb-0 hover:text-[#BB86FC] transition-colors">
-                    <p className="text-sm text-[#E0E0E0]">{p.title}</p>
-                    <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-[#555] font-mono">{p.branch}</span>
-                      <span className="text-xs text-[#03DAC6] font-mono">↓ {p.downloads}</span>
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+                <p className="text-sm font-semibold text-[#F1F5F9]">آخر الإعلانات</p>
+              </div>
+              <div className="divide-y divide-[#1E2D45]">
+                {ANNOUNCEMENTS.map((a, i) => (
+                  <div key={i} className={`px-5 py-4 ${a.urgent ? 'bg-[#F43F5E]/3' : ''}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] text-[#4A5D78]">{a.date}</span>
+                      {a.urgent && <span className="text-[10px] bg-[#F43F5E]/15 text-[#F43F5E] rounded-full px-2 py-0.5 font-medium">عاجل</span>}
                     </div>
-                  </Link>
+                    <p className="text-xs text-[#F1F5F9]">{a.text}</p>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Exclusive offers */}
-            <div className="border border-[#FFD700]/20 bg-[#FFD700]/5 p-4">
-              <p className="text-xs font-mono text-[#FFD700] mb-2">[ EXCLUSIVE_OFFERS ]</p>
-              <p className="text-sm text-[#E0E0E0] mb-3">خصم 30% على دورات الامتحانات — لفترة محدودة</p>
-              <Link to="/academy" className="block px-4 py-2 bg-[#FFD700] text-[#121212] font-bold text-sm text-center hover:bg-[#e6c200] transition-colors">
-                تصفّح الدورات
-              </Link>
-            </div>
-
-            {/* Ad zone */}
-            <div className="border border-dashed border-[#2A2A2A] p-4 text-center">
-              <p className="text-xs font-mono text-[#555]">[ AD_ZONE ]</p>
-              <p className="text-xs text-[#444] mt-1">مقهى الدراسة — شارع الجامعة</p>
-              <p className="text-xs text-[#444]">خصم 20% بإبراز بطاقة HalabUnver</p>
+            <div className="bg-gradient-to-br from-[#6366F1]/10 to-[#8B5CF6]/5 rounded-2xl border border-[#6366F1]/20 p-5 text-center">
+              <p className="text-xs font-semibold text-[#6366F1] mb-2">نصيحة الموسم</p>
+              <p className="text-sm text-[#F1F5F9] font-medium mb-2">حمّل الملخصات، شاهد المراجعات، ونظّم وقتك.</p>
+              <p className="text-xs text-[#4A5D78] italic">"Challenge Every Day — النجاح يبدأ من هنا."</p>
             </div>
           </div>
         </div>

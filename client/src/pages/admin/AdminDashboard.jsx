@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import StatusPill from '../../components/shared/StatusPill'
 
 const ADMIN_MODULES = [
-  { icon: '👥', label: 'إدارة المستخدمين', desc: 'قبول الهويات، الصلاحيات، بانات الطلاب', color: '#BB86FC' },
-  { icon: '📦', label: 'إدارة الطلبات', desc: 'جميع طلبات المتجر والمستقلين', color: '#03DAC6' },
-  { icon: '📚', label: 'إدارة المكتبة', desc: 'رفع ومراجعة الملفات والملخصات', color: '#FFD700' },
-  { icon: '📢', label: 'لوحة الإعلانات', desc: 'نشر الأخبار والإعلانات المدفوعة', color: '#CF6679' },
-  { icon: '💰', label: 'السجل المالي', desc: 'تتبع الإيرادات وتحويلات ShamCash', color: '#4CAF50' },
-  { icon: '🏪', label: 'مخزون المتجر', desc: 'إدارة المنتجات والأسعار والمخزون', color: '#BB86FC' },
-  { icon: '⚙️', label: 'إعدادات النظام', desc: 'التخطيط العام وسعر الصرف اليومي', color: '#03DAC6' },
+  { icon: '👥', label: 'إدارة المستخدمين', desc: 'قبول الهويات، الصلاحيات، بيانات الطلاب', color: '#6366F1' },
+  { icon: '📦', label: 'إدارة الطلبات', desc: 'جميع طلبات المتجر والمستقلين', color: '#14B8A6' },
+  { icon: '📚', label: 'إدارة المكتبة', desc: 'رفع ومراجعة الملفات والملخصات', color: '#F59E0B' },
+  { icon: '📢', label: 'لوحة الإعلانات', desc: 'نشر الأخبار والإعلانات المدفوعة', color: '#F43F5E' },
+  { icon: '💰', label: 'السجل المالي', desc: 'تتبع الإيرادات وتحويلات ShamCash', color: '#10B981' },
+  { icon: '🏪', label: 'مخزون المتجر', desc: 'إدارة المنتجات والأسعار والمخزون', color: '#8B5CF6' },
+  { icon: '⚙️', label: 'إعدادات النظام', desc: 'التخطيط العام وسعر الصرف اليومي', color: '#94A3B8' },
 ]
 
 const PENDING_USERS = [
@@ -24,10 +24,10 @@ const PENDING_ORDERS = [
 ]
 
 const STATS = [
-  { label: 'طلاب جدد اليوم', val: '14', color: '#BB86FC' },
-  { label: 'طلبات معلّقة', val: '7', color: '#FFD700' },
-  { label: 'إيرادات الشهر', val: '2.4M SYP', color: '#4CAF50' },
-  { label: 'هويات بانتظار المراجعة', val: '3', color: '#EF4444' },
+  { label: 'طلاب جدد اليوم', val: '14', color: '#6366F1', bg: '#6366F110' },
+  { label: 'طلبات معلّقة', val: '7', color: '#F59E0B', bg: '#F59E0B10' },
+  { label: 'إيرادات الشهر', val: '2.4M SYP', color: '#10B981', bg: '#10B98110' },
+  { label: 'هويات بانتظار المراجعة', val: '3', color: '#F43F5E', bg: '#F43F5E10' },
 ]
 
 const EXAM_SEASON = true
@@ -43,27 +43,29 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <span className="text-xs font-mono text-[#888]">[ ADMIN_DASHBOARD ] — مركز التحكم</span>
-            <h1 className="text-2xl font-black text-[#E0E0E0] mt-1">⚙️ لوحة الإدارة</h1>
+            <span className="section-label">لوحة الإدارة</span>
+            <h1 className="text-2xl font-black text-[#F1F5F9]">⚙️ مركز التحكم</h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 border border-[#2A2A2A] px-3 py-2">
-              <span className="text-xs text-[#888]">موسم الامتحانات</span>
-              <button onClick={() => setExamSeason(!examSeason)}
-                className={`w-10 h-5 rounded-full transition-colors relative ${examSeason ? 'bg-[#EF4444]' : 'bg-[#2A2A2A]'}`}>
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${examSeason ? 'left-5' : 'left-0.5'}`} />
+            <div className="flex items-center gap-3 bg-[#0F1828] border border-[#1E2D45] rounded-xl px-4 py-2.5">
+              <span className="text-xs text-[#94A3B8]">موسم الامتحانات</span>
+              <button
+                onClick={() => setExamSeason(!examSeason)}
+                className={`w-11 h-6 rounded-full transition-all relative ${examSeason ? 'bg-[#F43F5E]' : 'bg-[#1E2D45]'}`}
+              >
+                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${examSeason ? 'left-6' : 'left-1'}`} />
               </button>
-              {examSeason && <span className="text-xs text-[#EF4444] font-mono animate-blink-red">ACTIVE</span>}
+              {examSeason && <span className="text-xs text-[#F43F5E] font-semibold animate-blink-soft">نشط</span>}
             </div>
           </div>
         </div>
 
-        {/* Stats bar */}
+        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {STATS.map(s => (
-            <div key={s.label} className="bg-[#1E1E1E] border border-[#2A2A2A] p-4">
-              <p className="text-2xl font-black" style={{ color: s.color }}>{s.val}</p>
-              <p className="text-xs text-[#888] mt-0.5">{s.label}</p>
+            <div key={s.label} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 hover:border-[#6366F1]/20 transition-all">
+              <p className="text-2xl font-black mb-0.5" style={{ color: s.color }}>{s.val}</p>
+              <p className="text-xs text-[#94A3B8]">{s.label}</p>
             </div>
           ))}
         </div>
@@ -72,18 +74,31 @@ export default function AdminDashboard() {
 
           {/* Module nav */}
           <aside className="lg:col-span-1">
-            <div className="border border-[#2A2A2A]">
-              <div className="p-3 border-b border-[#2A2A2A]">
-                <p className="text-xs font-mono text-[#888]">[ MODULES ]</p>
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+              <div className="p-3 border-b border-[#1E2D45]">
+                <p className="text-xs font-semibold text-[#F1F5F9]">الوحدات</p>
               </div>
               <nav className="p-2">
-                <button onClick={() => setActiveModule('overview')}
-                  className={`w-full text-right px-3 py-2.5 text-sm mb-1 transition-colors ${activeModule === 'overview' ? 'bg-[#BB86FC]/10 text-[#BB86FC] border-r-2 border-[#BB86FC]' : 'text-[#888] hover:text-[#E0E0E0]'}`}>
+                <button
+                  onClick={() => setActiveModule('overview')}
+                  className={`w-full text-right px-3 py-2.5 text-sm mb-1 rounded-xl transition-all ${
+                    activeModule === 'overview'
+                      ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
+                      : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
+                  }`}
+                >
                   📊 نظرة عامة
                 </button>
                 {ADMIN_MODULES.map(m => (
-                  <button key={m.label} onClick={() => setActiveModule(m.label)}
-                    className={`w-full text-right px-3 py-2.5 text-xs mb-1 transition-colors ${activeModule === m.label ? 'bg-[#BB86FC]/10 text-[#BB86FC] border-r-2 border-[#BB86FC]' : 'text-[#888] hover:text-[#E0E0E0]'}`}>
+                  <button
+                    key={m.label}
+                    onClick={() => setActiveModule(m.label)}
+                    className={`w-full text-right px-3 py-2.5 text-xs mb-1 rounded-xl transition-all ${
+                      activeModule === m.label
+                        ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
+                        : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
+                    }`}
+                  >
                     {m.icon} {m.label}
                   </button>
                 ))}
@@ -99,75 +114,85 @@ export default function AdminDashboard() {
                 {/* Module cards */}
                 <div className="grid grid-cols-2 gap-3">
                   {ADMIN_MODULES.map(m => (
-                    <button key={m.label} onClick={() => setActiveModule(m.label)}
-                      className="bg-[#1E1E1E] border border-[#2A2A2A] p-4 text-right hover:border-[#BB86FC]/50 transition-colors">
-                      <span className="text-2xl block mb-2">{m.icon}</span>
-                      <p className="text-sm font-bold text-[#E0E0E0]">{m.label}</p>
-                      <p className="text-xs text-[#888] mt-0.5">{m.desc}</p>
+                    <button
+                      key={m.label}
+                      onClick={() => setActiveModule(m.label)}
+                      className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 text-right hover:border-[#6366F1]/30 hover:shadow-lg transition-all"
+                    >
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-2" style={{ background: m.color + '18' }}>
+                        {m.icon}
+                      </div>
+                      <p className="text-sm font-bold text-[#F1F5F9]">{m.label}</p>
+                      <p className="text-xs text-[#94A3B8] mt-0.5">{m.desc}</p>
                     </button>
                   ))}
                 </div>
 
                 {/* Pending IDs */}
-                <div className="bg-[#1E1E1E] border border-[#2A2A2A]">
-                  <div className="px-5 py-3 border-b border-[#2A2A2A] flex items-center justify-between">
-                    <p className="text-xs font-mono text-[#888]">[ PENDING_IDs ] — هويات بانتظار التحقق</p>
-                    <span className="text-xs bg-[#EF4444] text-white px-2 py-0.5">{PENDING_USERS.length}</span>
+                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+                  <div className="px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
+                    <p className="text-sm font-semibold text-[#F1F5F9]">هويات بانتظار التحقق</p>
+                    <span className="text-xs bg-[#F43F5E] text-white px-2 py-0.5 rounded-full font-bold">{PENDING_USERS.length}</span>
                   </div>
                   {PENDING_USERS.map(u => (
-                    <div key={u.id} className="flex items-center justify-between px-5 py-3 border-b border-[#2A2A2A] last:border-0 gap-4">
+                    <div key={u.id} className="flex items-center justify-between px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
                       <div className="flex-1">
-                        <p className="text-sm text-[#E0E0E0]">{u.name}</p>
-                        <p className="text-xs font-mono text-[#555]">{u.id} · {u.faculty}</p>
+                        <p className="text-sm text-[#F1F5F9] font-medium">{u.name}</p>
+                        <p className="text-xs text-[#4A5D78] mt-0.5">{u.id} · {u.faculty}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <StatusPill status="pending" />
-                        <button className="px-3 py-1 bg-[#4CAF50] text-white text-xs font-bold hover:bg-[#43a047] transition-colors">✅ قبول</button>
-                        <button className="px-3 py-1 bg-[#EF4444] text-white text-xs font-bold hover:bg-[#e53935] transition-colors">✕ رفض</button>
+                        <button className="px-3 py-1.5 bg-[#10B981] text-white text-xs font-bold rounded-lg hover:bg-[#0d9f72] transition-colors">✅ قبول</button>
+                        <button className="px-3 py-1.5 bg-[#F43F5E] text-white text-xs font-bold rounded-lg hover:bg-[#e0284f] transition-colors">✕ رفض</button>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Pending orders */}
-                <div className="bg-[#1E1E1E] border border-[#2A2A2A]">
-                  <div className="px-5 py-3 border-b border-[#2A2A2A]">
-                    <p className="text-xs font-mono text-[#888]">[ PENDING_ORDERS ] — طلبات المتجر</p>
+                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
+                  <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+                    <p className="text-sm font-semibold text-[#F1F5F9]">طلبات المتجر المعلّقة</p>
                   </div>
                   {PENDING_ORDERS.map(o => (
-                    <div key={o.id} className="flex items-center justify-between px-5 py-3 border-b border-[#2A2A2A] last:border-0 gap-4">
+                    <div key={o.id} className="flex items-center justify-between px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
                       <div className="flex-1">
-                        <p className="text-sm text-[#E0E0E0]">{o.item}</p>
-                        <p className="text-xs font-mono text-[#555]">{o.id} · {o.student} · {o.amount} SYP</p>
+                        <p className="text-sm text-[#F1F5F9] font-medium">{o.item}</p>
+                        <p className="text-xs text-[#4A5D78] mt-0.5">{o.id} · {o.student} · {o.amount} SYP</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <StatusPill status={o.status} />
-                        <button className="px-3 py-1 border border-[#BB86FC]/40 text-[#BB86FC] text-xs hover:bg-[#BB86FC]/10 transition-colors">تفاصيل</button>
+                        <button className="px-3 py-1.5 rounded-lg border border-[#6366F1]/30 text-[#6366F1] text-xs hover:bg-[#6366F1]/10 transition-all">تفاصيل</button>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Exchange rate */}
-                <div className="border border-[#2A2A2A] p-5">
-                  <p className="text-xs font-mono text-[#888] mb-3">[ GLOBAL_SETTINGS ] — إعدادات اليوم</p>
+                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5">
+                  <p className="text-sm font-semibold text-[#F1F5F9] mb-4">إعدادات اليوم</p>
                   <div className="flex items-center gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#888]">سعر الصرف اليومي (SYP/$):</span>
-                      <input defaultValue="14500" className="w-24 bg-[#1E1E1E] border border-[#2A2A2A] text-[#E0E0E0] px-3 py-1.5 text-sm font-mono outline-none focus:border-[#BB86FC]" />
+                      <span className="text-xs text-[#94A3B8]">سعر الصرف اليومي (SYP/$):</span>
+                      <input
+                        defaultValue="14500"
+                        className="w-24 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] px-3 py-1.5 text-sm font-mono outline-none focus:border-[#6366F1]/50 rounded-lg transition-colors"
+                      />
                     </div>
-                    <button className="px-4 py-1.5 bg-[#BB86FC] text-[#121212] text-xs font-bold hover:bg-[#a06cdc] transition-colors">تحديث السعر</button>
+                    <button className="px-4 py-1.5 gradient-bg text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">تحديث السعر</button>
                   </div>
                 </div>
               </>
             )}
 
             {activeModule !== 'overview' && (
-              <div className="bg-[#1E1E1E] border border-[#BB86FC]/20 p-8 text-center">
-                <p className="text-4xl mb-4">{ADMIN_MODULES.find(m => m.label === activeModule)?.icon}</p>
-                <h3 className="text-xl font-bold text-[#E0E0E0] mb-2">{activeModule}</h3>
-                <p className="text-sm text-[#888]">{ADMIN_MODULES.find(m => m.label === activeModule)?.desc}</p>
-                <p className="text-xs font-mono text-[#555] mt-4">[ MODULE UNDER CONSTRUCTION — CONNECTED TO BACKEND API ]</p>
+              <div className="bg-[#0F1828] rounded-2xl border border-[#6366F1]/20 p-10 text-center">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style={{ background: (ADMIN_MODULES.find(m => m.label === activeModule)?.color || '#6366F1') + '18' }}>
+                  {ADMIN_MODULES.find(m => m.label === activeModule)?.icon}
+                </div>
+                <h3 className="text-xl font-bold text-[#F1F5F9] mb-2">{activeModule}</h3>
+                <p className="text-sm text-[#94A3B8] mb-4">{ADMIN_MODULES.find(m => m.label === activeModule)?.desc}</p>
+                <span className="text-xs text-[#4A5D78] bg-[#162032] rounded-full px-4 py-2 inline-block">قيد التطوير — متصل بـ Backend API</span>
               </div>
             )}
           </main>

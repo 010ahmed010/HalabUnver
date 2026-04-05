@@ -2,132 +2,195 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const STEPS = [
-  { key: 'terms', label: 'شروط الخدمة' },
-  { key: 'skills', label: 'محاذاة المهارات' },
-  { key: 'payment', label: 'رسوم الوصول' },
+  { key: 'terms', label: 'الشروط والأحكام' },
+  { key: 'profile', label: 'معلوماتك الأساسية' },
+  { key: 'skills', label: 'مهاراتك ومجالك' },
+  { key: 'payment', label: 'إعداد الدفع' },
 ]
 
-const USER_SKILLS = ['MERN Stack', 'Pentesting', 'Linux', 'Python']
+const SUBSCRIPTION_FEATURES = [
+  'إنشاء ملف مستقل موثّق',
+  'نشر خدماتك في الكتالوج',
+  'الوصول لنظام الوساطة الآمن (Escrow)',
+  'شارة "Verified Student"',
+  'قبول المدفوعات عبر ShamCash',
+]
 
 export default function FreelanceOnboarding() {
-  const [currentStep, setCurrentStep] = useState(0)
+  const [step, setStep] = useState(0)
   const [agreed, setAgreed] = useState(false)
-  const [confirmedSkills, setConfirmedSkills] = useState([...USER_SKILLS])
+  const [form, setForm] = useState({ name: '', bio: '', major: '', skills: '' })
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleNext = () => {
+    if (step < STEPS.length - 1) setStep(s => s + 1)
+    else setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <div className="pt-16 min-h-screen flex items-center justify-center">
+        <div className="max-w-md text-center animate-fade-up px-4">
+          <div className="w-24 h-24 gradient-bg rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-[#6366F1]/20">✅</div>
+          <h2 className="text-2xl font-black text-[#F1F5F9] mb-2">أهلاً بك في HalabWork!</h2>
+          <p className="text-[#94A3B8] text-sm mb-4">طلبك قيد المراجعة. سيتم تفعيل حسابك خلال 24–48 ساعة.</p>
+          <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 text-right mb-6 text-sm space-y-2 text-[#94A3B8]">
+            <p>🎓 <span className="text-[#F1F5F9] font-medium">المرحلة التالية:</span> قم بزيارة لوحة التحكم</p>
+            <p>📋 <span className="text-[#F1F5F9] font-medium">أضف</span> خدماتك الأولى في الكتالوج</p>
+            <p>💬 <span className="text-[#F1F5F9] font-medium">ابدأ</span> باستقبال الطلبات من العملاء</p>
+          </div>
+          <Link to="/dashboard" className="px-8 py-3.5 gradient-bg text-white font-bold text-sm rounded-xl hover:opacity-90 transition-opacity inline-block">
+            الذهاب للوحة التحكم
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="pt-16 min-h-screen">
-      {/* Hero Banner */}
-      <div className="relative py-12 border-b border-[#2A2A2A] grid-bg overflow-hidden">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 border border-[#BB86FC]/30 px-3 py-1 mb-4 text-xs font-mono text-[#888]">
-            👤 المستخدم الحالي: <span className="text-[#BB86FC]">أحمد الجاسم</span>
-          </div>
-          <h1 className="text-3xl font-black text-[#E0E0E0]">Scale Your Skills.</h1>
-          <p className="text-[#BB86FC] text-xl font-bold mt-1">Challenge Every Day.</p>
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="mb-8">
+          <span className="section-label">انضم كمستقل</span>
+          <h1 className="text-2xl font-black text-[#F1F5F9] mb-1">سجّل كمستقل</h1>
+          <p className="text-sm text-[#94A3B8]">$5/شهر · <span className="text-[#10B981] font-medium">دخول مجاني الأسبوع الأول</span></p>
         </div>
-      </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-10">
-
-        {/* Step indicator */}
-        <div className="flex items-center gap-0 mb-10">
+        {/* Progress steps */}
+        <div className="flex gap-2 mb-8 overflow-x-auto no-scrollbar">
           {STEPS.map((s, i) => (
-            <div key={s.key} className="flex items-center flex-1">
-              <div className={`flex items-center gap-2 px-4 py-2 text-xs font-mono w-full justify-center border transition-colors ${
-                i === currentStep ? 'border-[#BB86FC] text-[#BB86FC] bg-[#BB86FC]/10' :
-                i < currentStep ? 'border-[#4CAF50] text-[#4CAF50]' :
-                'border-[#2A2A2A] text-[#555]'
-              }`}>
-                {i < currentStep ? '✓' : `0${i + 1}`} {s.label}
+            <div
+              key={s.key}
+              className={`flex items-center gap-2 shrink-0 ${i < STEPS.length - 1 ? 'flex-1' : ''}`}
+            >
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                  i < step
+                    ? 'bg-[#10B981] text-white'
+                    : i === step
+                    ? 'gradient-bg text-white'
+                    : 'bg-[#162032] text-[#4A5D78] border border-[#1E2D45]'
+                }`}
+              >
+                {i < step ? '✓' : i + 1}
               </div>
-              {i < STEPS.length - 1 && <div className="w-px h-8 bg-[#2A2A2A]" />}
+              <span className={`text-xs ${i === step ? 'text-[#F1F5F9] font-semibold' : 'text-[#4A5D78]'}`}>{s.label}</span>
+              {i < STEPS.length - 1 && <div className="flex-1 h-px bg-[#1E2D45]" />}
             </div>
           ))}
         </div>
 
-        {/* Step 1 — Terms */}
-        {currentStep === 0 && (
-          <div className="space-y-4 animate-fade-up">
-            <p className="text-xs font-mono text-[#888] mb-3">[ STEP_1 ] — شروط الخدمة</p>
-            <div className="border border-[#2A2A2A] p-5 h-56 overflow-y-auto text-xs text-[#888] leading-loose font-mono">
-              <p className="text-[#E0E0E0] font-bold mb-3">اتفاقية المستقلين — HalabUnver Professional Code</p>
-              <p>1. العمولة: 5% من قيمة كل صفقة تذهب للمنصة كـ"Resilience Tax".</p>
-              <p>2. الدفع: يُحتجز المبلغ في محفظة المنصة (Escrow) حتى موافقة العميل والإدارة.</p>
-              <p>3. الالتزام: يجب تسليم العمل في الموعد المتفق عليه وبالجودة المحددة.</p>
-              <p>4. الأخلاقيات: يُحظر قبول مشاريع خارج المنصة من عملاء تعرّفت عليهم عبرها.</p>
-              <p>5. التوثيق: يجب أن يكون حسابك موثّقاً بهوية طلابية صالحة.</p>
-              <p>6. الاشتراك: رسوم شهرية $5 USD لتفعيل خاصية نشر الخدمات وتلقّي العروض.</p>
-              <p className="mt-4 text-[#555]">[ للمزيد اقرأ سياسة الاستخدام الكاملة على halabunver.sy/terms ]</p>
-            </div>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="accent-[#BB86FC] w-4 h-4" />
-              <span className="text-sm text-[#E0E0E0]">✅ أوافق على HalabUnver Professional Code</span>
-            </label>
-            <button disabled={!agreed} onClick={() => setCurrentStep(1)}
-              className={`w-full py-3 font-bold text-sm transition-colors ${agreed ? 'bg-[#BB86FC] text-[#121212] hover:bg-[#a06cdc]' : 'bg-[#2A2A2A] text-[#555] cursor-not-allowed'}`}>
-              التالي — خطوة 2
-            </button>
-          </div>
-        )}
+        <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-6">
 
-        {/* Step 2 — Skills */}
-        {currentStep === 1 && (
-          <div className="space-y-4 animate-fade-up">
-            <p className="text-xs font-mono text-[#888] mb-3">[ STEP_2 ] — تأكيد مهاراتك</p>
-            <p className="text-sm text-[#888]">تمّ استيراد مهاراتك من ملفك الشخصي. تأكّد أو عدّل:</p>
-            <div className="flex flex-wrap gap-2">
-              {USER_SKILLS.map(s => (
-                <button key={s}
-                  onClick={() => setConfirmedSkills(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
-                  className={`px-4 py-2 text-sm border transition-colors ${confirmedSkills.includes(s) ? 'border-[#BB86FC] text-[#BB86FC] bg-[#BB86FC]/10' : 'border-[#2A2A2A] text-[#555]'}`}>
-                  {confirmedSkills.includes(s) ? '✓' : '+'} {s}
-                </button>
+          {/* Step 0: Terms */}
+          {step === 0 && (
+            <div>
+              <h3 className="text-base font-bold text-[#F1F5F9] mb-3">الشروط والأحكام</h3>
+              <div className="h-48 overflow-y-auto bg-[#162032] rounded-xl border border-[#1E2D45] p-4 mb-4 text-xs text-[#94A3B8] leading-relaxed space-y-2">
+                <p><strong className="text-[#F1F5F9]">1. الأهلية:</strong> يجب أن تكون طالباً مسجلاً في جامعة حلب أو أحد معاهدها.</p>
+                <p><strong className="text-[#F1F5F9]">2. الاشتراك:</strong> الرسوم $5 شهرياً، قابلة للإلغاء في أي وقت.</p>
+                <p><strong className="text-[#F1F5F9]">3. الوساطة:</strong> تحتفظ المنصة بـ 10% من قيمة كل صفقة مقابل خدمة الحماية.</p>
+                <p><strong className="text-[#F1F5F9]">4. المحتوى:</strong> يلتزم المستقل بتقديم عمل أصيل وعدم الغش الأكاديمي.</p>
+                <p><strong className="text-[#F1F5F9]">5. التقييم:</strong> يحق للعميل تقييم الخدمة بعد إتمام التسليم.</p>
+              </div>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="accent-[#6366F1] w-4 h-4 rounded" />
+                <span className="text-sm text-[#94A3B8]">أوافق على الشروط والأحكام وسياسة الخصوصية</span>
+              </label>
+            </div>
+          )}
+
+          {/* Step 1: Profile */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <h3 className="text-base font-bold text-[#F1F5F9]">معلوماتك الأساسية</h3>
+              {[
+                { key: 'name', label: 'الاسم الكامل', placeholder: 'أحمد الجاسم' },
+                { key: 'bio', label: 'نبذة مختصرة', placeholder: 'مطوّر Full-Stack شغوف بـ React وNode.js...' },
+                { key: 'major', label: 'تخصصك الجامعي', placeholder: 'هندسة معلوماتية — السنة الرابعة' },
+              ].map(f => (
+                <div key={f.key}>
+                  <label className="text-xs font-medium text-[#94A3B8] block mb-1.5">{f.label}</label>
+                  <input
+                    placeholder={f.placeholder}
+                    value={form[f.key]}
+                    onChange={e => setForm({...form, [f.key]: e.target.value})}
+                    className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]/60 rounded-xl transition-colors"
+                  />
+                </div>
               ))}
             </div>
-            <p className="text-xs text-[#555] font-mono">المهارات المؤكدة: [{confirmedSkills.join(', ')}]</p>
-            <div className="flex gap-3">
-              <button onClick={() => setCurrentStep(0)} className="px-4 py-2.5 border border-[#2A2A2A] text-[#888] text-sm hover:border-[#BB86FC]">السابق</button>
-              <button onClick={() => setCurrentStep(2)} className="flex-1 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm hover:bg-[#a06cdc] transition-colors">التالي — خطوة 3</button>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* Step 3 — Payment */}
-        {currentStep === 2 && (
-          <div className="space-y-4 animate-fade-up">
-            <p className="text-xs font-mono text-[#888] mb-3">[ STEP_3 ] — رسوم الوصول للمنصة</p>
-            <div className="border border-[#BB86FC]/30 bg-[#BB86FC]/5 p-6 text-center">
-              <p className="text-4xl font-black text-[#E0E0E0] mb-1">$5</p>
-              <p className="text-xs text-[#888] font-mono">شهرياً · يُحوَّل للسعر بالليرة السورية وفق سعر الإدارة</p>
-            </div>
-            <Link to="/dashboard/wallet" className="block w-full py-3 bg-[#BB86FC] text-[#121212] font-bold text-sm text-center hover:bg-[#a06cdc] transition-colors">
-              💳 دفع رسوم الاشتراك — الانتقال للمحفظة
-            </Link>
-            <div className="border border-[#2A2A2A] p-4">
-              <p className="text-xs font-mono text-[#888] mb-2">[ ESCROW_EDUCATION ]</p>
-              <p className="text-xs text-[#888] leading-relaxed">
-                عند قبول طلب، يُحتجز المبلغ في محفظة المنصة. بعد تسليم العمل وموافقة العميل، تُحوَّل الأموال لمحفظتك.
-              </p>
-              <button className="text-xs text-[#BB86FC] mt-2 hover:underline">📖 اقرأ قواعد الوساطة</button>
-            </div>
-            <div className="border border-[#2A2A2A] p-3">
-              <p className="text-xs font-mono text-[#888] mb-2">معاينة ملفك العام:</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 border border-[#2A2A2A] flex items-center justify-center">👤</div>
-                <div>
-                  <p className="text-sm text-[#E0E0E0]">أحمد الجاسم</p>
-                  <p className="text-xs text-[#555]">سيظهر هكذا في لوحة المتميزين</p>
+          {/* Step 2: Skills */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <h3 className="text-base font-bold text-[#F1F5F9]">مهاراتك ومجالك</h3>
+              <div>
+                <label className="text-xs font-medium text-[#94A3B8] block mb-1.5">مهاراتك الرئيسية</label>
+                <input
+                  placeholder="React.js, Node.js, MongoDB..."
+                  value={form.skills}
+                  onChange={e => setForm({...form, skills: e.target.value})}
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] px-4 py-2.5 text-sm outline-none focus:border-[#6366F1]/60 rounded-xl transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#94A3B8] block mb-2">التخصصات المتاحة</label>
+                <div className="flex flex-wrap gap-2">
+                  {['برمجة وتطوير', 'تصميم', 'هندسة', 'ذكاء اصطناعي', 'كتابة', 'تسويق'].map(d => (
+                    <button key={d} className="px-3 py-1.5 text-xs border border-[#1E2D45] rounded-full text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all">
+                      {d}
+                    </button>
+                  ))}
                 </div>
-                <Link to="/freelance/profile/ahmed" className="text-xs text-[#BB86FC] mr-auto hover:underline">✏️ تعديل الملف</Link>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Sticky status */}
-        <div className="mt-8 border border-[#EF4444]/30 bg-[#EF4444]/5 px-4 py-3 flex items-center justify-between">
-          <span className="text-xs font-mono text-[#EF4444]">🔴 Restricted Access — ادفع لفتح الوصول</span>
-          <span className="text-xs text-[#555]">Powered by ShamCash</span>
+          {/* Step 3: Payment */}
+          {step === 3 && (
+            <div>
+              <h3 className="text-base font-bold text-[#F1F5F9] mb-4">إعداد طريقة الدفع</h3>
+              <div className="bg-gradient-to-br from-[#F59E0B]/10 to-[#FBBF24]/5 rounded-xl border border-[#F59E0B]/20 p-5 mb-4">
+                <p className="text-sm font-bold text-[#F1F5F9] mb-3">ما تحصل عليه مقابل $5/شهر:</p>
+                <ul className="space-y-2">
+                  {SUBSCRIPTION_FEATURES.map(f => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[#94A3B8]">
+                      <span className="text-[#10B981] shrink-0">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-[#162032] rounded-xl border border-[#1E2D45] p-4 text-center">
+                <p className="text-xs text-[#94A3B8] mb-3">سيتم الدفع الأول عبر ShamCash بعد تفعيل الحساب</p>
+                <div className="w-20 h-20 mx-auto border-2 border-[#6366F1]/30 rounded-xl flex items-center justify-center text-xs text-[#4A5D78] mb-2">QR CODE</div>
+                <p className="text-xs text-[#4A5D78]">ShamCash · +963 9XX XXXXXXX</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-3 mt-4">
+          {step > 0 && (
+            <button
+              onClick={() => setStep(s => s - 1)}
+              className="px-5 py-3 rounded-xl border border-[#1E2D45] text-[#94A3B8] text-sm hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all"
+            >
+              ← السابق
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            disabled={step === 0 && !agreed}
+            className={`flex-1 py-3 font-bold text-sm rounded-xl transition-all ${
+              step === 0 && !agreed
+                ? 'bg-[#162032] text-[#4A5D78] border border-[#1E2D45] cursor-not-allowed'
+                : 'gradient-bg text-white hover:opacity-90'
+            }`}
+          >
+            {step === STEPS.length - 1 ? '✅ إرسال الطلب' : 'التالي →'}
+          </button>
         </div>
       </div>
     </div>

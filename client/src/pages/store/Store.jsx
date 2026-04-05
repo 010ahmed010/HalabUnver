@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const CATEGORIES = ['الكل', '💻 أجهزة', '📐 معدات هندسية', '🏥 مستلزمات طبية', '👕 ميرش المنصة']
+const CATEGORIES = ['الكل', 'أجهزة', 'معدات هندسية', 'مستلزمات طبية', 'ميرش المنصة']
 const PRODUCTS = [
   { id: 'p1', name: 'Huion H640P — لوحة رسم رقمية', originalPrice: '530,000', studentPrice: '450,000', source: 'منصة', availability: 'فوري', discount: '15%', inStock: true },
   { id: 'p2', name: 'ThinkPad X1 Carbon — مُجدّد', originalPrice: '4,200,000', studentPrice: '3,700,000', source: 'وسيط', availability: 'فوري', discount: '12%', inStock: true },
@@ -18,11 +18,10 @@ export default function Store() {
   const [reserved, setReserved] = useState(null)
 
   const filtered = PRODUCTS.filter(p => {
-    if (activeCategory !== 'الكل' && !p.name.toLowerCase().includes(activeCategory.replace(/^\S+\s/, '').toLowerCase())) return true
-    if (sourceFilter === '🏠 منصة' && p.source !== 'منصة') return false
-    if (sourceFilter === '🤝 وسيط' && p.source !== 'وسيط') return false
-    if (availFilter === '⚡ فوري' && !p.inStock) return false
-    if (availFilter === '📦 مسبق' && p.inStock) return false
+    if (sourceFilter === 'منصة' && p.source !== 'منصة') return false
+    if (sourceFilter === 'وسيط' && p.source !== 'وسيط') return false
+    if (availFilter === 'فوري' && !p.inStock) return false
+    if (availFilter === 'مسبق' && p.inStock) return false
     return true
   })
 
@@ -32,28 +31,33 @@ export default function Store() {
 
         {/* Sidebar */}
         <aside className="hidden md:block w-52 shrink-0">
-          <div className="border border-[#2A2A2A] p-4 sticky top-20">
-            <p className="text-xs font-mono text-[#888] mb-3">[ CATEGORIES ]</p>
+          <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 sticky top-20">
+            <p className="text-xs font-semibold text-[#F1F5F9] mb-3">التصنيفات</p>
             {CATEGORIES.map(c => (
-              <button key={c} onClick={() => setActiveCategory(c)}
-                className={`w-full text-right px-3 py-2 text-xs mb-1 transition-colors ${
-                  activeCategory === c ? 'bg-[#BB86FC]/10 text-[#BB86FC] border-r-2 border-[#BB86FC]' : 'text-[#888] hover:text-[#E0E0E0]'
-                }`}>{c}
+              <button
+                key={c}
+                onClick={() => setActiveCategory(c)}
+                className={`w-full text-right px-3 py-2 text-xs mb-1 rounded-lg transition-all ${
+                  activeCategory === c
+                    ? 'bg-[#F43F5E]/10 text-[#F43F5E] font-semibold'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
+                }`}
+              >
+                {c}
               </button>
             ))}
 
-            <p className="text-xs font-mono text-[#888] mt-4 mb-2">[ FILTER_HUD ]</p>
-            <div className="space-y-1 text-xs">
-              <p className="text-[#555] font-mono">المصدر</p>
-              {['الكل', '🏠 منصة', '🤝 وسيط'].map(s => (
-                <label key={s} className="flex items-center gap-2 cursor-pointer text-[#888] hover:text-[#E0E0E0]">
-                  <input type="radio" name="source" value={s} checked={sourceFilter === s} onChange={e => setSourceFilter(e.target.value)} className="accent-[#BB86FC]" /> {s}
+            <div className="mt-4 pt-4 border-t border-[#1E2D45]">
+              <p className="text-xs font-semibold text-[#F1F5F9] mb-2">المصدر</p>
+              {['الكل', 'منصة', 'وسيط'].map(s => (
+                <label key={s} className="flex items-center gap-2 cursor-pointer text-xs text-[#94A3B8] hover:text-[#F1F5F9] mb-2">
+                  <input type="radio" name="source" value={s} checked={sourceFilter === s} onChange={e => setSourceFilter(e.target.value)} className="accent-[#6366F1]" /> {s}
                 </label>
               ))}
-              <p className="text-[#555] font-mono mt-2">التوفر</p>
-              {['الكل', '⚡ فوري', '📦 مسبق'].map(a => (
-                <label key={a} className="flex items-center gap-2 cursor-pointer text-[#888] hover:text-[#E0E0E0]">
-                  <input type="radio" name="avail" value={a} checked={availFilter === a} onChange={e => setAvailFilter(e.target.value)} className="accent-[#BB86FC]" /> {a}
+              <p className="text-xs font-semibold text-[#F1F5F9] mt-3 mb-2">التوفر</p>
+              {['الكل', 'فوري', 'مسبق'].map(a => (
+                <label key={a} className="flex items-center gap-2 cursor-pointer text-xs text-[#94A3B8] hover:text-[#F1F5F9] mb-2">
+                  <input type="radio" name="avail" value={a} checked={availFilter === a} onChange={e => setAvailFilter(e.target.value)} className="accent-[#6366F1]" /> {a}
                 </label>
               ))}
             </div>
@@ -62,48 +66,59 @@ export default function Store() {
 
         {/* Product Grid */}
         <main className="flex-1">
-          <p className="text-xs font-mono text-[#888] mb-4">[ {filtered.length} منتج ]</p>
+          <p className="text-sm text-[#94A3B8] mb-5">
+            <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> منتج متاح
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(p => (
-              <div key={p.id} className="bg-[#1E1E1E] border border-[#2A2A2A] hover:border-[#BB86FC]/40 transition-colors">
-                {/* Badges */}
-                <div className="relative aspect-square bg-[#252525] flex items-center justify-center">
-                  <span className="text-4xl">📦</span>
-                  <span className="absolute top-2 right-2 text-[10px] font-mono bg-[#EF4444] text-white px-1.5 py-0.5">
-                    % خصم {p.discount}
+              <div
+                key={p.id}
+                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] hover:border-[#F43F5E]/20 hover:shadow-lg transition-all overflow-hidden"
+              >
+                <div className="relative aspect-square bg-[#162032] flex items-center justify-center">
+                  <span className="text-5xl">📦</span>
+                  <span className="absolute top-3 right-3 text-[10px] font-bold rounded-full bg-[#F43F5E] text-white px-2.5 py-0.5">
+                    {p.discount} خصم
                   </span>
-                  <span className={`absolute top-2 left-2 text-[10px] font-mono px-1.5 py-0.5 border ${
-                    p.source === 'منصة' ? 'border-[#03DAC6]/60 text-[#03DAC6]' : 'border-[#FFD700]/60 text-[#FFD700]'
+                  <span className={`absolute top-3 left-3 text-[10px] font-medium rounded-full px-2.5 py-0.5 ${
+                    p.source === 'منصة'
+                      ? 'bg-[#14B8A6]/15 text-[#14B8A6] border border-[#14B8A6]/30'
+                      : 'bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30'
                   }`}>
                     {p.source === 'منصة' ? '🏠 منصة' : '🤝 وسيط'}
                   </span>
                   {!p.inStock && (
-                    <div className="absolute inset-0 bg-[#121212]/60 flex items-center justify-center">
-                      <span className="text-xs font-mono text-[#888]">طلب مسبق</span>
+                    <div className="absolute inset-0 bg-[#070C18]/60 backdrop-blur-sm flex items-center justify-center rounded-none">
+                      <span className="text-sm font-semibold text-[#94A3B8] bg-[#0F1828] rounded-full px-4 py-2 border border-[#1E2D45]">طلب مسبق</span>
                     </div>
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="text-sm text-[#E0E0E0] font-medium mb-2">{p.name}</h3>
+                  <h3 className="text-sm text-[#F1F5F9] font-semibold mb-2 leading-snug">{p.name}</h3>
                   <div className="mb-3">
-                    <span className="text-xs text-[#555] line-through block">{p.originalPrice} SYP</span>
-                    <span className="text-base font-bold text-[#E0E0E0]">{p.studentPrice} SYP</span>
+                    <span className="text-xs text-[#4A5D78] line-through block">{p.originalPrice} SYP</span>
+                    <span className="text-base font-bold text-[#F1F5F9]">{p.studentPrice} SYP</span>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setReserved(p.id)}
-                      className={`flex-1 py-2 text-xs font-bold transition-colors ${p.inStock
-                        ? 'bg-[#BB86FC] text-[#121212] hover:bg-[#a06cdc]'
-                        : 'border border-[#2A2A2A] text-[#888] hover:border-[#BB86FC]'}`}
+                      className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
+                        p.inStock
+                          ? 'gradient-bg text-white hover:opacity-90'
+                          : 'border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40'
+                      }`}
                     >
-                      {p.inStock ? '💳 حجز' : '📦 طلب مسبق'}
+                      {p.inStock ? '💳 حجز الآن' : '📦 طلب مسبق'}
                     </button>
-                    <Link to={`/store/product/${p.id}`} className="px-3 py-2 border border-[#2A2A2A] text-[#888] text-xs hover:border-[#BB86FC] transition-colors">
+                    <Link
+                      to={`/store/product/${p.id}`}
+                      className="px-3 py-2.5 rounded-xl border border-[#1E2D45] text-[#94A3B8] text-xs hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all"
+                    >
                       تفاصيل
                     </Link>
                   </div>
                   {reserved === p.id && (
-                    <p className="text-xs text-[#4CAF50] font-mono mt-2 text-center animate-fade-up">
+                    <p className="text-xs text-[#10B981] font-medium mt-2.5 text-center animate-fade-up">
                       ✓ تم الحجز! سيتواصل معك الفريق خلال ساعتين
                     </p>
                   )}
@@ -112,13 +127,14 @@ export default function Store() {
             ))}
           </div>
 
-          {/* Empty state */}
           {filtered.length === 0 && (
-            <div className="border border-[#2A2A2A] p-12 text-center">
-              <p className="text-[#888] text-sm mb-4">لم يتم العثور على منتجات</p>
-              <a href="https://wa.me/963912345678?text=أريد طلب منتج محدد"
-                className="px-5 py-2.5 bg-[#4CAF50] text-white text-sm font-bold hover:bg-[#43a047] transition-colors inline-block">
-                📲 Request Broker — عبر WhatsApp
+            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-12 text-center">
+              <p className="text-[#94A3B8] text-sm mb-5">لم يتم العثور على منتجات</p>
+              <a
+                href="https://wa.me/963912345678?text=أريد طلب منتج محدد"
+                className="px-5 py-2.5 bg-[#10B981] text-white text-sm font-bold rounded-xl hover:bg-[#0d9f72] transition-colors inline-block"
+              >
+                📲 اطلب منتجاً عبر WhatsApp
               </a>
             </div>
           )}

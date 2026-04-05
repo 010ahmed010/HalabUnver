@@ -11,7 +11,6 @@ const ORDERS = [
 const PENDING = {
   id: '#HS-703',
   item: 'ThinkPad X1 Carbon — مُجدّد',
-  status: 'pending',
   price: '3,700,000',
 }
 
@@ -20,24 +19,29 @@ export default function OrderHistory() {
 
   return (
     <div className="space-y-4 animate-fade-up">
-      <h2 className="text-xl font-black text-[#E0E0E0]">🛒 طلباتي</h2>
+      <div>
+        <span className="section-label">المتجر</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">طلباتي</h2>
+      </div>
 
-      {/* Pending notifier */}
-      <div className="border border-[#FFD700]/40 bg-[#FFD700]/5 p-5">
-        <p className="text-xs font-mono text-[#FFD700] mb-2">[ PENDING_ACTION ] — يتطلب إجراء</p>
-        <p className="text-sm text-[#E0E0E0] mb-1">الطلب {PENDING.id} يتطلب تحميل إيصال الدفع.</p>
-        <p className="text-xs text-[#888] mb-3">العنصر: {PENDING.item}</p>
-        <Link to="/dashboard/wallet" className="px-4 py-2 bg-[#FFD700] text-[#121212] font-bold text-xs hover:bg-[#e6c200] transition-colors inline-block">
+      {/* Pending action */}
+      <div className="bg-[#F59E0B]/5 rounded-2xl border border-[#F59E0B]/30 p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-blink-soft" />
+          <p className="text-xs font-semibold text-[#F59E0B]">يتطلب إجراء</p>
+        </div>
+        <p className="text-sm text-[#F1F5F9] mb-0.5">الطلب {PENDING.id} يتطلب تحميل إيصال الدفع.</p>
+        <p className="text-xs text-[#94A3B8] mb-3">المنتج: {PENDING.item}</p>
+        <Link to="/dashboard/wallet" className="inline-block px-4 py-2 bg-[#F59E0B] text-[#070C18] font-bold text-xs rounded-lg hover:bg-[#FBBF24] transition-colors">
           📤 تحميل الإيصال
         </Link>
       </div>
 
-      {/* Savings counter */}
-      <div className="border border-[#4CAF50]/20 bg-[#4CAF50]/5 p-4 flex items-center justify-between">
+      {/* Savings */}
+      <div className="bg-[#10B981]/5 rounded-2xl border border-[#10B981]/20 px-5 py-3.5 flex items-center justify-between">
         <div>
-          <p className="text-xs font-mono text-[#888] mb-0.5">[ SAVINGS_COUNTER ]</p>
-          <p className="text-sm text-[#E0E0E0]">وفّرت <span className="text-[#4CAF50] font-bold">155,000 SYP</span> مقارنةً بأسعار السوق</p>
-          <p className="text-xs font-mono text-[#555] italic mt-1">"Invest in your tools. Challenge Every Day."</p>
+          <p className="text-sm text-[#F1F5F9]">وفّرت <span className="text-[#10B981] font-bold">155,000 SYP</span> مقارنةً بأسعار السوق</p>
+          <p className="text-xs text-[#4A5D78] italic mt-0.5">"Invest in your tools. Challenge Every Day."</p>
         </div>
         <span className="text-3xl">💎</span>
       </div>
@@ -45,55 +49,57 @@ export default function OrderHistory() {
       {/* Order list */}
       <div className="space-y-3">
         {ORDERS.map(o => (
-          <div key={o.id} className="bg-[#1E1E1E] border border-[#2A2A2A] p-5">
+          <div key={o.id} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 hover:border-[#6366F1]/20 transition-all">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-[#252525] border border-[#2A2A2A] flex items-center justify-center text-lg">📦</div>
+                <div className="w-12 h-12 bg-[#162032] rounded-xl border border-[#1E2D45] flex items-center justify-center text-xl">📦</div>
                 <div>
-                  <p className="text-sm font-bold text-[#E0E0E0]">{o.item}</p>
-                  <p className="text-xs font-mono text-[#555]">{o.id} · {o.date}</p>
+                  <p className="text-sm font-bold text-[#F1F5F9]">{o.item}</p>
+                  <p className="text-xs text-[#4A5D78] mt-0.5">{o.id} · {o.date}</p>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-1">
+              <div className="flex flex-col items-end gap-1.5">
                 <StatusPill status={o.status} />
-                <span className="text-xs font-mono text-[#E0E0E0]">{o.price} SYP</span>
+                <span className="text-xs font-semibold text-[#F1F5F9] font-mono">{o.price} SYP</span>
               </div>
             </div>
 
-            {/* Pickup node */}
+            {/* Pickup info */}
             {o.status === 'ready' && o.pickup && (
-              <div className="border border-[#BB86FC]/20 bg-[#BB86FC]/5 p-4 mt-3">
-                <p className="text-xs font-mono text-[#888] mb-2">[ PICKUP_NODE ]</p>
-                <p className="text-sm text-[#E0E0E0] mb-1">📍 {o.pickup}</p>
-                <div className="flex items-center justify-between mt-3">
+              <div className="rounded-xl border border-[#6366F1]/20 bg-[#6366F1]/5 p-4 mt-3">
+                <p className="text-xs font-semibold text-[#6366F1] mb-2">تفاصيل الاستلام</p>
+                <p className="text-sm text-[#F1F5F9] mb-3">📍 {o.pickup}</p>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-[#888] mb-1">رمز الاستلام الآمن (4 أرقام)</p>
+                    <p className="text-xs text-[#94A3B8] mb-1">رمز الاستلام الآمن (4 أرقام)</p>
                     {showCode === o.id ? (
-                      <span className="text-2xl font-black font-mono text-[#BB86FC] tracking-[0.3em]">{o.code}</span>
+                      <span className="text-2xl font-black font-mono gradient-text tracking-[0.3em]">{o.code}</span>
                     ) : (
-                      <span className="text-2xl font-black font-mono text-[#555] tracking-[0.3em]">••••</span>
+                      <span className="text-2xl font-black font-mono text-[#1E2D45] tracking-[0.3em]">••••</span>
                     )}
                   </div>
-                  <button onClick={() => setShowCode(showCode === o.id ? null : o.id)}
-                    className="px-3 py-1.5 border border-[#BB86FC]/40 text-[#BB86FC] text-xs hover:bg-[#BB86FC]/10 transition-colors">
-                    {showCode === o.id ? '🔒 إخفاء' : '👁️ عرض الرمز'}
+                  <button
+                    onClick={() => setShowCode(showCode === o.id ? null : o.id)}
+                    className="px-3 py-1.5 rounded-lg border border-[#6366F1]/30 text-[#6366F1] text-xs hover:bg-[#6366F1]/10 transition-all"
+                  >
+                    {showCode === o.id ? '🔒 إخفاء' : '👁 عرض الرمز'}
                   </button>
                 </div>
               </div>
             )}
 
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 mt-3 pt-3 border-t border-[#1E2D45]">
               {o.status === 'success' && (
-                <button className="text-xs border border-[#2A2A2A] px-3 py-1.5 text-[#888] hover:border-[#BB86FC] transition-colors">🔄 إعادة الطلب</button>
+                <button className="px-3 py-1.5 text-xs rounded-lg border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all">🔄 إعادة الطلب</button>
               )}
-              <button className="text-xs border border-[#EF4444]/30 px-3 py-1.5 text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors">⚠️ مشكلة في الطلب؟</button>
-              <button className="text-xs border border-[#2A2A2A] px-3 py-1.5 text-[#888] hover:border-[#BB86FC] transition-colors">📄 تحميل الفاتورة</button>
+              <button className="px-3 py-1.5 text-xs rounded-lg border border-[#F43F5E]/30 text-[#F43F5E] hover:bg-[#F43F5E]/10 transition-all">⚠ مشكلة</button>
+              <button className="px-3 py-1.5 text-xs rounded-lg border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all">📄 الفاتورة</button>
             </div>
           </div>
         ))}
       </div>
 
-      <Link to="/store" className="block w-full py-2.5 border border-[#2A2A2A] text-[#888] text-sm text-center hover:border-[#BB86FC] transition-colors">
+      <Link to="/store" className="block w-full py-3 rounded-xl border border-[#1E2D45] text-[#94A3B8] text-sm text-center hover:border-[#F43F5E]/40 hover:text-[#F43F5E] transition-all">
         🛒 العودة للمتجر
       </Link>
     </div>

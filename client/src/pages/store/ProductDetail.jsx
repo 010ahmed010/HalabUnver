@@ -1,116 +1,173 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import StatusPill from '../../components/shared/StatusPill'
 
 const SPECS = [
   { label: 'المعالج', value: 'Intel Core i7-1165G7 @ 2.80GHz' },
-  { label: 'الذاكرة', value: '16 GB LPDDR4X' },
-  { label: 'التخزين', value: '512 GB NVMe SSD' },
-  { label: 'الشاشة', value: '14" IPS FHD (1920×1080)' },
-  { label: 'صحة البطارية', value: '87%' },
-  { label: 'الوزن', value: '1.13 kg' },
-  { label: 'المنافذ', value: '2× USB-C, 2× USB-A, HDMI' },
+  { label: 'الذاكرة', value: '16GB LPDDR4X' },
+  { label: 'التخزين', value: '512GB NVMe SSD' },
+  { label: 'الشاشة', value: '14" FHD IPS 400nits' },
+  { label: 'البطارية', value: '57Wh · تصل لـ 13 ساعة' },
+  { label: 'الوزن', value: '1.13 كغ' },
+  { label: 'نظام التشغيل', value: 'Windows 11 Pro' },
+  { label: 'حالة المنتج', value: 'مُجدَّد — تحقق Grade A' },
+]
+
+const REVIEWS = [
+  { name: 'أحمد.م', stars: 5, text: 'جهاز رائع، سريع جداً وخفيف. التوصيل كان دقيقاً.' },
+  { name: 'سارة.خ', stars: 4, text: 'الحالة كما وُصفت. البطارية ممتازة لحضور المحاضرات.' },
+]
+
+const RELATED = [
+  { name: 'Huion H640P — خصم 15%', price: '450,000', icon: '🖊️' },
+  { name: 'Raspberry Pi 4 — 4GB', price: '155,000', icon: '🖥️' },
+  { name: 'Arduino Mega 2560', price: '80,000', icon: '⚡' },
 ]
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const [activeThumb, setActiveThumb] = useState(0)
   const [reserved, setReserved] = useState(false)
-  const isAdmin = false
+  const [activeImg, setActiveImg] = useState(0)
 
   return (
     <div className="pt-16 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <p className="text-xs font-mono text-[#555] mb-6">
-          <Link to="/" className="hover:text-[#BB86FC]">الرئيسية</Link> ›
-          <Link to="/store" className="hover:text-[#BB86FC]"> المتجر</Link> ›
-          <span className="text-[#888]"> ThinkPad X1 Carbon</span>
-        </p>
 
-        {/* Hero Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-          {/* Gallery — 7 cols */}
-          <div className="lg:col-span-7">
-            <div className="aspect-video bg-[#1E1E1E] border border-[#2A2A2A] flex items-center justify-center mb-3 overflow-hidden group">
-              <span className="text-8xl group-hover:scale-110 transition-transform">💻</span>
+        {/* Breadcrumb */}
+        <div className="text-xs text-[#4A5D78] mb-5 flex items-center gap-1.5">
+          <Link to="/store" className="hover:text-[#F43F5E] transition-colors">المتجر</Link>
+          <span>›</span>
+          <span className="text-[#94A3B8]">أجهزة</span>
+          <span>›</span>
+          <span className="text-[#F1F5F9]">ThinkPad X1 Carbon</span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+
+          {/* Images */}
+          <div>
+            <div className="aspect-video bg-[#0F1828] rounded-2xl border border-[#1E2D45] flex items-center justify-center text-6xl mb-3">
+              💻
             </div>
             <div className="flex gap-2">
-              {[0, 1, 2, 3].map(i => (
-                <button key={i} onClick={() => setActiveThumb(i)}
-                  className={`w-16 h-16 border flex items-center justify-center text-2xl transition-colors ${activeThumb === i ? 'border-[#BB86FC]' : 'border-[#2A2A2A] hover:border-[#BB86FC]/50'}`}>
+              {[0, 1, 2].map(i => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  className={`flex-1 aspect-video rounded-xl border flex items-center justify-center text-2xl transition-all ${
+                    activeImg === i
+                      ? 'border-[#F43F5E]/50 bg-[#F43F5E]/10'
+                      : 'border-[#1E2D45] bg-[#0F1828] hover:border-[#F43F5E]/30'
+                  }`}
+                >
                   💻
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Buy Box — 5 cols */}
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-mono text-[#555]">#HS-102</span>
-              <span className="text-xs border border-[#4CAF50]/40 text-[#4CAF50] px-2 py-0.5">✅ متوفر حالياً</span>
-            </div>
-            <h1 className="text-2xl font-black text-[#E0E0E0] mb-2">ThinkPad X1 Carbon — مُجدّد بحالة ممتازة</h1>
-
-            <div className="border border-[#2A2A2A] p-4 mb-4">
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-3xl font-black text-[#E0E0E0]">3,700,000</span>
-                <span className="text-sm text-[#888]">SYP</span>
-              </div>
-              <span className="text-sm text-[#555] line-through">السعر الأصلي: 4,200,000 SYP</span>
-              <div className="mt-2 text-xs font-mono text-[#4CAF50]">
-                💰 توفير عبر HalabUnver: <span className="font-bold">500,000 SYP</span>
-              </div>
+          {/* Info */}
+          <div>
+            <div className="flex gap-2 mb-3">
+              <span className="text-xs font-semibold text-[#14B8A6] bg-[#14B8A6]/10 rounded-full px-2.5 py-1 border border-[#14B8A6]/20">🏠 منصة</span>
+              <StatusPill status="ready" />
             </div>
 
-            <button
-              onClick={() => setReserved(!reserved)}
-              className={`w-full py-3.5 font-bold text-base mb-3 transition-colors ${reserved ? 'bg-[#4CAF50] text-white' : 'bg-[#BB86FC] text-[#121212] hover:bg-[#a06cdc]'}`}
-            >
-              {reserved ? '✓ تم الحجز! سيتواصل معك الفريق' : '💳 حجز وإتمام الدفع'}
-            </button>
-            {reserved && (
-              <p className="text-xs text-center font-mono text-[#888] mb-3">
-                قم بتحميل إيصال ShamCash في <Link to="/dashboard/orders" className="text-[#BB86FC] hover:underline">طلباتي</Link>
-              </p>
+            <h1 className="text-2xl font-black text-[#F1F5F9] mb-2">ThinkPad X1 Carbon — مُجدّد</h1>
+            <p className="text-sm text-[#94A3B8] mb-4">الجهاز الأمثل للمهندس الجامعي — خفيف، سريع، وبطارية لا تنتهي.</p>
+
+            <div className="mb-5">
+              <span className="text-sm text-[#4A5D78] line-through block">4,200,000 SYP (سعر السوق)</span>
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-black text-[#F1F5F9]">3,700,000 SYP</span>
+                <span className="text-sm font-bold rounded-full bg-[#F43F5E] text-white px-2.5 py-0.5">12% خصم</span>
+              </div>
+              <p className="text-xs text-[#10B981] font-medium mt-1">✓ سعر حصري لطلاب جامعة حلب</p>
+            </div>
+
+            {reserved ? (
+              <div className="rounded-2xl border border-[#10B981]/30 bg-[#10B981]/5 p-5 animate-fade-up">
+                <p className="text-sm text-[#10B981] font-bold mb-1">✓ تم الحجز بنجاح</p>
+                <p className="text-xs text-[#94A3B8]">سيتواصل معك الفريق خلال ساعتين عبر WhatsApp أو Telegram لتأكيد الدفع ومكان الاستلام.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <button
+                  onClick={() => setReserved(true)}
+                  className="w-full py-4 gradient-bg text-white font-bold text-base rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/20"
+                >
+                  💳 احجز الجهاز الآن — يُدفع لاحقاً
+                </button>
+                <div className="flex items-center gap-2 text-xs text-[#4A5D78] justify-center">
+                  <span>🛡️</span>
+                  <span>الدفع يتم عبر ShamCash · ضمان الاسترداد لمدة 7 أيام</span>
+                </div>
+              </div>
             )}
 
-            {isAdmin && (
-              <button className="w-full py-2 border border-[#FFD700]/40 text-[#FFD700] text-xs hover:bg-[#FFD700]/10 transition-colors">
-                ✏️ تعديل المنتج — لوحة الإدارة
-              </button>
-            )}
+            <div className="mt-5 pt-5 border-t border-[#1E2D45] space-y-2.5 text-xs text-[#94A3B8]">
+              <div className="flex justify-between"><span>مصدر المنتج</span><span className="text-[#F1F5F9] font-medium">منصة HalabUnver (مباشر)</span></div>
+              <div className="flex justify-between"><span>وقت التوصيل</span><span className="text-[#F1F5F9] font-medium">2-5 أيام عمل</span></div>
+              <div className="flex justify-between"><span>الضمان</span><span className="text-[#F1F5F9] font-medium">شهر واحد - Grade A</span></div>
+            </div>
           </div>
         </div>
 
-        {/* Logistics Bento */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-          {[
-            { label: 'المصدر', icon: '🤝', text: 'توفير خارجي: يتم تأمين المنتج عبر شركاء المنصة مع فحص فني كامل.' },
-            { label: 'الاستلام', icon: '📍', text: 'استلام من مكتب الهندسة المعمارية — الطابق 2، مكتب 402.' },
-            { label: 'الضمان', icon: '🛡️', text: '3 أيام استبدال في حال وجود عيب هيكلي أو خلل في الهاردوير.' },
-          ].map(b => (
-            <div key={b.label} className="border border-[#2A2A2A] p-5">
-              <span className="text-2xl block mb-2">{b.icon}</span>
-              <p className="text-xs font-mono text-[#888] mb-1">{b.label}</p>
-              <p className="text-sm text-[#E0E0E0]">{b.text}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Technical DNA */}
-        <div className="border border-[#2A2A2A] p-6">
-          <p className="text-xs font-mono text-[#888] mb-4">[ TECHNICAL_DNA ] — المواصفات الكاملة</p>
-          <div className="border border-[#2A2A2A]">
+        {/* Specs */}
+        <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden mb-6">
+          <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+            <p className="text-sm font-semibold text-[#F1F5F9]">المواصفات التقنية</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2">
             {SPECS.map((s, i) => (
-              <div key={s.label} className={`flex items-center px-4 py-3 border-b border-[#2A2A2A] last:border-0 ${i % 2 === 0 ? '' : 'bg-[#1E1E1E]/50'}`}>
-                <span className="text-xs font-mono text-[#888] w-32 shrink-0">{s.label}</span>
-                <span className="text-sm text-[#E0E0E0]">{s.value}</span>
+              <div
+                key={s.label}
+                className={`flex justify-between px-5 py-3 text-sm ${
+                  i < SPECS.length - 2 ? 'border-b border-[#1E2D45]' : ''
+                } ${i % 2 === 0 ? 'md:border-l border-[#1E2D45]' : ''}`}
+              >
+                <span className="text-[#4A5D78]">{s.label}</span>
+                <span className="text-[#F1F5F9] font-medium">{s.value}</span>
               </div>
             ))}
           </div>
-          <div className="mt-4">
-            <a href="#" className="text-xs text-[#BB86FC] hover:underline">📄 تحميل جدول المواصفات الرسمي (PDF)</a>
+        </div>
+
+        {/* Reviews */}
+        <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 mb-6">
+          <p className="text-sm font-semibold text-[#F1F5F9] mb-4">تقييمات الطلاب</p>
+          <div className="space-y-4">
+            {REVIEWS.map((r, i) => (
+              <div key={i} className="border-b border-[#1E2D45] pb-4 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {Array(r.stars).fill('★').map((s, j) => (
+                    <span key={j} className="text-[#F59E0B] text-sm">{s}</span>
+                  ))}
+                  <span className="text-xs text-[#4A5D78]">— {r.name}</span>
+                </div>
+                <p className="text-sm text-[#94A3B8]">"{r.text}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Related */}
+        <div>
+          <p className="text-sm font-semibold text-[#F1F5F9] mb-3">منتجات ذات صلة</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {RELATED.map(r => (
+              <Link
+                key={r.name}
+                to="/store"
+                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 flex items-center gap-3 hover:border-[#F43F5E]/20 transition-all group"
+              >
+                <span className="text-3xl">{r.icon}</span>
+                <div>
+                  <p className="text-xs font-bold text-[#F1F5F9] group-hover:text-[#F43F5E] transition-colors">{r.name}</p>
+                  <p className="text-xs text-[#94A3B8] mt-0.5 font-mono">{r.price} SYP</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

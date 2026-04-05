@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const COURSES = [
-  {
-    id: 'mern-001', title: 'MERN Stack Mastery', progress: 45, totalLessons: 8, doneLessons: 3,
-    status: 'active', timeLeft: '3h 12m', currentLesson: 'Lesson 4: Express Middleware',
+  { id: 'mern-001', title: 'MERN Stack Mastery', instructor: 'أحمد الجاسم', progress: 45, totalLessons: 8, doneLessons: 3, status: 'active', currentLesson: 'الدرس 4: Express Middleware', timeLeft: '3h 12m',
     lessons: [
       { title: 'مقدمة — ما هو MERN؟', done: true },
       { title: 'إعداد بيئة التطوير', done: true },
@@ -12,46 +10,55 @@ const COURSES = [
       { title: 'MongoDB — المخططات', done: false, active: true },
     ]
   },
-  { id: 'arch-006', title: 'AutoCAD للمبتدئين', progress: 100, totalLessons: 12, doneLessons: 12, status: 'completed', timeLeft: '0', currentLesson: '' },
-  { id: 'sec-003', title: 'أساسيات الأمن السيبراني', progress: 20, totalLessons: 10, doneLessons: 2, status: 'active', timeLeft: '14h 30m', currentLesson: 'Lesson 3: Basic CTF' },
+  { id: 'arch-006', title: 'AutoCAD للمبتدئين', instructor: 'كريم إبراهيم', progress: 100, totalLessons: 12, doneLessons: 12, status: 'completed', currentLesson: 'مكتمل', timeLeft: '0' },
+  { id: 'sec-003', title: 'أساسيات الأمن السيبراني', instructor: 'سامر خالد', progress: 20, totalLessons: 10, doneLessons: 2, status: 'active', currentLesson: 'الدرس 3: Basic CTF', timeLeft: '14h 30m' },
 ]
 
-const SKILL_ORBS = ['⚛️ React', '🌿 MongoDB', '🎨 AutoCAD', '🛡️ Security']
+const SKILLS = ['⚛️ React', '🌿 MongoDB', '🎨 AutoCAD', '🛡️ Security']
 
 export default function EnrolledCourses() {
   const [filter, setFilter] = useState('الكل')
   const [expanded, setExpanded] = useState(null)
 
   const lastCourse = COURSES.find(c => c.status === 'active')
-  const filtered = COURSES.filter(c => filter === 'الكل' || (filter === 'نشطة' && c.status === 'active') || (filter === 'مكتملة' && c.status === 'completed'))
+  const filtered = COURSES.filter(c =>
+    filter === 'الكل' ||
+    (filter === 'نشطة' && c.status === 'active') ||
+    (filter === 'مكتملة' && c.status === 'completed')
+  )
 
   return (
     <div className="space-y-4 animate-fade-up">
-      <h2 className="text-xl font-black text-[#E0E0E0]">📚 دوراتي</h2>
+      <div>
+        <span className="section-label">التعلم</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">دوراتي المسجّلة</h2>
+      </div>
 
-      {/* Continue watching hero */}
+      {/* Continue watching */}
       {lastCourse && (
-        <div className="bg-[#1E1E1E] border border-[#BB86FC]/30 p-6">
-          <p className="text-xs font-mono text-[#888] mb-2">[ CONTINUE_WATCHING ]</p>
+        <div className="bg-gradient-to-br from-[#6366F1]/10 to-[#8B5CF6]/5 rounded-2xl border border-[#6366F1]/20 p-5">
+          <p className="text-xs font-semibold text-[#6366F1] mb-3">متابعة من حيث توقفت</p>
           <div className="flex items-center gap-4">
-            <div className="w-24 h-16 bg-[#252525] flex items-center justify-center text-2xl shrink-0">🎓</div>
+            <div className="w-16 h-12 bg-[#162032] rounded-xl flex items-center justify-center text-xl shrink-0">🎓</div>
             <div className="flex-1">
-              <p className="text-sm font-bold text-[#E0E0E0]">{lastCourse.title}</p>
-              <p className="text-xs text-[#888]">{lastCourse.currentLesson}</p>
-              <p className="text-xs font-mono text-[#BB86FC] mt-1">⏱ {lastCourse.timeLeft} remaining</p>
+              <p className="text-sm font-bold text-[#F1F5F9]">{lastCourse.title}</p>
+              <p className="text-xs text-[#94A3B8] mt-0.5">{lastCourse.currentLesson}</p>
+              <p className="text-xs text-[#6366F1] mt-1 font-medium">⏱ {lastCourse.timeLeft} متبق</p>
             </div>
-            <Link to={`/academy/course/${lastCourse.id}`}
-              className="px-5 py-2.5 bg-[#BB86FC] text-[#121212] font-bold text-sm hover:bg-[#a06cdc] transition-colors shrink-0">
-              ▶️ متابعة التعلم
+            <Link
+              to={`/academy/course/${lastCourse.id}`}
+              className="px-4 py-2.5 gradient-bg text-white font-bold text-xs rounded-xl hover:opacity-90 transition-opacity shrink-0"
+            >
+              ▶ متابعة
             </Link>
           </div>
           <div className="mt-3">
-            <div className="flex justify-between text-xs font-mono text-[#888] mb-1">
+            <div className="flex justify-between text-xs text-[#94A3B8] mb-1.5">
               <span>{lastCourse.progress}% مكتمل</span>
-              <span>{lastCourse.doneLessons} / {lastCourse.totalLessons} دروس</span>
+              <span>{lastCourse.doneLessons} / {lastCourse.totalLessons}</span>
             </div>
-            <div className="h-2 bg-[#2A2A2A]">
-              <div className="h-2 bg-[#BB86FC]" style={{ width: `${lastCourse.progress}%` }} />
+            <div className="h-2 bg-[#162032] rounded-full overflow-hidden">
+              <div className="h-2 gradient-bg rounded-full" style={{ width: `${lastCourse.progress}%` }} />
             </div>
           </div>
         </div>
@@ -60,9 +67,16 @@ export default function EnrolledCourses() {
       {/* Filter */}
       <div className="flex gap-2">
         {['الكل', 'نشطة', 'مكتملة'].map(f => (
-          <button key={f} onClick={() => setFilter(f)}
-            className={`px-4 py-1.5 text-xs transition-colors ${filter === f ? 'bg-[#BB86FC] text-[#121212] font-bold' : 'border border-[#2A2A2A] text-[#888] hover:border-[#BB86FC]'}`}>
-            {f === 'نشطة' ? '🟢 ' : f === 'مكتملة' ? '✅ ' : ''}{f}
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-1.5 text-sm rounded-full transition-all ${
+              filter === f
+                ? 'gradient-bg text-white font-semibold'
+                : 'border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1]'
+            }`}
+          >
+            {f}
           </button>
         ))}
       </div>
@@ -70,38 +84,48 @@ export default function EnrolledCourses() {
       {/* Course list */}
       <div className="space-y-3">
         {filtered.map(c => (
-          <div key={c.id} className="bg-[#1E1E1E] border border-[#2A2A2A] overflow-hidden">
-            <div className="flex items-center gap-4 p-4">
-              <div className="w-16 h-12 bg-[#252525] flex items-center justify-center text-xl shrink-0 relative">
-                🎓
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#BB86FC]" style={{ width: `${c.progress}%` }} />
-              </div>
+          <div key={c.id} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden hover:border-[#6366F1]/20 transition-all">
+            <div className="flex items-center gap-4 p-5">
+              <div className="w-14 h-10 bg-[#162032] rounded-xl flex items-center justify-center text-xl shrink-0">🎓</div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[#E0E0E0] truncate">{c.title}</p>
-                <div className="flex items-center gap-3 mt-1">
-                  <div className="flex-1 h-1.5 bg-[#2A2A2A]">
-                    <div className={`h-1.5 ${c.progress === 100 ? 'bg-[#4CAF50]' : 'bg-[#BB86FC]'}`} style={{ width: `${c.progress}%` }} />
+                <p className="text-sm font-bold text-[#F1F5F9] truncate">{c.title}</p>
+                <p className="text-xs text-[#4A5D78] mt-0.5">{c.instructor}</p>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex-1 h-1.5 bg-[#162032] rounded-full overflow-hidden">
+                    <div
+                      className="h-1.5 rounded-full"
+                      style={{ width: `${c.progress}%`, background: c.progress === 100 ? '#10B981' : '#6366F1' }}
+                    />
                   </div>
-                  <span className="text-xs font-mono text-[#888] shrink-0">{c.progress}%</span>
+                  <span className="text-xs text-[#94A3B8] shrink-0">{c.progress}%</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {c.status === 'completed'
-                  ? <span className="text-xs border border-[#4CAF50]/40 text-[#4CAF50] px-2 py-0.5">📜 شهادة جاهزة</span>
-                  : <span className="text-xs border border-[#2A2A2A] text-[#555] px-2 py-0.5">🔒 الشهادة مقفلة</span>
+                  ? <span className="text-xs text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/30 rounded-full px-2.5 py-1">📜 شهادة جاهزة</span>
+                  : <span className="text-xs text-[#4A5D78] bg-[#162032] border border-[#1E2D45] rounded-full px-2.5 py-1">🔒 قيد التعلم</span>
                 }
-                <button onClick={() => setExpanded(expanded === c.id ? null : c.id)}
-                  className="text-xs text-[#888] hover:text-[#BB86FC] transition-colors">
-                  {expanded === c.id ? '▲' : '▼'}
-                </button>
+                {c.lessons && (
+                  <button
+                    onClick={() => setExpanded(expanded === c.id ? null : c.id)}
+                    className="text-xs text-[#4A5D78] hover:text-[#6366F1] w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#162032] transition-all"
+                  >
+                    {expanded === c.id ? '▲' : '▼'}
+                  </button>
+                )}
               </div>
             </div>
 
             {expanded === c.id && c.lessons && (
-              <div className="border-t border-[#2A2A2A] bg-[#121212]/50">
+              <div className="border-t border-[#1E2D45] bg-[#070C18]/30 animate-fade-up">
                 {c.lessons.map((l, i) => (
-                  <div key={i} className={`flex items-center gap-3 px-5 py-2.5 text-xs border-b border-[#2A2A2A] last:border-0 ${l.active ? 'text-[#BB86FC]' : l.done ? 'text-[#555]' : 'text-[#888]'}`}>
-                    <span>{l.done ? '✅' : l.active ? '▶️' : '⚪'}</span>
+                  <div
+                    key={i}
+                    className={`flex items-center gap-3 px-5 py-2.5 text-xs border-b border-[#1E2D45] last:border-0 ${
+                      l.active ? 'text-[#6366F1]' : l.done ? 'text-[#4A5D78]' : 'text-[#94A3B8]'
+                    }`}
+                  >
+                    <span>{l.done ? '✅' : l.active ? '▶' : '○'}</span>
                     <span>{l.title}</span>
                   </div>
                 ))}
@@ -111,24 +135,25 @@ export default function EnrolledCourses() {
         ))}
       </div>
 
-      {/* Skill orbs */}
-      <div className="bg-[#1E1E1E] border border-[#2A2A2A] p-5">
-        <p className="text-xs font-mono text-[#888] mb-3">[ SKILL_ACQUISITION ] — المهارات المكتسبة</p>
-        <div className="flex flex-wrap gap-2">
-          {SKILL_ORBS.map(s => (
-            <span key={s} className="border border-[#BB86FC]/40 px-3 py-1.5 text-xs text-[#BB86FC]">{s}</span>
+      {/* Skills */}
+      <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5">
+        <p className="text-xs font-semibold text-[#F1F5F9] mb-3">المهارات المكتسبة</p>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {SKILLS.map(s => (
+            <span key={s} className="border border-[#6366F1]/30 bg-[#6366F1]/8 px-3 py-1.5 text-xs text-[#6366F1] rounded-lg font-medium">{s}</span>
           ))}
         </div>
-        <p className="text-xs font-mono text-[#888] mt-3">Total Learning XP: <span className="text-[#4CAF50]">+1,400 XP</span></p>
-        <p className="text-xs text-[#555] mt-1">دورتان إضافيتان للوصول لمستوى "Professional"</p>
+        <div className="text-xs text-[#94A3B8] flex justify-between pt-3 border-t border-[#1E2D45]">
+          <span>XP المكتسبة من التعلم</span>
+          <span className="font-bold text-[#10B981] font-mono">+1,400 XP</span>
+        </div>
       </div>
 
-      {/* Actions */}
       <div className="flex gap-3">
-        <Link to="/academy" className="flex-1 py-2.5 border border-[#2A2A2A] text-[#888] text-sm text-center hover:border-[#BB86FC] transition-colors">
-          🎓 ابحث عن دورات جديدة
+        <Link to="/academy" className="flex-1 py-3 text-center text-sm rounded-xl border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1] transition-all">
+          🎓 اكتشف دورات جديدة
         </Link>
-        <button className="px-5 py-2.5 border border-[#4CAF50]/40 text-[#4CAF50] text-sm hover:bg-[#4CAF50]/10 transition-colors">
+        <button className="px-5 py-3 rounded-xl border border-[#10B981]/30 text-[#10B981] text-sm hover:bg-[#10B981]/10 transition-all">
           📜 شهاداتي
         </button>
       </div>
