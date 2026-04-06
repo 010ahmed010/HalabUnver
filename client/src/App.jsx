@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
+import { AuthProvider } from './context/AuthContext'
 import Layout from './components/layout/Layout'
+import StudentRoute from './components/guards/StudentRoute'
+import BusinessRoute from './components/guards/BusinessRoute'
+import AdminRoute from './components/guards/AdminRoute'
 
 const HomePage = lazy(() => import('./pages/home/HomePage'))
 const SearchResults = lazy(() => import('./pages/home/SearchResults'))
@@ -31,13 +35,16 @@ const OrderHistory = lazy(() => import('./pages/dashboard/OrderHistory'))
 const SystemInbox = lazy(() => import('./pages/dashboard/SystemInbox'))
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
+const BusinessDashboard = lazy(() => import('./pages/business/BusinessDashboard'))
+const Login = lazy(() => import('./pages/auth/Login'))
+const Register = lazy(() => import('./pages/auth/Register'))
 
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#121212]">
+    <div className="min-h-screen flex items-center justify-center bg-[#070C18]">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-8 h-8 border-2 border-[#BB86FC] border-t-transparent rounded-full animate-spin" />
-        <span className="text-[#888] font-mono text-sm">LOADING SYSTEM...</span>
+        <div className="w-8 h-8 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+        <span className="text-[#4A5D78] font-mono text-sm">LOADING SYSTEM...</span>
       </div>
     </div>
   )
@@ -45,43 +52,76 @@ function PageLoader() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="search" element={<SearchResults />} />
-            <Route path="exam-hub" element={<ExamHub />} />
-            <Route path="contact" element={<ContactUs />} />
-            <Route path="about" element={<About />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Auth pages — no Layout wrapper */}
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
 
-            <Route path="academy" element={<Academy />} />
-            <Route path="academy/course/:id" element={<CourseDisplay />} />
+            {/* Business dashboard — no Layout wrapper */}
+            <Route
+              path="/business"
+              element={
+                <BusinessRoute>
+                  <BusinessDashboard />
+                </BusinessRoute>
+              }
+            />
 
-            <Route path="library" element={<Library />} />
-            <Route path="library/viewer/:id" element={<DocumentReader />} />
+            {/* Main site with Layout */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="search" element={<SearchResults />} />
+              <Route path="exam-hub" element={<ExamHub />} />
+              <Route path="contact" element={<ContactUs />} />
+              <Route path="about" element={<About />} />
 
-            <Route path="freelance" element={<FreelanceHome />} />
-            <Route path="freelance/catalog/:category" element={<ServiceCatalog />} />
-            <Route path="freelance/profile/:id" element={<FreelanceProfile />} />
-            <Route path="freelance/leaderboard" element={<Leaderboard />} />
-            <Route path="freelance/onboarding" element={<FreelanceOnboarding />} />
+              <Route path="academy" element={<Academy />} />
+              <Route path="academy/course/:id" element={<CourseDisplay />} />
 
-            <Route path="store" element={<Store />} />
-            <Route path="store/product/:id" element={<ProductDetail />} />
+              <Route path="library" element={<Library />} />
+              <Route path="library/viewer/:id" element={<DocumentReader />} />
 
-            <Route path="dashboard" element={<DashboardLayout />}>
-              <Route index element={<AcademicProfile />} />
-              <Route path="learning" element={<EnrolledCourses />} />
-              <Route path="wallet" element={<WalletOverview />} />
-              <Route path="orders" element={<OrderHistory />} />
-              <Route path="inbox" element={<SystemInbox />} />
+              <Route path="freelance" element={<FreelanceHome />} />
+              <Route path="freelance/catalog/:category" element={<ServiceCatalog />} />
+              <Route path="freelance/profile/:id" element={<FreelanceProfile />} />
+              <Route path="freelance/leaderboard" element={<Leaderboard />} />
+              <Route path="freelance/onboarding" element={<FreelanceOnboarding />} />
+
+              <Route path="store" element={<Store />} />
+              <Route path="store/product/:id" element={<ProductDetail />} />
+
+              {/* Protected: Student only */}
+              <Route
+                path="dashboard"
+                element={
+                  <StudentRoute>
+                    <DashboardLayout />
+                  </StudentRoute>
+                }
+              >
+                <Route index element={<AcademicProfile />} />
+                <Route path="learning" element={<EnrolledCourses />} />
+                <Route path="wallet" element={<WalletOverview />} />
+                <Route path="orders" element={<OrderHistory />} />
+                <Route path="inbox" element={<SystemInbox />} />
+              </Route>
+
+              {/* Protected: Admin only */}
+              <Route
+                path="admin"
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }
+              />
             </Route>
-
-            <Route path="admin" element={<AdminDashboard />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }

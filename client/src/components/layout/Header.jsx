@@ -1,21 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
-const navLinks = [
+const NAV_LINKS = [
   { label: 'الأكاديمية', href: '/academy', icon: '🎓' },
   { label: 'المكتبة', href: '/library', icon: '📚' },
   { label: 'المستقلون', href: '/freelance', icon: '💼' },
   { label: 'المتجر', href: '/store', icon: '🛒' },
-  { label: 'لوحة التحكم', href: '/dashboard', icon: '⚙️' },
 ]
+
+const ACCOUNT_COLORS = {
+  student: '#6366F1',
+  business: '#F59E0B',
+  admin: '#10B981',
+}
+
+const ACCOUNT_LABELS = {
+  student: 'طالب',
+  business: { vendor: 'بائع', advertiser: 'معلن', freelancer: 'مستقل' },
+  admin: 'مشرف',
+}
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const { user, logout, isGuest, isStudent, isBusiness, isAdmin } = useAuth()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -23,7 +38,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => { setMobileOpen(false) }, [pathname])
+  useEffect(() => { setMobileOpen(false); setUserMenuOpen(false) }, [pathname])
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -32,10 +47,20 @@ export default function Header() {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') { setSearchOpen(false); setMobileOpen(false) }
+      if (e.key === 'Escape') { setSearchOpen(false); setMobileOpen(false); setUserMenuOpen(false) }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    const onClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
 
   const handleSearch = (e) => {
@@ -46,6 +71,38 @@ export default function Header() {
       setQuery('')
     }
   }
+
+  const handleLogout = () => {
+    logout()
+    setUserMenuOpen(false)
+    navigate('/')
+  }
+
+  const getDashboardLink = () => {
+    if (isAdmin) return '/admin'
+    if (isBusiness) return '/business'
+    return '/dashboard'
+  }
+
+  const getDashboardLabel = () => {
+    if (isAdmin) return 'لوحة الإدارة'
+    if (isBusiness) return 'لوحة الأعمال'
+    return 'لوحة التحكم'
+  }
+
+  const getAccountLabel = () => {
+    if (!user) return ''
+    if (user.accountType === 'admin') return 'مشرف'
+    if (user.accountType === 'business') return ACCOUNT_LABELS.business[user.businessType] || 'أعمال'
+    return 'طالب'
+  }
+
+  const accentColor = user ? ACCOUNT_COLORS[user.accountType] : '#6366F1'
+
+  const navLinks = [
+    ...NAV_LINKS,
+    ...(user ? [{ label: getDashboardLabel(), href: getDashboardLink(), icon: '⚙️' }] : []),
+  ]
 
   return (
     <>
@@ -68,7 +125,7 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map(link => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
@@ -115,26 +172,81 @@ export default function Header() {
               <span className="hidden md:inline">الأخبار</span>
             </Link>
 
-            {/* Login */}
-            <Link
-              to="/dashboard"
-              className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-xl hover:border-[#6366F1]/50 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                <polyline points="10 17 15 12 10 7" />
-                <line x1="15" y1="12" x2="3" y2="12" />
-              </svg>
-              دخول
-            </Link>
+            {/* GUEST: show login + join */}
+            {isGuest && (
+              <>
+                <Link
+                  to="/auth/login"
+                  className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-xl hover:border-[#6366F1]/50 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                  </svg>
+                  دخول
+                </Link>
+                <Link
+                  to="/auth/register"
+                  className="flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-[14px] font-bold gradient-bg text-white rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/25"
+                >
+                  انضم مجاناً
+                </Link>
+              </>
+            )}
 
-            {/* CTA */}
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-[14px] font-bold gradient-bg text-white rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/25"
-            >
-              انضم مجاناً
-            </Link>
+            {/* LOGGED IN: user menu */}
+            {!isGuest && (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-[#1E2D45] hover:border-[#6366F1]/40 hover:bg-[#6366F1]/5 transition-all"
+                >
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                    style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}99)` }}
+                  >
+                    {user?.name?.[0] || 'م'}
+                  </div>
+                  <div className="hidden md:flex flex-col items-start">
+                    <span className="text-[#F1F5F9] text-xs font-semibold leading-tight">{user?.name}</span>
+                    <span className="text-[10px] leading-tight" style={{ color: accentColor }}>{getAccountLabel()}</span>
+                  </div>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-[#4A5D78] transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}>
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute top-full mt-2 left-0 w-52 bg-[#0F1828] border border-[#1E2D45] rounded-2xl shadow-2xl shadow-black/40 overflow-hidden z-50 animate-fade-up">
+                    <div className="px-4 py-3 border-b border-[#1E2D45]">
+                      <div className="text-[#F1F5F9] font-semibold text-sm">{user?.name}</div>
+                      <div className="text-xs mt-0.5" style={{ color: accentColor }}>{getAccountLabel()}</div>
+                    </div>
+                    <div className="p-2">
+                      <Link
+                        to={getDashboardLink()}
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-white/5 transition-all text-sm"
+                      >
+                        <span>⚙️</span> {getDashboardLabel()}
+                      </Link>
+                      {isAdmin && (
+                        <div className="flex items-center gap-2 px-3 py-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-blink-soft" />
+                          <span className="text-[#10B981] text-xs font-mono">ADMIN MODE</span>
+                        </div>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[#F43F5E] hover:bg-[#F43F5E]/8 transition-all text-sm mt-1"
+                      >
+                        <span>🚪</span> تسجيل الخروج
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Hamburger */}
             <button
@@ -180,19 +292,45 @@ export default function Header() {
                   </Link>
                 )
               })}
-              <div className="mt-3 pt-4 border-t border-[#1E2D45] flex gap-3">
-                <Link
-                  to="/dashboard"
-                  className="flex-1 text-center py-3 text-[14px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-2xl hover:border-[#6366F1]/40 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
-                >
-                  تسجيل الدخول
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className="flex-1 text-center py-3 text-[14px] font-bold gradient-bg text-white rounded-2xl hover:opacity-90 transition-opacity"
-                >
-                  انضم مجاناً
-                </Link>
+
+              <div className="mt-3 pt-4 border-t border-[#1E2D45]">
+                {isGuest ? (
+                  <div className="flex gap-3">
+                    <Link
+                      to="/auth/login"
+                      className="flex-1 text-center py-3 text-[14px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-2xl hover:border-[#6366F1]/40 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
+                    >
+                      تسجيل الدخول
+                    </Link>
+                    <Link
+                      to="/auth/register"
+                      className="flex-1 text-center py-3 text-[14px] font-bold gradient-bg text-white rounded-2xl hover:opacity-90 transition-opacity"
+                    >
+                      انضم مجاناً
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-3 px-4 py-3 bg-[#0F1828] rounded-2xl border border-[#1E2D45]">
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                        style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}99)` }}
+                      >
+                        {user?.name?.[0]}
+                      </div>
+                      <div>
+                        <div className="text-[#F1F5F9] text-sm font-semibold">{user?.name}</div>
+                        <div className="text-xs" style={{ color: accentColor }}>{getAccountLabel()}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full py-3 text-[14px] font-medium text-[#F43F5E] border border-[#F43F5E]/20 rounded-2xl hover:bg-[#F43F5E]/8 transition-all"
+                    >
+                      🚪 تسجيل الخروج
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </>

@@ -10,18 +10,36 @@
 - **الخط:** IBM Plex Sans Arabic + Cairo (Google Fonts)
 - **Port:** 5000 (Vite) mapped to external port 80
 
+## أنواع الحسابات (Three Account Types)
+| النوع | accountType | تفاصيل |
+|-------|-------------|---------|
+| طالب | `student` | isVerified, isFreelancer, xp, level |
+| أعمال | `business` | businessType: vendor/advertiser/freelancer |
+| مشرف | `admin` | وصول كامل لجميع الأدوات |
+
+- AuthContext في `context/AuthContext.jsx` — مع 6 حسابات تجريبية mock
+- Route Guards: `StudentRoute`, `BusinessRoute`, `AdminRoute` في `components/guards/`
+- لوحة الأعمال: `/business` — tabs تتغير بحسب businessType
+- الهيدر account-aware: Guest / Student / Business / Admin لكل منهم واجهة مختلفة
+
 ## هيكل المشروع
 
 ```
 client/src/
-├── App.jsx               — React Router مع 20+ مسار lazy-loaded
+├── App.jsx               — React Router مع AuthProvider + Route Guards
 ├── index.css             — Tailwind v4 + @theme + animations + utility classes
 ├── main.jsx
+├── context/
+│   └── AuthContext.jsx   — global auth state + mock users + login/register/logout
 ├── components/
 │   ├── layout/
 │   │   ├── Layout.jsx    — root layout wrapper
-│   │   ├── Navbar.jsx    — sticky navbar + search modal + mobile menu (backdrop+ESC)
+│   │   ├── Header.jsx    — sticky header + account-aware nav + user menu dropdown
 │   │   └── Footer.jsx    — 4-column footer + system status dot
+│   ├── guards/
+│   │   ├── StudentRoute.jsx  — protects /dashboard
+│   │   ├── BusinessRoute.jsx — protects /business
+│   │   └── AdminRoute.jsx    — protects /admin
 │   └── shared/
 │       └── StatusPill.jsx — shared status badge (6 states)
 └── pages/
@@ -53,8 +71,13 @@ client/src/
     │   ├── WalletOverview.jsx    — ShamCash transaction log + virtual wallet
     │   ├── OrderHistory.jsx      — orders + 4-digit pickup code
     │   └── SystemInbox.jsx       — notifications + escrow alerts
-    └── admin/
-        └── AdminDashboard.jsx    — admin control center (7 modules + exam toggle)
+    ├── admin/
+    │   └── AdminDashboard.jsx    — admin control center (7 modules + exam toggle)
+    ├── auth/
+    │   ├── Login.jsx     — unified login + 6 demo account quick-login buttons
+    │   └── Register.jsx  — multi-step wizard (account type → sub-type → form)
+    └── business/
+        └── BusinessDashboard.jsx — vendor/advertiser/freelancer tabs dashboard
 ```
 
 ## UI/UX Design Patterns
@@ -147,7 +170,10 @@ client/src/
 | `/dashboard/wallet` | المحفظة |
 | `/dashboard/orders` | الطلبات |
 | `/dashboard/inbox` | الرسائل |
-| `/admin` | لوحة الإدارة |
+| `/admin` | لوحة الإدارة (Admin فقط) |
+| `/auth/login` | صفحة الدخول |
+| `/auth/register` | صفحة التسجيل (wizard متعدد الخطوات) |
+| `/business` | لوحة الأعمال (Business فقط) |
 
 ## للتطوير لاحقاً
 - Backend: Node.js + Express + MongoDB (لم يُبنَ بعد)
