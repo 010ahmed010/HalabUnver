@@ -2,11 +2,18 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
-const NAV_LINKS = [
-  { label: 'الأكاديمية', href: '/academy', icon: '🎓' },
-  { label: 'المكتبة', href: '/library', icon: '📚' },
-  { label: 'المستقلون', href: '/freelance', icon: '💼' },
-  { label: 'المتجر', href: '/store', icon: '🛒' },
+const PRIMARY_NAV = [
+  { label: 'الأكاديمية', href: '/academy' },
+  { label: 'المكتبة', href: '/library' },
+  { label: 'المستقلون', href: '/freelance' },
+  { label: 'المتجر', href: '/store' },
+]
+
+const SECONDARY_NAV = [
+  { label: 'عن المنصة', href: '/about' },
+  { label: 'تواصل معنا', href: '/contact' },
+  { label: 'مركز الامتحانات', href: '/exam-hub' },
+  { label: 'أفضل المستقلين', href: '/freelance/leaderboard' },
 ]
 
 const ACCOUNT_COLORS = {
@@ -99,9 +106,9 @@ export default function Header() {
 
   const accentColor = user ? ACCOUNT_COLORS[user.accountType] : '#6366F1'
 
-  const navLinks = [
-    ...NAV_LINKS,
-    ...(user ? [{ label: getDashboardLabel(), href: getDashboardLink(), icon: '⚙️' }] : []),
+  const primaryLinks = [
+    ...PRIMARY_NAV,
+    ...(user ? [{ label: getDashboardLabel(), href: getDashboardLink() }] : []),
   ]
 
   return (
@@ -109,11 +116,12 @@ export default function Header() {
       <header
         className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-[#070C18]/95 backdrop-blur-xl border-b border-[#1E2D45] shadow-2xl shadow-black/40'
-            : 'bg-[#070C18]/70 backdrop-blur-md border-b border-[#1E2D45]/40'
+            ? 'bg-[#070C18]/96 backdrop-blur-xl border-b border-[#1E2D45] shadow-2xl shadow-black/40'
+            : 'bg-[#070C18]/75 backdrop-blur-md border-b border-[#1E2D45]/40'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between gap-4">
+        {/* ── Row 1: Logo · Primary apps nav · Auth ── */}
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[68px] flex items-center justify-between gap-4">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0 group">
@@ -125,22 +133,21 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map(link => {
+          {/* Desktop primary nav — no icons */}
+          <nav className="hidden lg:flex items-center gap-0.5">
+            {primaryLinks.map(link => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
               return (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`relative flex items-center gap-2 px-4 py-2 text-[14px] rounded-xl transition-all duration-200 font-medium group ${
+                  className={`relative px-4 py-2 text-[13.5px] rounded-xl transition-all duration-200 font-semibold ${
                     isActive
                       ? 'bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/25'
                       : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-white/5 border border-transparent'
                   }`}
                 >
-                  <span className="text-sm leading-none">{link.icon}</span>
-                  <span>{link.label}</span>
+                  {link.label}
                   {isActive && (
                     <span className="absolute bottom-1 right-1/2 translate-x-1/2 w-4 h-0.5 rounded-full gradient-bg" />
                   )}
@@ -149,7 +156,7 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Right Actions */}
+          {/* Right actions */}
           <div className="flex items-center gap-2 sm:gap-3">
 
             {/* Search */}
@@ -158,44 +165,30 @@ export default function Header() {
               className="p-2.5 rounded-xl text-[#94A3B8] hover:text-[#6366F1] hover:bg-[#6366F1]/8 border border-transparent hover:border-[#6366F1]/20 transition-all"
               aria-label="بحث"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
             </button>
 
-            {/* News badge */}
-            <Link
-              to="/exam-hub"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-full bg-[#F43F5E]/10 text-[#F43F5E] border border-[#F43F5E]/20 hover:bg-[#F43F5E]/20 hover:border-[#F43F5E]/40 transition-all"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F43F5E] animate-blink-soft shrink-0" />
-              <span className="hidden md:inline">الأخبار</span>
-            </Link>
-
-            {/* GUEST: show login + join */}
+            {/* Guest buttons */}
             {isGuest && (
               <>
                 <Link
                   to="/auth/login"
-                  className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[14px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-xl hover:border-[#6366F1]/50 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
+                  className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[13.5px] font-medium text-[#CBD5E1] border border-[#1E2D45] rounded-xl hover:border-[#6366F1]/50 hover:text-[#F1F5F9] hover:bg-[#6366F1]/5 transition-all"
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                    <polyline points="10 17 15 12 10 7" />
-                    <line x1="15" y1="12" x2="3" y2="12" />
-                  </svg>
                   دخول
                 </Link>
                 <Link
                   to="/auth/register"
-                  className="flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-[14px] font-bold gradient-bg text-white rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/25"
+                  className="flex items-center px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-[13.5px] font-bold gradient-bg text-white rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/25"
                 >
                   انضم مجاناً
                 </Link>
               </>
             )}
 
-            {/* LOGGED IN: user menu */}
+            {/* Logged-in user menu */}
             {!isGuest && (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -212,7 +205,7 @@ export default function Header() {
                     <span className="text-[#F1F5F9] text-xs font-semibold leading-tight">{user?.name}</span>
                     <span className="text-[10px] leading-tight" style={{ color: accentColor }}>{getAccountLabel()}</span>
                   </div>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-[#4A5D78] transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`text-[#4A5D78] transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}>
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </button>
@@ -264,36 +257,89 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ── Row 2: Secondary nav (desktop only) ── */}
+        <div className="hidden lg:block border-t border-[#1E2D45]/50">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[36px] flex items-center gap-1">
+            {SECONDARY_NAV.map(link => {
+              const isActive = pathname === link.href
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`px-3.5 py-1 text-[12px] rounded-lg transition-all font-medium ${
+                    isActive
+                      ? 'text-[#818CF8] bg-[#6366F1]/10'
+                      : 'text-[#4A5D78] hover:text-[#94A3B8] hover:bg-white/4'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+
+            {/* Exam season pill in secondary row */}
+            <Link
+              to="/exam-hub"
+              className="mr-auto flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold rounded-full bg-[#F43F5E]/10 text-[#F43F5E] border border-[#F43F5E]/20 hover:bg-[#F43F5E]/18 transition-all"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F43F5E] animate-blink-soft shrink-0" />
+              الأخبار
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Mobile Menu ── */}
         {mobileOpen && (
           <>
             <div
-              className="lg:hidden fixed inset-0 top-[72px] bg-[#070C18]/80 backdrop-blur-sm z-40"
+              className="lg:hidden fixed inset-0 top-[68px] bg-[#070C18]/80 backdrop-blur-sm z-40"
               onClick={() => setMobileOpen(false)}
             />
-            <div className="lg:hidden relative z-50 bg-[#070C18]/98 backdrop-blur-xl border-t border-[#1E2D45] px-5 py-5 flex flex-col gap-1.5 shadow-2xl">
-              {navLinks.map(link => {
+            <div className="lg:hidden relative z-50 bg-[#070C18]/98 backdrop-blur-xl border-t border-[#1E2D45] px-5 py-4 flex flex-col gap-1 shadow-2xl">
+
+              {/* Primary links */}
+              <p className="text-[10px] font-bold text-[#4A5D78] uppercase tracking-widest px-2 mb-1">التطبيقات</p>
+              {primaryLinks.map(link => {
                 const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
                 return (
                   <Link
                     key={link.href}
                     to={link.href}
-                    className={`flex items-center gap-3 py-3.5 px-5 rounded-2xl text-[15px] font-medium transition-all ${
+                    className={`flex items-center justify-between py-3 px-4 rounded-2xl text-[15px] font-medium transition-all ${
                       isActive
                         ? 'bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/25'
                         : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-white/5 border border-transparent'
                     }`}
                   >
-                    <span className="text-base">{link.icon}</span>
                     {link.label}
-                    {isActive && (
-                      <span className="mr-auto w-2 h-2 rounded-full bg-[#6366F1] shrink-0" />
-                    )}
+                    {isActive && <span className="w-2 h-2 rounded-full bg-[#6366F1] shrink-0" />}
                   </Link>
                 )
               })}
 
-              <div className="mt-3 pt-4 border-t border-[#1E2D45]">
+              {/* Secondary links */}
+              <div className="border-t border-[#1E2D45] mt-2 pt-3">
+                <p className="text-[10px] font-bold text-[#4A5D78] uppercase tracking-widest px-2 mb-1">المنصة</p>
+                {SECONDARY_NAV.map(link => {
+                  const isActive = pathname === link.href
+                  return (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={`flex items-center justify-between py-2.5 px-4 rounded-xl text-[14px] font-medium transition-all ${
+                        isActive
+                          ? 'text-[#818CF8] bg-[#6366F1]/8'
+                          : 'text-[#4A5D78] hover:text-[#94A3B8] hover:bg-white/4'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
+              </div>
+
+              {/* Auth section */}
+              <div className="border-t border-[#1E2D45] mt-2 pt-4">
                 {isGuest ? (
                   <div className="flex gap-3">
                     <Link
@@ -340,7 +386,7 @@ export default function Header() {
       {/* Search Modal */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-[#070C18]/92 backdrop-blur-md flex items-start justify-center pt-24 sm:pt-32 px-4"
+          className="fixed inset-0 z-[100] bg-[#070C18]/92 backdrop-blur-md flex items-start justify-center pt-28 sm:pt-36 px-4"
           onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
         >
           <div className="w-full max-w-2xl animate-fade-up">

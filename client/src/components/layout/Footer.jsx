@@ -15,6 +15,27 @@ const footerLinks = {
   ],
 }
 
+const SOCIAL = [
+  {
+    letter: 'T',
+    title: 'Telegram',
+    href: 'https://t.me/HalabUnver',
+    hoverColor: '#229ED9',
+  },
+  {
+    letter: 'W',
+    title: 'WhatsApp',
+    href: 'https://wa.me/963999000111',
+    hoverColor: '#25D366',
+  },
+  {
+    letter: 'F',
+    title: 'Facebook',
+    href: 'https://facebook.com/HalabUnver',
+    hoverColor: '#1877F2',
+  },
+]
+
 export default function Footer() {
   return (
     <footer className="bg-[#070C18] border-t border-[#1E2D45] w-full">
@@ -23,7 +44,7 @@ export default function Footer() {
         {/* Main footer grid */}
         <div className="py-16 sm:py-20 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-10 lg:gap-12">
 
-          {/* Brand — spans 2 cols on sm */}
+          {/* Brand */}
           <div className="col-span-2 sm:col-span-4 lg:col-span-1 flex flex-col gap-4">
             <Link to="/" className="inline-flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shrink-0 shadow-lg shadow-[#6366F1]/30">
@@ -70,19 +91,35 @@ export default function Footer() {
           {/* Contact column */}
           <div>
             <h4 className="text-xs font-bold text-[#F1F5F9] mb-6 uppercase tracking-widest">تواصل معنا</h4>
-            <ul className="space-y-3 text-[15px] text-[#94A3B8] mb-6">
-              <li>support@halabunver.sy</li>
-              <li>جامعة حلب — سوريا</li>
+            <ul className="space-y-3 text-[15px] text-[#94A3B8] mb-5">
+              <li>
+                <a
+                  href="mailto:support@halabunver.sy"
+                  className="hover:text-[#6366F1] transition-colors"
+                >
+                  support@halabunver.sy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/963999000111"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 hover:text-[#25D366] transition-colors"
+                >
+                  <span className="text-sm">💬</span>
+                  WhatsApp: +963 999 000 111
+                </a>
+              </li>
+              <li className="text-sm">جامعة حلب — سوريا</li>
             </ul>
             <div className="flex gap-3">
-              {[
-                { letter: 'T', title: 'Telegram' },
-                { letter: 'W', title: 'WhatsApp' },
-                { letter: 'F', title: 'Facebook' },
-              ].map(s => (
+              {SOCIAL.map(s => (
                 <a
                   key={s.letter}
-                  href="#"
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   title={s.title}
                   className="w-10 h-10 rounded-xl border border-[#1E2D45] flex items-center justify-center text-[#94A3B8] hover:border-[#6366F1]/60 hover:text-[#6366F1] hover:bg-[#6366F1]/10 transition-all text-sm font-bold"
                 >

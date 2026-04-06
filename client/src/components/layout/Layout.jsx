@@ -9,6 +9,8 @@ export default function Layout() {
       style={{ fontFamily: "'IBM Plex Sans Arabic', 'Cairo', sans-serif" }}
     >
       <Header />
+      {/* Compensates for the secondary nav row (36px) added to the fixed header */}
+      <div className="h-9 shrink-0 hidden lg:block" />
       <main className="flex-1 w-full">
         <Outlet />
       </main>
