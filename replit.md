@@ -246,10 +246,29 @@ client/src/
 | `/business` | لوحة الأعمال |
 
 ## Docker للنشر على VPS
+
+هيكل الـ Docker يعمل من **جذر المشروع** — خدمتان:
+- `frontend`: يبني React (Vite) → ينسخ الـ dist إلى Nginx → يُوكّل `/api/*` إلى الـ backend
+- `backend`: Node.js + Express فقط (لا يحتاج port عام — Nginx هو من يُوجّه إليه)
+
+```
+docker-compose.yml          ← جذر المشروع (يُشغّل كل شيء)
+client/
+  Dockerfile                ← multi-stage: node build → nginx serve
+  nginx.conf                ← يخدم static files + يُوكّل /api إلى backend:8000
+server/
+  Dockerfile                ← Node.js backend فقط
+  docker-compose.yml        ← للاختبار المنفرد للـ API (اختياري)
+.env.example                ← قالب متغيرات البيئة
+```
+
 ```bash
-# في server/
+# من جذر المشروع
 cp .env.example .env
-# عدّل MONGODB_URI و JWT_SECRET
+# عدّل MONGODB_URI و JWT_SECRET في .env
 docker compose up -d --build
 ```
-الـ API يعمل على port 8000. استخدم Nginx كـ reverse proxy لتوجيه `/api` إليه.
+
+- الموقع يعمل على port 80 (و 443 مع SSL)
+- الـ Nginx يُوجّه `/api/*` داخلياً إلى `backend:8000` — لا يحتاج الـ backend أي port عام
+- لاختبار الـ API بمفرده: `cd server && docker compose up -d --build`
