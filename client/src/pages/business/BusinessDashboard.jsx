@@ -1,67 +1,60 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useCallback } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { api } from '../../lib/api'
 
-const VENDOR_PRODUCTS = [
-  { id: 'PRD-01', name: 'لابتوب ThinkPad X1', price: '4,500,000 SYP', stock: 3, status: 'منشور' },
-  { id: 'PRD-02', name: 'قرص SSD 1TB', price: '850,000 SYP', stock: 12, status: 'قيد المراجعة' },
-]
+function Spinner() {
+  return <div className="w-6 h-6 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto" />
+}
 
-const VENDOR_ORDERS = [
-  { id: '#HS-702', item: 'لابتوب ThinkPad X1', customer: 'أحمد الجاسم', status: 'مدفوع', amount: '4,500,000 SYP' },
-]
+function LockedService({ label, desc }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-[#F59E0B]/10 flex items-center justify-center text-3xl mx-auto mb-4">🔒</div>
+      <h3 className="text-[#F1F5F9] font-bold text-lg mb-2">{label}</h3>
+      <p className="text-[#4A5D78] text-sm mb-1">{desc}</p>
+      <p className="text-[#F59E0B] text-xs">الخدمة مقفلة — تواصل مع الإدارة لتفعيلها</p>
+    </div>
+  )
+}
 
-const AD_CAMPAIGNS = [
-  { id: 'AD-01', name: 'إعلان رمضان 2026', zone: 'الشريط العلوي', status: 'نشط', clicks: 142, period: 'حتى 30 أبريل' },
-  { id: 'AD-02', name: 'عرض الصيف', zone: 'الشريط الجانبي', status: 'قيد المراجعة', clicks: 0, period: 'مايو 2026' },
-]
+const TYPE_CONFIG = {
+  vendor: { label: 'بائع منتجات', color: '#14B8A6', icon: '🛒', tabs: ['overview', 'products', 'orders', 'revenue'] },
+  advertiser: { label: 'معلن محلي', color: '#F59E0B', icon: '📢', tabs: ['overview', 'campaigns', 'create'] },
+  freelancer: { label: 'مستقل خارجي', color: '#F43F5E', icon: '💼', tabs: ['overview', 'services', 'contracts'] },
+}
 
-const SERVICES = [
-  { id: 'SRV-01', title: 'تطوير تطبيق MERN Stack', price: '500,000 SYP', orders: 3, rating: 4.9 },
-  { id: 'SRV-02', title: 'تصحيح أخطاء برمجية', price: '50,000 SYP/ساعة', orders: 7, rating: 5.0 },
-]
-
-const STATUS_STYLE = {
-  'منشور': 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20',
-  'نشط': 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20',
-  'قيد المراجعة': 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
-  'مدفوع': 'bg-[#6366F1]/10 text-[#818CF8] border-[#6366F1]/20',
-  'مرفوض': 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20',
+const TAB_LABELS = {
+  overview: { icon: '📊', label: 'نظرة عامة' },
+  products: { icon: '📦', label: 'منتجاتي' },
+  orders: { icon: '🛒', label: 'الطلبات' },
+  revenue: { icon: '💰', label: 'الإيرادات' },
+  campaigns: { icon: '📢', label: 'الحملات' },
+  create: { icon: '➕', label: 'حملة جديدة' },
+  services: { icon: '💼', label: 'خدماتي' },
+  contracts: { icon: '📋', label: 'العقود' },
 }
 
 export default function BusinessDashboard() {
-  const { user, logout } = useAuth()
+  const { user, logout, refreshUser } = useAuth()
+  const navigate = useNavigate()
   const [tab, setTab] = useState('overview')
 
-  const tabs = {
-    vendor: ['overview', 'products', 'orders', 'revenue'],
-    advertiser: ['overview', 'campaigns', 'create'],
-    freelancer: ['overview', 'services', 'contracts', 'earnings'],
+  const config = TYPE_CONFIG[user?.businessType] || TYPE_CONFIG.vendor
+  const activeTabs = config.tabs
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
   }
 
-  const tabLabels = {
-    overview: { icon: '📊', label: 'نظرة عامة' },
-    products: { icon: '📦', label: 'منتجاتي' },
-    orders: { icon: '🛒', label: 'الطلبات' },
-    revenue: { icon: '💰', label: 'الإيرادات' },
-    campaigns: { icon: '📢', label: 'الحملات' },
-    create: { icon: '➕', label: 'حملة جديدة' },
-    services: { icon: '💼', label: 'خدماتي' },
-    contracts: { icon: '📋', label: 'العقود' },
-    earnings: { icon: '💸', label: 'الأرباح' },
-  }
-
-  const activeTabs = tabs[user?.businessType] || []
-
-  const typeConfig = {
-    vendor: { label: 'بائع منتجات', color: '#14B8A6', icon: '🛒' },
-    advertiser: { label: 'معلن محلي', color: '#F59E0B', icon: '📢' },
-    freelancer: { label: 'مستقل خارجي', color: '#F43F5E', icon: '💼' },
-  }
-  const config = typeConfig[user?.businessType] || {}
+  // Pending approval state
+  const isPending = user?.status === 'pending'
+  const isFrozen = user?.status === 'frozen'
 
   return (
     <div className="min-h-screen bg-[#070C18] flex">
+      {/* Sidebar */}
       <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-[#0F1828] border-l border-[#1E2D45] sticky top-0 h-screen">
         <div className="p-6 border-b border-[#1E2D45]">
           <Link to="/" className="flex items-center gap-2.5 group mb-4">
@@ -79,9 +72,11 @@ export default function BusinessDashboard() {
               </div>
             </div>
             <div className={`text-xs px-2 py-1 rounded-full border inline-block ${
-              user?.status === 'active' ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20' : 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20'
+              user?.status === 'active' ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20' :
+              user?.status === 'frozen' ? 'bg-[#6366F1]/10 text-[#818CF8] border-[#6366F1]/20' :
+              'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20'
             }`}>
-              {user?.status === 'active' ? '🟢 نشط' : '🕒 قيد المراجعة'}
+              {user?.status === 'active' ? '🟢 نشط' : user?.status === 'frozen' ? '❄️ مجمّد' : '🕒 قيد المراجعة'}
             </div>
           </div>
         </div>
@@ -91,293 +86,471 @@ export default function BusinessDashboard() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-right ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-right w-full ${
                 tab === t
-                  ? 'bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/25'
-                  : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-white/5'
+                  ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
               }`}
             >
-              <span>{tabLabels[t]?.icon}</span>
-              {tabLabels[t]?.label}
+              <span>{TAB_LABELS[t]?.icon}</span>
+              <span>{TAB_LABELS[t]?.label}</span>
             </button>
           ))}
         </nav>
 
         <div className="p-4 border-t border-[#1E2D45]">
           <button
-            onClick={logout}
-            className="w-full flex items-center gap-2 px-4 py-2.5 text-[#4A5D78] hover:text-[#F43F5E] hover:bg-[#F43F5E]/5 rounded-xl transition-all text-sm"
+            onClick={handleLogout}
+            className="w-full text-center px-3 py-2 text-xs rounded-xl text-[#4A5D78] hover:text-[#F43F5E] hover:bg-[#F43F5E]/5 transition-all"
           >
-            <span>🚪</span> تسجيل الخروج
+            تسجيل خروج
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 p-6 lg:p-8 max-w-5xl">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-[#4A5D78] text-sm">لوحة الأعمال</span>
-              <h1 className="text-2xl font-black text-[#F1F5F9] mt-1">
-                مرحباً، <span className="gradient-text">{user?.name}</span>
-              </h1>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold"
-              style={{ color: config.color, borderColor: `${config.color}30`, background: `${config.color}10` }}>
-              {config.icon} {config.label}
-            </div>
-          </div>
-          <div className="lg:hidden flex gap-2 mt-4 overflow-x-auto no-scrollbar pb-1">
-            {activeTabs.map(t => (
-              <button key={t} onClick={() => setTab(t)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                  tab === t ? 'gradient-bg text-white' : 'bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8]'
-                }`}>
-                {tabLabels[t]?.icon} {tabLabels[t]?.label}
-              </button>
-            ))}
-          </div>
+      {/* Main */}
+      <main className="flex-1 min-w-0 overflow-auto">
+        {/* Mobile tabs */}
+        <div className="flex gap-2 p-4 lg:hidden flex-wrap border-b border-[#1E2D45] bg-[#0F1828]">
+          {activeTabs.map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                tab === t ? 'gradient-bg text-white' : 'bg-[#162032] border border-[#1E2D45] text-[#94A3B8]'
+              }`}
+            >
+              {TAB_LABELS[t]?.icon} {TAB_LABELS[t]?.label}
+            </button>
+          ))}
         </div>
 
-        {tab === 'overview' && <OverviewTab user={user} config={config} />}
-        {tab === 'products' && <ProductsTab />}
-        {tab === 'orders' && <OrdersTab />}
-        {tab === 'campaigns' && <CampaignsTab />}
-        {tab === 'create' && <CreateCampaignTab />}
-        {tab === 'services' && <ServicesTab />}
-        {tab === 'revenue' || tab === 'earnings' || tab === 'contracts'
-          ? <PlaceholderTab label={tabLabels[tab]?.label} />
-          : null}
+        <div className="p-6 sm:p-8">
+          {/* Status banners */}
+          {isPending && (
+            <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/25 rounded-2xl p-5 mb-6">
+              <p className="text-[#F59E0B] font-bold">⏳ حسابك قيد المراجعة</p>
+              <p className="text-[#94A3B8] text-sm mt-1">ستصلك إشعار عبر الرسائل فور قبول حسابك من قِبل الإدارة</p>
+            </div>
+          )}
+          {isFrozen && (
+            <div className="bg-[#6366F1]/8 border border-[#6366F1]/25 rounded-2xl p-5 mb-6">
+              <p className="text-[#818CF8] font-bold">❄️ حسابك مجمّد مؤقتاً</p>
+              <p className="text-[#94A3B8] text-sm mt-1">تواصل مع الإدارة لمعرفة السبب والحل</p>
+            </div>
+          )}
+
+          {/* Content */}
+          {tab === 'overview' && <OverviewTab user={user} config={config} />}
+          {tab === 'products' && <ProductsTab user={user} />}
+          {tab === 'orders' && <VendorOrdersTab />}
+          {tab === 'revenue' && <RevenueTab />}
+          {tab === 'campaigns' && <CampaignsTab user={user} />}
+          {tab === 'create' && <CreateCampaignTab />}
+          {tab === 'services' && <ServicesTab user={user} />}
+          {tab === 'contracts' && <ContractsTab />}
+        </div>
       </main>
     </div>
   )
 }
 
 function OverviewTab({ user, config }) {
-  const statsMap = {
-    vendor: [
-      { label: 'إجمالي الإيرادات', value: '4,500,000 SYP', icon: '💰', color: '#10B981' },
-      { label: 'المنتجات المنشورة', value: '1', icon: '📦', color: '#14B8A6' },
-      { label: 'الطلبات المكتملة', value: '1', icon: '✅', color: '#6366F1' },
-      { label: 'تقييم المتجر', value: '4.8 ⭐', icon: '⭐', color: '#F59E0B' },
-    ],
-    advertiser: [
-      { label: 'الحملات النشطة', value: '1', icon: '📢', color: '#F59E0B' },
-      { label: 'إجمالي النقرات', value: '142', icon: '👆', color: '#6366F1' },
-      { label: 'معدل النقر', value: '3.2%', icon: '📈', color: '#10B981' },
-      { label: 'الحملات قيد المراجعة', value: '1', icon: '🕒', color: '#F43F5E' },
-    ],
-    freelancer: [
-      { label: 'إجمالي الأرباح', value: '2,150,000 SYP', icon: '💸', color: '#10B981' },
-      { label: 'الخدمات النشطة', value: '2', icon: '💼', color: '#6366F1' },
-      { label: 'العقود المكتملة', value: '10', icon: '✅', color: '#14B8A6' },
-      { label: 'متوسط التقييم', value: '4.95 ⭐', icon: '⭐', color: '#F59E0B' },
-    ],
+  return (
+    <div className="space-y-5">
+      <div>
+        <span className="section-label">لوحة الأعمال</span>
+        <h1 className="text-2xl font-black text-[#F1F5F9]">{config.icon} نظرة عامة</h1>
+      </div>
+      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6">
+        <p className="text-sm font-semibold text-[#F1F5F9] mb-4">الخدمات المتاحة</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { key: 'canSellProducts', icon: '🛒', label: 'بيع المنتجات', desc: 'عرض وبيع منتجاتك في المتجر' },
+            { key: 'canRunAds', icon: '📢', label: 'الإعلانات', desc: 'إطلاق حملات إعلانية على المنصة' },
+            { key: 'canOfferFreelance', icon: '💼', label: 'الخدمات المستقلة', desc: 'تقديم خدماتك في سوق المستقلين' },
+            { key: 'canUploadCourses', icon: '📚', label: 'الدورات', desc: 'رفع دورات تعليمية للأكاديمية' },
+            { key: 'canUploadLibraryDocs', icon: '📄', label: 'المكتبة', desc: 'إضافة وثائق ومحاضرات' },
+          ].map(svc => {
+            const enabled = user?.businessPermissions?.[svc.key]
+            return (
+              <div key={svc.key} className={`flex items-center gap-3 p-4 rounded-xl border ${enabled ? 'border-[#10B981]/20 bg-[#10B981]/5' : 'border-[#1E2D45] bg-[#162032]/50 opacity-60'}`}>
+                <span className="text-xl">{svc.icon}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#F1F5F9]">{svc.label}</p>
+                  <p className="text-xs text-[#4A5D78]">{enabled ? svc.desc : '🔒 غير مفعّل — انتظر موافقة الإدارة'}</p>
+                </div>
+                {enabled && <span className="mr-auto text-[#10B981] text-sm">✓</span>}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ProductsTab({ user }) {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [form, setForm] = useState({ name: '', description: '', price: '', category: '', imageUrl: '', stock: 1 })
+  const [showForm, setShowForm] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  const canSell = user?.businessPermissions?.canSellProducts
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      const data = await api.get('/store/products?own=true')
+      setProducts(data.data || [])
+    } catch {}
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { fetchProducts() }, [fetchProducts])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      await api.post('/store/products', {
+        name: form.name,
+        description: form.description,
+        price: Number(form.price),
+        category: form.category,
+        images: form.imageUrl ? [form.imageUrl] : [],
+        stock: Number(form.stock),
+      })
+      setMsg('تم إرسال المنتج للمراجعة')
+      setShowForm(false)
+      setForm({ name: '', description: '', price: '', category: '', imageUrl: '', stock: 1 })
+      await fetchProducts()
+    } catch (err) {
+      setMsg(err.message)
+    } finally {
+      setSubmitting(false)
+    }
   }
-  const stats = statsMap[user?.businessType] || []
+
+  if (!canSell) return <LockedService label="بيع المنتجات" desc="لم يتم تفعيل خدمة بيع المنتجات لحسابك بعد" />
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map(s => (
-          <div key={s.label} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
-            <div className="text-2xl mb-3">{s.icon}</div>
-            <div className="text-xl font-black mb-1" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-[#4A5D78] text-xs">{s.label}</div>
-          </div>
-        ))}
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-black text-[#F1F5F9]">📦 منتجاتي</h2>
+        <button onClick={() => setShowForm(!showForm)} className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+          {showForm ? 'إلغاء' : '+ إضافة منتج'}
+        </button>
       </div>
 
-      {user?.status === 'pending' && (
-        <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/25 rounded-2xl p-5 flex items-start gap-4">
-          <span className="text-2xl shrink-0">🕒</span>
-          <div>
-            <div className="text-[#F59E0B] font-semibold mb-1">حسابك قيد المراجعة</div>
-            <div className="text-[#94A3B8] text-sm">تقوم الإدارة بمراجعة طلبك. ستتلقى إشعاراً فور التفعيل. في العادة لا يستغرق الأمر أكثر من 24 ساعة.</div>
+      {showForm && (
+        <form onSubmit={handleSubmit} className="bg-[#0F1828] border border-[#6366F1]/20 rounded-2xl p-5 flex flex-col gap-3">
+          <p className="text-sm font-bold text-[#F1F5F9]">منتج جديد</p>
+          <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="اسم المنتج" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <textarea value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="وصف المنتج..." rows={3} className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors resize-none" />
+          <div className="grid grid-cols-2 gap-3">
+            <input type="number" value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} placeholder="السعر (SYP)" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+            <input type="number" value={form.stock} onChange={e => setForm(p => ({...p, stock: e.target.value}))} placeholder="الكمية" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
           </div>
+          <input value={form.imageUrl} onChange={e => setForm(p => ({...p, imageUrl: e.target.value}))} placeholder="رابط صورة المنتج (URL)..." className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <input value={form.category} onChange={e => setForm(p => ({...p, category: e.target.value}))} placeholder="الفئة (مثال: إلكترونيات)" className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/20 rounded-xl px-4 py-2.5 text-[#F59E0B] text-xs">
+            سيتم مراجعة المنتج من قِبل الإدارة قبل النشر
+          </div>
+          {msg && <p className="text-xs text-[#10B981]">{msg}</p>}
+          <button type="submit" disabled={submitting} className="gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm">
+            {submitting ? 'جاري الإرسال...' : '📤 إرسال للمراجعة'}
+          </button>
+        </form>
+      )}
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : products.length === 0 ? (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-10 text-center">
+          <p className="text-3xl mb-3">📦</p>
+          <p className="text-[#4A5D78] text-sm">لا توجد منتجات بعد — أضف منتجك الأول</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {products.map(p => (
+            <div key={p._id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5 flex items-center gap-4">
+              {p.images?.[0] && <img src={p.images[0]} alt={p.name} className="w-16 h-16 rounded-xl object-cover shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-[#F1F5F9] font-semibold">{p.name}</p>
+                <p className="text-sm gradient-text font-bold mt-0.5">{p.price?.toLocaleString()} SYP</p>
+              </div>
+              <span className={`text-xs px-2.5 py-1 rounded-full border shrink-0 ${
+                p.approvalStatus === 'approved' ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20' :
+                p.approvalStatus === 'rejected' ? 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20' :
+                'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20'
+              }`}>
+                {p.approvalStatus === 'approved' ? 'منشور' : p.approvalStatus === 'rejected' ? 'مرفوض' : 'قيد المراجعة'}
+              </span>
+            </div>
+          ))}
         </div>
       )}
     </div>
   )
 }
 
-function ProductsTab() {
-  return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#F1F5F9]">منتجاتي</h2>
-        <button className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
-          ➕ إضافة منتج
-        </button>
-      </div>
-      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[#1E2D45]">
-              {['المعرّف', 'المنتج', 'السعر', 'المخزون', 'الحالة', ''].map(h => (
-                <th key={h} className="px-5 py-4 text-right text-[#4A5D78] font-medium">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {VENDOR_PRODUCTS.map(p => (
-              <tr key={p.id} className="border-b border-[#1E2D45] last:border-0 hover:bg-[#162032] transition-colors">
-                <td className="px-5 py-4 text-[#4A5D78] font-mono text-xs">{p.id}</td>
-                <td className="px-5 py-4 text-[#F1F5F9] font-medium">{p.name}</td>
-                <td className="px-5 py-4 text-[#94A3B8]">{p.price}</td>
-                <td className="px-5 py-4 text-[#94A3B8]">{p.stock}</td>
-                <td className="px-5 py-4">
-                  <span className={`text-xs px-2.5 py-1 rounded-full border ${STATUS_STYLE[p.status] || ''}`}>{p.status}</span>
-                </td>
-                <td className="px-5 py-4">
-                  <button className="text-[#4A5D78] hover:text-[#6366F1] transition-colors text-xs">✏️ تعديل</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
+function VendorOrdersTab() {
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
 
-function OrdersTab() {
-  return (
-    <div className="flex flex-col gap-5">
-      <h2 className="text-lg font-bold text-[#F1F5F9]">الطلبات الواردة</h2>
-      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[#1E2D45]">
-              {['رقم الطلب', 'المنتج', 'العميل', 'الحالة', 'المبلغ'].map(h => (
-                <th key={h} className="px-5 py-4 text-right text-[#4A5D78] font-medium">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {VENDOR_ORDERS.map(o => (
-              <tr key={o.id} className="border-b border-[#1E2D45] last:border-0 hover:bg-[#162032] transition-colors">
-                <td className="px-5 py-4 text-[#4A5D78] font-mono text-xs">{o.id}</td>
-                <td className="px-5 py-4 text-[#F1F5F9]">{o.item}</td>
-                <td className="px-5 py-4 text-[#94A3B8]">{o.customer}</td>
-                <td className="px-5 py-4">
-                  <span className={`text-xs px-2.5 py-1 rounded-full border ${STATUS_STYLE[o.status] || ''}`}>{o.status}</span>
-                </td>
-                <td className="px-5 py-4 text-[#F1F5F9] font-semibold">{o.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
+  useEffect(() => {
+    api.get('/store/orders')
+      .then(data => setOrders(data.data || []))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
 
-function CampaignsTab() {
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#F1F5F9]">حملاتي الإعلانية</h2>
-        <button className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
-          ➕ حملة جديدة
-        </button>
-      </div>
-      <div className="flex flex-col gap-4">
-        {AD_CAMPAIGNS.map(c => (
-          <div key={c.id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5 flex items-center justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-[#F1F5F9] font-semibold">{c.name}</span>
-                <span className={`text-xs px-2.5 py-1 rounded-full border ${STATUS_STYLE[c.status] || ''}`}>{c.status}</span>
-              </div>
-              <div className="flex items-center gap-4 text-[#4A5D78] text-xs">
-                <span>📍 {c.zone}</span>
-                <span>📅 {c.period}</span>
-                <span>👆 {c.clicks} نقرة</span>
-              </div>
+    <div className="space-y-4">
+      <h2 className="text-xl font-black text-[#F1F5F9]">🛒 طلبات منتجاتي</h2>
+      {loading ? <div className="py-12 flex justify-center"><Spinner /></div> : orders.length === 0 ? (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-8 text-center">
+          <p className="text-[#4A5D78] text-sm">لا توجد طلبات بعد</p>
+        </div>
+      ) : orders.map(o => (
+        <div key={o._id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[#F1F5F9] font-semibold">{o.productId?.name || 'منتج'}</p>
+              <p className="text-xs text-[#4A5D78] mt-0.5">{o.customerId?.name} · #{o.orderId || o._id?.slice(-8)}</p>
+              <p className="text-sm font-bold gradient-text mt-1">{o.amount?.toLocaleString()} SYP</p>
             </div>
-            <button className="text-[#4A5D78] hover:text-[#6366F1] transition-colors text-sm">✏️</button>
+            <span className={`text-xs px-2.5 py-1 rounded-full border ${
+              o.status === 'delivered' ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20' :
+              'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20'
+            }`}>
+              {o.status === 'delivered' ? 'تم التسليم' : o.status === 'pending' ? 'معلّق' : o.status}
+            </span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function RevenueTab() {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <p className="text-5xl mb-4">💰</p>
+      <h3 className="text-[#F1F5F9] font-bold text-lg mb-2">الإيرادات</h3>
+      <p className="text-[#4A5D78] text-sm">تقرير الإيرادات قيد التطوير — متصل بالنظام المالي</p>
+    </div>
+  )
+}
+
+function CampaignsTab({ user }) {
+  const [campaigns, setCampaigns] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const canRunAds = user?.businessPermissions?.canRunAds
+
+  useEffect(() => {
+    if (!canRunAds) { setLoading(false); return }
+    api.get('/ads')
+      .then(data => setCampaigns(data.data || []))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [canRunAds])
+
+  if (!canRunAds) return <LockedService label="الحملات الإعلانية" desc="لم يتم تفعيل خدمة الإعلانات لحسابك بعد" />
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-black text-[#F1F5F9]">📢 حملاتي الإعلانية</h2>
+      {loading ? <div className="py-12 flex justify-center"><Spinner /></div> : campaigns.length === 0 ? (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-8 text-center">
+          <p className="text-[#4A5D78] text-sm">لا توجد حملات بعد — أنشئ حملتك الأولى</p>
+        </div>
+      ) : campaigns.map(c => (
+        <div key={c._id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
+          <p className="text-[#F1F5F9] font-semibold">{c.title}</p>
+          <p className="text-xs text-[#4A5D78] mt-1">{c.zone} · {c.status}</p>
+        </div>
+      ))}
     </div>
   )
 }
 
 function CreateCampaignTab() {
+  const { user } = useAuth()
+  const canRunAds = user?.businessPermissions?.canRunAds
+  const [form, setForm] = useState({ title: '', targetUrl: '', imageUrl: '', zone: 'header', startDate: '', endDate: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  if (!canRunAds) return <LockedService label="إنشاء حملة إعلانية" desc="لم يتم تفعيل خدمة الإعلانات لحسابك بعد" />
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      await api.post('/ads', {
+        title: form.title,
+        targetUrl: form.targetUrl,
+        imageUrl: form.imageUrl,
+        zone: form.zone,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        advertiserId: user._id,
+      })
+      setMsg('تم إرسال الحملة للمراجعة بنجاح')
+      setForm({ title: '', targetUrl: '', imageUrl: '', zone: 'header', startDate: '', endDate: '' })
+    } catch (err) {
+      setMsg(err.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-5 max-w-xl">
-      <h2 className="text-lg font-bold text-[#F1F5F9]">إنشاء حملة إعلانية</h2>
-      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 flex flex-col gap-4">
-        {[
-          { label: 'اسم الحملة', placeholder: 'مثال: عرض رمضان 2026' },
-          { label: 'رابط الصفحة المستهدفة', placeholder: 'https://...' },
-        ].map(f => (
-          <div key={f.label} className="flex flex-col gap-1.5">
-            <label className="text-[#94A3B8] text-sm font-medium">{f.label}</label>
-            <input placeholder={f.placeholder}
-              className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
-          </div>
-        ))}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[#94A3B8] text-sm font-medium">منطقة العرض</label>
-          <select className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors">
-            <option>الشريط العلوي</option>
-            <option>الشريط الجانبي</option>
-            <option>داخل المحتوى</option>
-          </select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[#94A3B8] text-sm font-medium">صورة الإعلان (WebP)</label>
-          <div className="bg-[#162032] border border-dashed border-[#1E2D45] rounded-xl p-8 text-center text-[#4A5D78] text-sm hover:border-[#6366F1]/40 transition-colors cursor-pointer">
-            📎 اسحب الصورة هنا أو انقر للتحميل
-          </div>
+    <div className="space-y-5 max-w-lg">
+      <h2 className="text-xl font-black text-[#F1F5F9]">➕ حملة جديدة</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input value={form.title} onChange={e => setForm(p => ({...p, title: e.target.value}))} placeholder="عنوان الحملة" required className="bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+        <input value={form.imageUrl} onChange={e => setForm(p => ({...p, imageUrl: e.target.value}))} placeholder="رابط صورة الإعلان (URL)..." className="bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+        <input value={form.targetUrl} onChange={e => setForm(p => ({...p, targetUrl: e.target.value}))} placeholder="الرابط الهدف..." className="bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+        <select value={form.zone} onChange={e => setForm(p => ({...p, zone: e.target.value}))} className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors">
+          <option value="header">الشريط العلوي</option>
+          <option value="sidebar">الشريط الجانبي</option>
+          <option value="feed">داخل المحتوى</option>
+        </select>
+        <div className="grid grid-cols-2 gap-3">
+          <input type="date" value={form.startDate} onChange={e => setForm(p => ({...p, startDate: e.target.value}))} className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <input type="date" value={form.endDate} onChange={e => setForm(p => ({...p, endDate: e.target.value}))} className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors" />
         </div>
         <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/20 rounded-xl px-4 py-3 text-[#F59E0B] text-xs">
           ستُراجَع حملتك من قِبل الإدارة قبل النشر — عادةً خلال 24 ساعة
         </div>
-        <button className="gradient-bg text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity text-sm">
-          📤 إرسال للمراجعة
+        {msg && <p className="text-sm text-[#10B981]">{msg}</p>}
+        <button type="submit" disabled={submitting} className="gradient-bg text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm">
+          {submitting ? 'جاري الإرسال...' : '📤 إرسال للمراجعة'}
         </button>
-      </div>
+      </form>
     </div>
   )
 }
 
-function ServicesTab() {
+function ServicesTab({ user }) {
+  const [services, setServices] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({ title: '', description: '', price: '', deliveryDays: 3 })
+  const [submitting, setSubmitting] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  const canFreelance = user?.businessPermissions?.canOfferFreelance
+
+  const fetchServices = useCallback(async () => {
+    try {
+      const data = await api.get('/freelance/services?own=true')
+      setServices(data.data || [])
+    } catch {} finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => {
+    if (canFreelance) fetchServices()
+    else setLoading(false)
+  }, [canFreelance, fetchServices])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      await api.post('/freelance/services', {
+        title: form.title,
+        description: form.description,
+        price: Number(form.price),
+        deliveryDays: Number(form.deliveryDays),
+      })
+      setMsg('تم إضافة الخدمة بنجاح')
+      setShowForm(false)
+      setForm({ title: '', description: '', price: '', deliveryDays: 3 })
+      await fetchServices()
+    } catch (err) {
+      setMsg(err.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (!canFreelance) return <LockedService label="خدمات المستقل" desc="لم يتم تفعيل خدمة المستقلين لحسابك بعد" />
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#F1F5F9]">خدماتي</h2>
-        <button className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
-          ➕ إضافة خدمة
+        <h2 className="text-xl font-black text-[#F1F5F9]">💼 خدماتي</h2>
+        <button onClick={() => setShowForm(!showForm)} className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+          {showForm ? 'إلغاء' : '+ إضافة خدمة'}
         </button>
       </div>
-      <div className="flex flex-col gap-4">
-        {SERVICES.map(s => (
-          <div key={s.id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5 flex items-center justify-between gap-4">
-            <div className="flex-1">
-              <div className="text-[#F1F5F9] font-semibold mb-1.5">{s.title}</div>
-              <div className="flex items-center gap-4 text-[#4A5D78] text-xs">
-                <span className="gradient-text font-bold text-sm">{s.price}</span>
-                <span>📦 {s.orders} طلب</span>
-                <span>⭐ {s.rating}</span>
-              </div>
-            </div>
-            <button className="text-[#4A5D78] hover:text-[#6366F1] transition-colors text-sm">✏️</button>
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="bg-[#0F1828] border border-[#6366F1]/20 rounded-2xl p-5 flex flex-col gap-3">
+          <input value={form.title} onChange={e => setForm(p => ({...p, title: e.target.value}))} placeholder="عنوان الخدمة" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <textarea value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="وصف الخدمة..." rows={3} className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors resize-none" />
+          <div className="grid grid-cols-2 gap-3">
+            <input type="number" value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} placeholder="السعر (SYP)" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+            <input type="number" value={form.deliveryDays} onChange={e => setForm(p => ({...p, deliveryDays: e.target.value}))} placeholder="أيام التسليم" className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
           </div>
-        ))}
-      </div>
+          {msg && <p className="text-xs text-[#10B981]">{msg}</p>}
+          <button type="submit" disabled={submitting} className="gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 disabled:opacity-50 text-sm">
+            {submitting ? 'جاري الإضافة...' : '+ إضافة الخدمة'}
+          </button>
+        </form>
+      )}
+
+      {loading ? <div className="py-12 flex justify-center"><Spinner /></div> : services.length === 0 ? (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-8 text-center">
+          <p className="text-[#4A5D78] text-sm">لا توجد خدمات بعد — أضف خدمتك الأولى</p>
+        </div>
+      ) : services.map(s => (
+        <div key={s._id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-[#F1F5F9] font-semibold">{s.title}</p>
+            <div className="flex items-center gap-4 text-xs mt-1.5">
+              <span className="gradient-text font-bold">{s.price?.toLocaleString()} SYP</span>
+              <span className="text-[#4A5D78]">📦 {s.totalOrders || 0} طلب</span>
+              {s.rating > 0 && <span className="text-[#4A5D78]">⭐ {s.rating?.toFixed(1)}</span>}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
 
-function PlaceholderTab({ label }) {
+function ContractsTab() {
+  const [contracts, setContracts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/freelance/contracts')
+      .then(data => setContracts(data.data || []))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="text-5xl mb-4">🚧</div>
-      <h3 className="text-[#F1F5F9] font-bold text-lg mb-2">{label}</h3>
-      <p className="text-[#4A5D78] text-sm">هذا القسم قيد التطوير — سيكون متاحاً قريباً</p>
+    <div className="space-y-4">
+      <h2 className="text-xl font-black text-[#F1F5F9]">📋 العقود</h2>
+      {loading ? <div className="py-12 flex justify-center"><Spinner /></div> : contracts.length === 0 ? (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-8 text-center">
+          <p className="text-[#4A5D78] text-sm">لا توجد عقود بعد</p>
+        </div>
+      ) : contracts.map(c => (
+        <div key={c._id} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
+          <p className="text-[#F1F5F9] font-semibold">{c.title}</p>
+          <p className="text-sm gradient-text font-bold mt-1">{c.amount?.toLocaleString()} SYP</p>
+          <p className="text-xs text-[#4A5D78] mt-1">{c.status}</p>
+        </div>
+      ))}
     </div>
   )
 }

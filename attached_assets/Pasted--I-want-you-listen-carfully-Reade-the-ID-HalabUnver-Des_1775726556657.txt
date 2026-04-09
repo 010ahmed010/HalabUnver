@@ -1,0 +1,14 @@
+
+
+
+I want you listen carfully, Reade the ID HalabUnver_DescriptionMirrorMethod directory to take idea (but any ideat idea i will tell you,
+next do it be cause HalabUnver_DescriptionMirrorMethod may need change , it only contains the inital idea).
+the main style of this platform is verry buity and modren (like colors, animation, design of UI and etc).
+but the mistake in the functionalty of platform or features , they (functionalty, features) are work random and missed,
+so i want you help me to make this platfrom work in logic and it`s features and functionalties linked .
+First Most Important Thing We Have To Change: the accounts kind or types of the platform , there are different accoutn not logic to be exsist , so remove them all only keep three only for this platform : Admin , Business and Student account (check may one of them exsist).
+every singel accoutn must has its own dashboard , WHY we need only these three accounts only , because our functionalty platform consists of four sides (i will call them in generaly sides) , Side one: the publick side that student or any visitor can visit it (such as home page, course of the acadimy, library, freelance, etc) , Side tow: the student dashboard , in it studen can see his profile, and anything releted to
+him (based on the codebase and features you can see what studen dashboard needs (as pages)), Side three: business side that can by manage everthing reletedt to business (products, courseOfAcadimy, freelance , PDFsOfLibraries) but you must know this side like a group of business sides  (by default all those service managing are constrainted or closed because must buy them and admin allow them get in),
+Side foure: admin side , this side is clear because based on the functionalties and features and this this text explaine how will be ,
+must cover everything the platform need it (managment wise and monitring too), now this main context that this platform walk on, but important when you change anything in any side of those sides must make sure reflects to entire the platfrom.
+THE database URL = "mongodb+srv://newcloudstuff_db_user:BjvBgakv7204v0CT@halabunver.ngclrak.mongodb.net/halabUnver?appName=HalabUnver" i known, must not give like this but this for temparory case only to complate the changes , after finsh all changes i will put in .env file,import note we must dont load on serve as much possiable so no thing store on the server only the source code (it mean we will use URLs for images and PDFs, etc), so now Last thing i want you put in you consideration everthing must be common sense,but you have to plan first

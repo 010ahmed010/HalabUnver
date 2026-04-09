@@ -1,199 +1,211 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { api } from '../../lib/api'
+import { useAuth } from '../../context/AuthContext'
 
-const DISCIPLINES = [
-  { icon: '💻', label: 'برمجة وتطوير', slug: 'dev', count: 34 },
-  { icon: '🏗️', label: 'هندسة وعمارة', slug: 'arch', count: 18 },
-  { icon: '🎨', label: 'تصميم', slug: 'design', count: 22 },
-  { icon: '✍️', label: 'كتابة وترجمة', slug: 'writing', count: 12 },
-  { icon: '🤖', label: 'ذكاء اصطناعي', slug: 'ai', count: 9 },
-  { icon: '📈', label: 'تسويق رقمي', slug: 'marketing', count: 7 },
-  { icon: '📊', label: 'بيانات', slug: 'data', count: 11 },
-  { icon: '🎙️', label: 'صوتيات', slug: 'audio', count: 4 },
-  { icon: '🎬', label: 'فيديو وأنيميشن', slug: 'video', count: 8 },
-  { icon: '💼', label: 'أعمال', slug: 'business', count: 6 },
-  { icon: '📚', label: 'تعليم عن بعد', slug: 'edu', count: 14 },
-  { icon: '🏃', label: 'أسلوب حياة', slug: 'lifestyle', count: 3 },
-]
+const TYPE_LABELS = { student: '🎓 طالب', business: '💼 مستقل خارجي' }
 
-const TRUST_PILLARS = [
-  { icon: '💎', title: 'أسعار طلابية', desc: 'نتائج عالية الجودة بأسعار تناسب ميزانية الطالب.', color: '#6366F1' },
-  { icon: '🧠', title: 'عقول ذكية', desc: 'مواهب جامعية موثّقة بخلفيات علمية ومهنية مثبتة.', color: '#8B5CF6' },
-  { icon: '🛡️', title: 'وساطة آمنة', desc: 'أموالك محفوظة بواسطة المنصة حتى تسليم العمل (Escrow).', color: '#14B8A6' },
-  { icon: '⚡', title: 'دعم 24/7', desc: 'فريق دعم محلي ملم بالسوق السوري والاحتياجات الأكاديمية.', color: '#F59E0B' },
-]
+function ServiceCard({ service }) {
+  const freelancer = service.freelancerId || {}
+  return (
+    <Link
+      to={`/freelance/service/${service._id}`}
+      className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden hover:border-[#6366F1]/30 hover:-translate-y-0.5 transition-all group flex flex-col"
+    >
+      <div className="h-32 bg-gradient-to-br from-[#162032] to-[#0F1828] flex items-center justify-center relative overflow-hidden">
+        {service.thumbnail ? (
+          <img src={service.thumbnail} alt={service.title} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-4xl opacity-20">💼</span>
+        )}
+      </div>
+      <div className="p-4 flex flex-col flex-1">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-sm shrink-0">
+            {freelancer.avatar ? <img src={freelancer.avatar} alt="" className="w-full h-full rounded-full object-cover" /> : '👤'}
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-[#94A3B8] font-medium truncate">{freelancer.name || '—'}</p>
+            <p className="text-[10px] text-[#4A5D78]">{TYPE_LABELS[freelancer.accountType] || ''}</p>
+          </div>
+          {freelancer.isVerified && <span className="text-[#6366F1] text-xs mr-auto">✅</span>}
+        </div>
+        <h3 className="text-[#F1F5F9] font-bold text-sm leading-snug group-hover:text-[#818CF8] transition-colors line-clamp-2">{service.title}</h3>
+        <div className="flex items-center gap-3 mt-2 text-xs text-[#4A5D78]">
+          {service.rating > 0 && <span>⭐ {service.rating?.toFixed(1)}</span>}
+          {service.totalOrders > 0 && <span>📦 {service.totalOrders} طلب</span>}
+          {service.deliveryDays && <span>⏱ {service.deliveryDays} أيام</span>}
+        </div>
+        <div className="mt-auto pt-3 border-t border-[#1E2D45]">
+          <span className="text-sm font-black gradient-text">{service.price?.toLocaleString()} SYP</span>
+        </div>
+      </div>
+    </Link>
+  )
+}
 
-const TOP_TALENT = [
-  { name: 'أحمد الجاسم', title: 'Full-Stack MERN Developer', rating: 4.9, jobs: 24, from: '150,000', verified: true },
-  { name: 'ليلى عمر', title: 'UI/UX Designer', rating: 4.8, jobs: 18, from: '80,000', verified: true },
-  { name: 'كريم إبراهيم', title: 'AutoCAD Engineer', rating: 4.7, jobs: 31, from: '60,000', verified: true },
-  { name: 'سامر خالد', title: 'AI / Python Developer', rating: 4.9, jobs: 12, from: '200,000', verified: true },
-]
-
-const TRENDING = ['MERN Dev', 'AutoCAD', 'ترجمة', 'Python AI', 'UI Design', 'Data Analysis']
+function FreelancerCard({ profile }) {
+  return (
+    <Link
+      to={`/freelance/profile/${profile._id}`}
+      className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5 hover:border-[#6366F1]/30 transition-all flex items-center gap-4 group"
+    >
+      <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-xl shrink-0">
+        {profile.userId?.avatar ? <img src={profile.userId.avatar} alt="" className="w-full h-full object-cover rounded-2xl" /> : '👤'}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[#F1F5F9] font-bold group-hover:text-[#818CF8] transition-colors">{profile.displayName || profile.userId?.name}</p>
+        <p className="text-xs text-[#4A5D78] mt-0.5">{profile.title}</p>
+        <div className="flex items-center gap-3 mt-1.5 text-xs text-[#4A5D78]">
+          {profile.rating > 0 && <span>⭐ {profile.rating?.toFixed(1)}</span>}
+          {profile.completedJobs > 0 && <span>✓ {profile.completedJobs} مشروع</span>}
+        </div>
+      </div>
+      <div className="shrink-0 text-right">
+        <p className="text-sm font-bold gradient-text">{profile.hourlyRate ? `${profile.hourlyRate?.toLocaleString()} SYP/h` : '—'}</p>
+        {profile.isAvailable && <span className="text-[10px] text-[#10B981] mt-1 block">● متاح</span>}
+      </div>
+    </Link>
+  )
+}
 
 export default function FreelanceHome() {
-  const [searchQ, setSearchQ] = useState('')
+  const { user } = useAuth()
   const navigate = useNavigate()
+  const [tab, setTab] = useState('services')
+  const [services, setServices] = useState([])
+  const [profiles, setProfiles] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [type, setType] = useState('')
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    navigate(`/freelance/catalog/dev?q=${encodeURIComponent(searchQ)}`)
-  }
+  useEffect(() => {
+    setLoading(true)
+    setError('')
+    if (tab === 'services') {
+      let url = `/freelance/services?page=${page}&limit=12`
+      if (type) url += `&type=${type}`
+      if (search.trim()) url += `&search=${encodeURIComponent(search.trim())}`
+      api.get(url)
+        .then(data => { setServices(data.data || []); setTotal(data.total || 0) })
+        .catch(err => setError(err.message))
+        .finally(() => setLoading(false))
+    } else {
+      let url = `/freelance/profiles?page=${page}&limit=12`
+      if (search.trim()) url += `&search=${encodeURIComponent(search.trim())}`
+      api.get(url)
+        .then(data => { setProfiles(data.data || []); setTotal(data.total || 0) })
+        .catch(err => setError(err.message))
+        .finally(() => setLoading(false))
+    }
+  }, [tab, page, type, search])
+
+  const canJoin = user?.accountType === 'student' && !user?.isFreelancer
+  const isFreelancer = user?.isFreelancer || user?.businessPermissions?.canOfferFreelance
 
   return (
     <div className="pt-20 min-h-screen">
-
-      {/* HERO */}
-      <section className="relative py-16 sm:py-20 dot-bg overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-[#F59E0B]/8 rounded-full blur-[80px]" />
-          <div className="absolute bottom-1/3 left-1/4 w-60 h-60 bg-[#6366F1]/8 rounded-full blur-[60px]" />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-[#F59E0B]/10 border border-[#F59E0B]/20 rounded-full px-4 py-2 mb-6 text-xs font-medium text-[#F59E0B]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-blink-soft shrink-0" />
-            Scale Your Skills. Challenge Every Day.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <span className="section-label">العمل الحر</span>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#F1F5F9] mb-2">سوق المستقلين 💼</h1>
+            <p className="text-[#4A5D78] text-sm">خدمات مقدّمة من طلاب جامعة حلب ومستقلين خارجيين</p>
           </div>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#F1F5F9] mb-4 leading-tight">
-            سوق <span className="gradient-text-amber">المستقلين</span>
-            <br />
-            <span className="text-lg sm:text-2xl font-semibold text-[#94A3B8]">مواهب طلابية · نتائج احترافية</span>
-          </h1>
-          <p className="text-[#94A3B8] mb-8 text-sm sm:text-base max-w-xl mx-auto">
-            ابحث عن خدمات أو مواهب طلابية متخصصة — مدعومة بنظام الضمان وفريق دعم محلي
-          </p>
-
-          <form onSubmit={handleSearch} className="flex max-w-2xl mx-auto mb-6 rounded-2xl overflow-hidden border border-[#1E2D45] focus-within:border-[#F59E0B]/40 transition-colors">
-            <input
-              value={searchQ}
-              onChange={e => setSearchQ(e.target.value)}
-              placeholder="ابحث عن خدمة أو مستقل..."
-              className="flex-1 min-w-0 bg-[#0F1828] text-[#F1F5F9] placeholder-[#4A5D78] px-4 sm:px-5 py-3.5 text-sm outline-none"
-            />
-            <button type="submit" className="px-5 sm:px-6 py-3.5 bg-[#F59E0B] text-[#070C18] font-bold text-sm hover:bg-[#FBBF24] transition-colors shrink-0">
-              بحث
-            </button>
-          </form>
-
-          <div className="flex flex-wrap justify-center gap-2">
-            {TRENDING.map(t => (
-              <button
-                key={t}
-                onClick={() => setSearchQ(t)}
-                className="px-3 py-1.5 text-xs rounded-full border border-[#1E2D45] text-[#94A3B8] hover:border-[#F59E0B]/40 hover:text-[#F59E0B] transition-all"
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* DISCIPLINES */}
-      <section className="py-12 sm:py-16 border-y border-[#1E2D45] bg-[#0F1828]/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <span className="section-label">المجالات</span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#F1F5F9]">تصفح حسب التخصص</h2>
-          </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-            {DISCIPLINES.map(d => (
-              <Link
-                key={d.slug}
-                to={`/freelance/catalog/${d.slug}`}
-                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-3 sm:p-4 text-center hover:border-[#F59E0B]/30 hover:bg-[#F59E0B]/5 transition-all group"
-              >
-                <span className="text-xl sm:text-2xl block mb-2">{d.icon}</span>
-                <p className="text-[11px] sm:text-xs text-[#F1F5F9] group-hover:text-[#F59E0B] transition-colors font-medium leading-tight">{d.label}</p>
-                <p className="text-[10px] text-[#4A5D78] mt-0.5">{d.count} خدمة</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WHY HALAB-WORK */}
-      <section className="py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <span className="section-label">لماذا نختارنا</span>
-            <h2 className="text-xl sm:text-2xl font-black text-[#F1F5F9]">مزايا سوق HalabWork</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {TRUST_PILLARS.map(p => (
-              <div
-                key={p.title}
-                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 sm:p-6 hover:border-[#F59E0B]/20 transition-all"
-              >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-lg sm:text-xl mb-3" style={{ background: p.color + '18' }}>
-                  {p.icon}
-                </div>
-                <h3 className="text-[#F1F5F9] font-bold text-sm mb-2">{p.title}</h3>
-                <p className="text-xs text-[#94A3B8] leading-relaxed">{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURED TALENT */}
-      <section className="py-12 sm:py-16 bg-[#0F1828]/50 border-y border-[#1E2D45]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <span className="section-label">مستقلون مميزون</span>
-              <h2 className="text-xl sm:text-2xl font-black text-[#F1F5F9]">أفضل المواهب</h2>
-            </div>
-            <Link to="/freelance/leaderboard" className="px-3 sm:px-4 py-2 rounded-xl border border-[#F59E0B]/30 text-[#F59E0B] text-xs hover:bg-[#F59E0B]/10 transition-all shrink-0">
-              🏆 أفضل 100 →
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {TOP_TALENT.map(t => (
-              <Link
-                key={t.name}
-                to="/freelance/profile/ahmed"
-                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 hover:border-[#F59E0B]/30 hover:shadow-lg transition-all block group"
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#162032] border border-[#1E2D45] flex items-center justify-center text-xl sm:text-2xl mb-3">
-                  👤
-                </div>
-                {t.verified && <span className="text-xs text-[#6366F1] font-medium bg-[#6366F1]/10 rounded-full px-2 py-0.5">✅ موثّق</span>}
-                <h3 className="text-sm font-bold text-[#F1F5F9] mt-2 mb-0.5 group-hover:text-[#F59E0B] transition-colors">{t.name}</h3>
-                <p className="text-xs text-[#4A5D78] mb-3">{t.title}</p>
-                <div className="flex items-center justify-between text-xs pt-3 border-t border-[#1E2D45]">
-                  <span className="text-[#F59E0B] font-medium">★ {t.rating} ({t.jobs})</span>
-                  <span className="font-mono text-[#6366F1] text-[11px]">من {t.from} SYP</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* JOIN CTA */}
-      <section className="py-12 sm:py-16">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6">
-          <div className="bg-gradient-to-br from-[#F59E0B]/10 to-[#FBBF24]/5 rounded-3xl border border-[#F59E0B]/20 p-8 sm:p-10 text-center">
-            <div className="inline-flex items-center gap-2 bg-[#10B981]/10 border border-[#10B981]/20 rounded-full px-4 py-1.5 mb-5 text-xs text-[#10B981]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-blink-soft" />
-              دخول مجاني لفترة محدودة
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#F1F5F9] mb-2">انضم كمستقل</h2>
-            <p className="text-[#F59E0B] text-lg sm:text-xl font-bold mb-3">$5 / شهر</p>
-            <p className="text-[#94A3B8] text-sm mb-6 leading-relaxed">
-              حوّل مهاراتك الأكاديمية إلى مهنة. الوصول لمشاريع حصرية وبناء محفظة أعمالك.
-            </p>
+          {canJoin && (
             <Link
               to="/freelance/onboarding"
-              className="px-6 sm:px-8 py-3 sm:py-3.5 bg-[#F59E0B] text-[#070C18] font-bold text-sm rounded-xl hover:bg-[#FBBF24] transition-colors inline-block"
+              className="gradient-bg text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity"
             >
-              سجّل كمستقل الآن
+              💼 انضم كمستقل
             </Link>
-          </div>
+          )}
         </div>
-      </section>
+
+        {/* Tabs */}
+        <div className="flex gap-3 mb-6">
+          {[
+            { key: 'services', label: '🔧 الخدمات' },
+            { key: 'profiles', label: '👤 المستقلون' },
+          ].map(t => (
+            <button
+              key={t.key}
+              onClick={() => { setTab(t.key); setPage(1) }}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${
+                tab === t.key ? 'gradient-bg text-white' : 'bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/30'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search + Filters */}
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-4 mb-6 flex flex-wrap gap-3 items-center">
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            placeholder={tab === 'services' ? 'ابحث في الخدمات...' : 'ابحث في المستقلين...'}
+            className="flex-1 min-w-48 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+          />
+          {tab === 'services' && (
+            <select
+              value={type}
+              onChange={e => { setType(e.target.value); setPage(1) }}
+              className="bg-[#162032] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+            >
+              <option value="">الكل</option>
+              <option value="student">طلاب فقط</option>
+              <option value="external">مستقلون خارجيون</option>
+            </select>
+          )}
+          <span className="text-xs text-[#4A5D78]">{total} {tab === 'services' ? 'خدمة' : 'مستقل'}</span>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-10 h-10 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="bg-[#F43F5E]/10 border border-[#F43F5E]/25 rounded-2xl p-8 text-center text-[#F43F5E]">{error}</div>
+        ) : tab === 'services' ? (
+          services.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-5xl mb-4">📭</p>
+              <p className="text-[#F1F5F9] font-bold text-lg mb-2">لا توجد خدمات بعد</p>
+              <p className="text-[#4A5D78] text-sm">كن أول من يقدم خدمة على المنصة</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {services.map(s => <ServiceCard key={s._id} service={s} />)}
+            </div>
+          )
+        ) : (
+          profiles.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-5xl mb-4">👤</p>
+              <p className="text-[#F1F5F9] font-bold text-lg mb-2">لا يوجد مستقلون بعد</p>
+              <p className="text-[#4A5D78] text-sm">انضم إلى المنصة كمستقل وابدأ</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {profiles.map(p => <FreelancerCard key={p._id} profile={p} />)}
+            </div>
+          )
+        )}
+
+        {total > 12 && (
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-5 py-2 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm disabled:opacity-40 hover:border-[#6366F1]/30 transition-all">السابق</button>
+            <span className="text-sm text-[#4A5D78]">صفحة {page}</span>
+            <button disabled={services.length < 12 && profiles.length < 12} onClick={() => setPage(p => p + 1)} className="px-5 py-2 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm disabled:opacity-40 hover:border-[#6366F1]/30 transition-all">التالي</button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

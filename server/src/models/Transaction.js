@@ -4,13 +4,13 @@ const transactionSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   type: {
     type: String,
-    enum: ['store_order', 'freelance_subscription', 'freelance_escrow', 'academy_enrollment', 'refund'],
+    enum: ['store_order', 'freelance_subscription', 'freelance_escrow', 'academy_enrollment', 'refund', 'topup'],
     required: true,
   },
   purpose: { type: String, default: '' },
   amount: { type: Number, required: true },
   currency: { type: String, default: 'SYP' },
-  txId: { type: String, required: true, trim: true },
+  txId: { type: String, default: '', trim: true },
   receiptPhoto: { type: String, default: null },
   status: {
     type: String,

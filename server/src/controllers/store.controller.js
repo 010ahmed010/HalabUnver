@@ -7,14 +7,20 @@ const logActivity = require('../utils/logActivity')
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const { category, source, search, minPrice, maxPrice, sort = '-createdAt', page = 1, limit = 12 } = req.query
-    const filter = { isVisible: true, approvalStatus: 'approved' }
-    if (category) filter.category = category
-    if (source) filter.source = source
-    if (minPrice || maxPrice) filter.price = {}
-    if (minPrice) filter.price.$gte = Number(minPrice)
-    if (maxPrice) filter.price.$lte = Number(maxPrice)
-    if (search) filter.$text = { $search: search }
+    const { category, source, search, minPrice, maxPrice, sort = '-createdAt', page = 1, limit = 12, own } = req.query
+    let filter = {}
+    if (own === 'true' && req.user) {
+      filter.vendorId = req.user._id
+    } else {
+      filter.isVisible = true
+      filter.approvalStatus = 'approved'
+      if (category) filter.category = category
+      if (source) filter.source = source
+      if (minPrice || maxPrice) filter.price = {}
+      if (minPrice) filter.price.$gte = Number(minPrice)
+      if (maxPrice) filter.price.$lte = Number(maxPrice)
+      if (search) filter.$text = { $search: search }
+    }
 
     const total = await Product.countDocuments(filter)
     const products = await Product.find(filter)

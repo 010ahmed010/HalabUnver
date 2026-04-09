@@ -1,201 +1,750 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import StatusPill from '../../components/shared/StatusPill'
+import { useState, useEffect, useCallback } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
+import { api } from '../../lib/api'
 
-const ADMIN_MODULES = [
-  { icon: '👥', label: 'إدارة المستخدمين', desc: 'قبول الهويات، الصلاحيات، بيانات الطلاب', color: '#6366F1' },
-  { icon: '📦', label: 'إدارة الطلبات', desc: 'جميع طلبات المتجر والمستقلين', color: '#14B8A6' },
-  { icon: '📚', label: 'إدارة المكتبة', desc: 'رفع ومراجعة الملفات والملخصات', color: '#F59E0B' },
-  { icon: '📢', label: 'لوحة الإعلانات', desc: 'نشر الأخبار والإعلانات المدفوعة', color: '#F43F5E' },
-  { icon: '💰', label: 'السجل المالي', desc: 'تتبع الإيرادات وتحويلات ShamCash', color: '#10B981' },
-  { icon: '🏪', label: 'مخزون المتجر', desc: 'إدارة المنتجات والأسعار والمخزون', color: '#8B5CF6' },
-  { icon: '⚙️', label: 'إعدادات النظام', desc: 'التخطيط العام وسعر الصرف اليومي', color: '#94A3B8' },
+function Spinner() {
+  return <div className="w-6 h-6 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto" />
+}
+
+function StatusPill({ status }) {
+  const styles = {
+    active: 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20',
+    pending: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+    frozen: 'bg-[#6366F1]/10 text-[#818CF8] border-[#6366F1]/20',
+    rejected: 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20',
+  }
+  const labels = { active: 'نشط', pending: 'معلّق', frozen: 'مجمّد', rejected: 'مرفوض' }
+  return (
+    <span className={`text-xs px-2.5 py-1 rounded-full border ${styles[status] || styles.pending}`}>
+      {labels[status] || status}
+    </span>
+  )
+}
+
+const SIDEBAR_ITEMS = [
+  { key: 'overview', icon: '📊', label: 'نظرة عامة' },
+  { key: 'users', icon: '👥', label: 'المستخدمون' },
+  { key: 'businesses', icon: '💼', label: 'حسابات الأعمال' },
+  { key: 'orders', icon: '📦', label: 'الطلبات' },
+  { key: 'revenue', icon: '💰', label: 'الإيرادات' },
+  { key: 'config', icon: '⚙️', label: 'الإعدادات' },
 ]
-
-const PENDING_USERS = [
-  { name: 'علي محمد سالم', id: '#ST-4421', faculty: 'هندسة معلوماتية', submitted: '2026-04-03', status: 'pending' },
-  { name: 'سارة أحمد', id: '#ST-4422', faculty: 'هندسة كيمياوية', submitted: '2026-04-03', status: 'pending' },
-  { name: 'خالد عمر', id: '#ST-4418', faculty: 'هندسة معمارية', submitted: '2026-04-02', status: 'pending' },
-]
-
-const PENDING_ORDERS = [
-  { id: '#HS-703', item: 'ThinkPad X1 Carbon', student: 'أحمد الجاسم', amount: '3,700,000', status: 'pending' },
-  { id: '#HS-704', item: 'Arduino Mega 2560', student: 'سامر خالد', amount: '80,000', status: 'processing' },
-]
-
-const STATS = [
-  { label: 'طلاب جدد اليوم', val: '14', color: '#6366F1', bg: '#6366F110' },
-  { label: 'طلبات معلّقة', val: '7', color: '#F59E0B', bg: '#F59E0B10' },
-  { label: 'إيرادات الشهر', val: '2.4M SYP', color: '#10B981', bg: '#10B98110' },
-  { label: 'هويات بانتظار المراجعة', val: '3', color: '#F43F5E', bg: '#F43F5E10' },
-]
-
-const EXAM_SEASON = true
 
 export default function AdminDashboard() {
-  const [activeModule, setActiveModule] = useState('overview')
-  const [examSeason, setExamSeason] = useState(EXAM_SEASON)
+  const { logout } = useAuth()
+  const [active, setActive] = useState('overview')
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
   return (
-    <div className="pt-20 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-
-        {/* Header */}
-        <div className="flex items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <span className="section-label">لوحة الإدارة</span>
-            <h1 className="text-xl sm:text-2xl font-black text-[#F1F5F9]">⚙️ مركز التحكم</h1>
-          </div>
-          <div className="flex items-center gap-3 bg-[#0F1828] border border-[#1E2D45] rounded-xl px-3 sm:px-4 py-2.5 shrink-0">
-            <span className="text-xs text-[#94A3B8] hidden sm:inline">موسم الامتحانات</span>
-            <button
-              onClick={() => setExamSeason(!examSeason)}
-              className={`w-10 h-5 rounded-full transition-all relative flex-shrink-0 ${examSeason ? 'bg-[#F43F5E]' : 'bg-[#1E2D45]'}`}
-            >
-              <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 transition-all shadow-sm ${examSeason ? 'left-5' : 'left-0.5'}`} />
-            </button>
-            {examSeason && <span className="text-xs text-[#F43F5E] font-semibold animate-blink-soft">نشط</span>}
+    <div className="min-h-screen bg-[#070C18] flex">
+      {/* Sidebar */}
+      <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-[#0F1828] border-l border-[#1E2D45] sticky top-0 h-screen">
+        <div className="p-6 border-b border-[#1E2D45]">
+          <Link to="/" className="flex items-center gap-2.5 group mb-4">
+            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+              <span className="text-white font-black text-sm">ح</span>
+            </div>
+            <span className="text-[#F1F5F9] font-bold">حلب <span className="gradient-text">يونيفر</span></span>
+          </Link>
+          <div className="bg-[#162032] rounded-xl px-3 py-2 flex items-center gap-2">
+            <span className="text-lg">🔐</span>
+            <div>
+              <div className="text-[#F1F5F9] font-semibold text-xs">لوحة الإدارة</div>
+              <div className="text-[#10B981] text-[10px]">وصول كامل</div>
+            </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          {STATS.map(s => (
-            <div key={s.label} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 hover:border-[#6366F1]/20 transition-all">
-              <p className="text-xl sm:text-2xl font-black mb-1" style={{ color: s.color }}>{s.val}</p>
-              <p className="text-xs text-[#94A3B8] leading-tight">{s.label}</p>
+        <nav className="flex-1 p-4 flex flex-col gap-1">
+          {SIDEBAR_ITEMS.map(item => (
+            <button
+              key={item.key}
+              onClick={() => setActive(item.key)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-right w-full ${
+                active === item.key
+                  ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
+                  : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
+              }`}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-[#1E2D45]">
+          <button
+            onClick={handleLogout}
+            className="w-full text-center px-3 py-2 text-xs rounded-xl text-[#4A5D78] hover:text-[#F43F5E] hover:bg-[#F43F5E]/5 transition-all"
+          >
+            تسجيل خروج
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 min-w-0 overflow-auto">
+        <div className="p-6 sm:p-8">
+          {/* Mobile header */}
+          <div className="flex gap-2 lg:hidden mb-6 flex-wrap">
+            {SIDEBAR_ITEMS.map(item => (
+              <button
+                key={item.key}
+                onClick={() => setActive(item.key)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  active === item.key ? 'gradient-bg text-white' : 'bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8]'
+                }`}
+              >
+                {item.icon} {item.label}
+              </button>
+            ))}
+          </div>
+
+          {active === 'overview' && <OverviewPanel />}
+          {active === 'users' && <UsersPanel />}
+          {active === 'businesses' && <BusinessesPanel />}
+          {active === 'orders' && <OrdersPanel />}
+          {active === 'revenue' && <RevenuePanel />}
+          {active === 'config' && <ConfigPanel />}
+        </div>
+      </main>
+    </div>
+  )
+}
+
+function OverviewPanel() {
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [activityLogs, setActivityLogs] = useState([])
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/admin/stats'),
+      api.get('/admin/activity-log?limit=10'),
+    ]).then(([s, a]) => {
+      setStats(s.data)
+      setActivityLogs(a.data || [])
+    }).catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Spinner /></div>
+
+  const STAT_CARDS = [
+    { label: 'إجمالي المستخدمين', val: stats?.totalUsers, color: '#6366F1' },
+    { label: 'طلاب نشطون', val: stats?.activeStudents, color: '#10B981' },
+    { label: 'حسابات أعمال نشطة', val: stats?.activeBusinesses, color: '#14B8A6' },
+    { label: 'بانتظار الموافقة (أعمال)', val: stats?.pendingBusinessApprovals, color: '#F59E0B' },
+    { label: 'هويات بانتظار المراجعة', val: stats?.pendingVerifications, color: '#F43F5E' },
+    { label: 'إجمالي الطلبات', val: stats?.totalOrders, color: '#8B5CF6' },
+    { label: 'دورات منشورة', val: stats?.totalCourses, color: '#6366F1' },
+    { label: 'وثائق المكتبة', val: stats?.totalDocuments, color: '#14B8A6' },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <span className="section-label">لوحة الإدارة</span>
+        <h1 className="text-2xl font-black text-[#F1F5F9]">⚙️ مركز التحكم</h1>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {STAT_CARDS.map(s => (
+          <div key={s.label} className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 hover:border-[#6366F1]/20 transition-all">
+            <p className="text-2xl font-black mb-1" style={{ color: s.color }}>{s.val ?? '—'}</p>
+            <p className="text-xs text-[#94A3B8] leading-tight">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+          <p className="text-sm font-semibold text-[#F1F5F9]">سجل النشاط الأخير</p>
+        </div>
+        {activityLogs.length === 0 ? (
+          <div className="p-6 text-center text-[#4A5D78] text-sm">لا يوجد نشاط بعد</div>
+        ) : activityLogs.map(log => (
+          <div key={log._id} className="px-5 py-3 border-b border-[#1E2D45] last:border-0 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-[#F1F5F9]">{log.action} <span className="text-[#6366F1] font-medium">{log.targetName}</span></p>
+              <p className="text-xs text-[#4A5D78] mt-0.5">{log.adminId?.name || 'Admin'}</p>
+            </div>
+            <span className="text-xs text-[#4A5D78] shrink-0">{new Date(log.createdAt).toLocaleDateString('ar-SY')}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function UsersPanel() {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [actionLoading, setActionLoading] = useState(null)
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true)
+    try {
+      let url = `/users?page=${page}&limit=15`
+      if (typeFilter) url += `&accountType=${typeFilter}`
+      if (statusFilter) url += `&status=${statusFilter}`
+      if (search) url += `&search=${encodeURIComponent(search)}`
+      const data = await api.get(url)
+      setUsers(data.data || [])
+      setTotal(data.total || 0)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }, [page, typeFilter, statusFilter, search])
+
+  useEffect(() => { fetchUsers() }, [fetchUsers])
+
+  const handleStatusChange = async (userId, status) => {
+    setActionLoading(userId)
+    try {
+      await api.patch(`/users/${userId}/status`, { status })
+      await fetchUsers()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleVerify = async (userId, approved) => {
+    setActionLoading(userId)
+    try {
+      await api.patch(`/users/${userId}/verify`, { approved })
+      await fetchUsers()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <span className="section-label">الإدارة</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">👥 إدارة المستخدمين</h2>
+        <p className="text-[#4A5D78] text-sm">{total} مستخدم إجمالاً</p>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3">
+        <input
+          value={search}
+          onChange={e => { setSearch(e.target.value); setPage(1) }}
+          placeholder="بحث بالاسم أو البريد..."
+          className="bg-[#0F1828] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors flex-1 min-w-48"
+        />
+        <select
+          value={typeFilter}
+          onChange={e => { setTypeFilter(e.target.value); setPage(1) }}
+          className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors"
+        >
+          <option value="">كل الأنواع</option>
+          <option value="student">طلاب</option>
+          <option value="business">أعمال</option>
+          <option value="admin">مشرفون</option>
+        </select>
+        <select
+          value={statusFilter}
+          onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
+          className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors"
+        >
+          <option value="">كل الحالات</option>
+          <option value="active">نشط</option>
+          <option value="pending">معلّق</option>
+          <option value="frozen">مجمّد</option>
+          <option value="rejected">مرفوض</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+          {users.length === 0 ? (
+            <div className="p-8 text-center text-[#4A5D78] text-sm">لا يوجد مستخدمون بهذه الفلاتر</div>
+          ) : users.map(u => (
+            <div key={u._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F1F5F9] font-semibold text-sm">{u.name}</span>
+                  {u.isVerified && <span className="text-[10px] text-[#6366F1]">✅</span>}
+                </div>
+                <p className="text-xs text-[#4A5D78] mt-0.5">{u.email}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                    u.accountType === 'student' ? 'text-[#6366F1] border-[#6366F1]/20 bg-[#6366F1]/8' :
+                    u.accountType === 'business' ? 'text-[#F59E0B] border-[#F59E0B]/20 bg-[#F59E0B]/8' :
+                    'text-[#10B981] border-[#10B981]/20 bg-[#10B981]/8'
+                  }`}>
+                    {u.accountType === 'student' ? '🎓 طالب' : u.accountType === 'business' ? `💼 ${u.businessType || 'أعمال'}` : '🔐 مشرف'}
+                  </span>
+                  <StatusPill status={u.status} />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Student verification */}
+                {u.accountType === 'student' && u.verificationStatus === 'pending' && (
+                  <>
+                    <button
+                      disabled={actionLoading === u._id}
+                      onClick={() => handleVerify(u._id, true)}
+                      className="text-xs px-3 py-1.5 bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition-all disabled:opacity-50"
+                    >
+                      ✅ قبول
+                    </button>
+                    <button
+                      disabled={actionLoading === u._id}
+                      onClick={() => handleVerify(u._id, false)}
+                      className="text-xs px-3 py-1.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 text-[#F43F5E] rounded-lg hover:bg-[#F43F5E]/20 transition-all disabled:opacity-50"
+                    >
+                      ❌ رفض
+                    </button>
+                  </>
+                )}
+
+                {/* Status controls */}
+                {u.status !== 'frozen' && u.accountType !== 'admin' && (
+                  <button
+                    disabled={actionLoading === u._id}
+                    onClick={() => handleStatusChange(u._id, 'frozen')}
+                    className="text-xs px-3 py-1.5 bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#818CF8] rounded-lg hover:bg-[#6366F1]/20 transition-all disabled:opacity-50"
+                  >
+                    🔒 تجميد
+                  </button>
+                )}
+                {u.status === 'frozen' && (
+                  <button
+                    disabled={actionLoading === u._id}
+                    onClick={() => handleStatusChange(u._id, 'active')}
+                    className="text-xs px-3 py-1.5 bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition-all disabled:opacity-50"
+                  >
+                    🔓 إلغاء التجميد
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
+      )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 sm:gap-6">
-
-          {/* Module nav */}
-          <aside className="lg:col-span-1">
-            <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-              <div className="p-3 sm:p-4 border-b border-[#1E2D45]">
-                <p className="text-xs font-semibold text-[#F1F5F9]">الوحدات</p>
-              </div>
-              <nav className="p-2">
-                <button
-                  onClick={() => setActiveModule('overview')}
-                  className={`w-full text-right px-3 py-2.5 text-sm mb-1 rounded-xl transition-all ${
-                    activeModule === 'overview'
-                      ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
-                      : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
-                  }`}
-                >
-                  📊 نظرة عامة
-                </button>
-                {ADMIN_MODULES.map(m => (
-                  <button
-                    key={m.label}
-                    onClick={() => setActiveModule(m.label)}
-                    className={`w-full text-right px-3 py-2 text-xs mb-1 rounded-xl transition-all ${
-                      activeModule === m.label
-                        ? 'bg-[#6366F1]/15 text-[#6366F1] font-semibold'
-                        : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#162032]'
-                    }`}
-                  >
-                    {m.icon} {m.label}
-                  </button>
-                ))}
-              </nav>
-            </div>
-          </aside>
-
-          {/* Main panel */}
-          <main className="lg:col-span-3 space-y-4">
-
-            {activeModule === 'overview' && (
-              <>
-                {/* Module cards */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {ADMIN_MODULES.map(m => (
-                    <button
-                      key={m.label}
-                      onClick={() => setActiveModule(m.label)}
-                      className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 text-right hover:border-[#6366F1]/30 hover:shadow-lg transition-all"
-                    >
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl mb-2" style={{ background: m.color + '18' }}>
-                        {m.icon}
-                      </div>
-                      <p className="text-xs sm:text-sm font-bold text-[#F1F5F9] mb-0.5">{m.label}</p>
-                      <p className="text-[10px] sm:text-xs text-[#94A3B8] leading-tight">{m.desc}</p>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Pending IDs */}
-                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-                  <div className="px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
-                    <p className="text-sm font-semibold text-[#F1F5F9]">هويات بانتظار التحقق</p>
-                    <span className="text-xs bg-[#F43F5E] text-white px-2 py-0.5 rounded-full font-bold">{PENDING_USERS.length}</span>
-                  </div>
-                  {PENDING_USERS.map(u => (
-                    <div key={u.id} className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#F1F5F9] font-medium truncate">{u.name}</p>
-                        <p className="text-xs text-[#4A5D78] mt-0.5">{u.id} · {u.faculty}</p>
-                      </div>
-                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                        <StatusPill status="pending" />
-                        <button className="px-2.5 sm:px-3 py-1.5 bg-[#10B981] text-white text-xs font-bold rounded-lg hover:bg-[#0d9f72] transition-colors">✅ قبول</button>
-                        <button className="px-2.5 sm:px-3 py-1.5 bg-[#F43F5E] text-white text-xs font-bold rounded-lg hover:bg-[#e0284f] transition-colors">✕ رفض</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pending orders */}
-                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] overflow-hidden">
-                  <div className="px-4 sm:px-5 py-3.5 border-b border-[#1E2D45]">
-                    <p className="text-sm font-semibold text-[#F1F5F9]">طلبات المتجر المعلّقة</p>
-                  </div>
-                  {PENDING_ORDERS.map(o => (
-                    <div key={o.id} className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-[#1E2D45] last:border-0 gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-[#F1F5F9] font-medium truncate">{o.item}</p>
-                        <p className="text-xs text-[#4A5D78] mt-0.5 truncate">{o.id} · {o.student} · {o.amount} SYP</p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <StatusPill status={o.status} />
-                        <button className="px-3 py-1.5 rounded-lg border border-[#6366F1]/30 text-[#6366F1] text-xs hover:bg-[#6366F1]/10 transition-all">تفاصيل</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Exchange rate */}
-                <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-4 sm:p-5">
-                  <p className="text-sm font-semibold text-[#F1F5F9] mb-4">إعدادات اليوم</p>
-                  <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#94A3B8]">سعر الصرف (SYP/$):</span>
-                      <input
-                        defaultValue="14500"
-                        className="w-24 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] px-3 py-1.5 text-sm font-mono outline-none focus:border-[#6366F1]/50 rounded-lg transition-colors"
-                      />
-                    </div>
-                    <button className="px-4 py-1.5 gradient-bg text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">تحديث السعر</button>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {activeModule !== 'overview' && (
-              <div className="bg-[#0F1828] rounded-2xl border border-[#6366F1]/20 p-8 sm:p-10 text-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mx-auto mb-4" style={{ background: (ADMIN_MODULES.find(m => m.label === activeModule)?.color || '#6366F1') + '18' }}>
-                  {ADMIN_MODULES.find(m => m.label === activeModule)?.icon}
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#F1F5F9] mb-2">{activeModule}</h3>
-                <p className="text-sm text-[#94A3B8] mb-4">{ADMIN_MODULES.find(m => m.label === activeModule)?.desc}</p>
-                <span className="text-xs text-[#4A5D78] bg-[#162032] rounded-full px-4 py-2 inline-block">قيد التطوير — متصل بـ Backend API</span>
-              </div>
-            )}
-          </main>
+      {/* Pagination */}
+      {total > 15 && (
+        <div className="flex items-center justify-center gap-3">
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">السابق</button>
+          <span className="text-xs text-[#4A5D78]">صفحة {page} من {Math.ceil(total / 15)}</span>
+          <button disabled={page >= Math.ceil(total / 15)} onClick={() => setPage(p => p + 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">التالي</button>
         </div>
+      )}
+    </div>
+  )
+}
+
+function BusinessesPanel() {
+  const [pending, setPending] = useState([])
+  const [all, setAll] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState(null)
+  const [permsModal, setPermsModal] = useState(null)
+  const [perms, setPerms] = useState({})
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [p, a] = await Promise.all([
+        api.get('/admin/pending-businesses'),
+        api.get('/users?accountType=business&limit=50'),
+      ])
+      setPending(p.data || [])
+      setAll(a.data || [])
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchData() }, [fetchData])
+
+  const handleApprove = async (userId, approved) => {
+    setActionLoading(userId)
+    try {
+      await api.patch(`/admin/users/${userId}/approve-business`, { approved })
+      await fetchData()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const openPerms = (user) => {
+    setPermsModal(user)
+    setPerms(user.businessPermissions || {})
+  }
+
+  const savePerms = async () => {
+    if (!permsModal) return
+    setActionLoading(permsModal._id)
+    try {
+      await api.patch(`/admin/users/${permsModal._id}/permissions`, perms)
+      setPermsModal(null)
+      await fetchData()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const PERM_LABELS = {
+    canSellProducts: '🛒 بيع المنتجات',
+    canRunAds: '📢 تشغيل الإعلانات',
+    canOfferFreelance: '💼 تقديم خدمات مستقل',
+    canUploadCourses: '📚 رفع دورات',
+    canUploadLibraryDocs: '📄 رفع وثائق مكتبة',
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <span className="section-label">إدارة الأعمال</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">💼 حسابات الأعمال</h2>
       </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : (
+        <>
+          {/* Pending approvals */}
+          {pending.length > 0 && (
+            <div className="bg-[#F59E0B]/5 border border-[#F59E0B]/20 rounded-2xl overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#F59E0B]/20">
+                <p className="text-sm font-semibold text-[#F59E0B]">⏳ بانتظار الموافقة ({pending.length})</p>
+              </div>
+              {pending.map(biz => (
+                <div key={biz._id} className="px-5 py-4 border-b border-[#F59E0B]/10 last:border-0 flex items-center gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[#F1F5F9] font-semibold text-sm">{biz.name}</p>
+                    <p className="text-xs text-[#4A5D78]">{biz.email} · {biz.businessType}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={actionLoading === biz._id}
+                      onClick={() => handleApprove(biz._id, true)}
+                      className="text-xs px-3 py-1.5 bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition-all disabled:opacity-50"
+                    >
+                      ✅ قبول
+                    </button>
+                    <button
+                      disabled={actionLoading === biz._id}
+                      onClick={() => handleApprove(biz._id, false)}
+                      className="text-xs px-3 py-1.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 text-[#F43F5E] rounded-lg hover:bg-[#F43F5E]/20 transition-all disabled:opacity-50"
+                    >
+                      ❌ رفض
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* All business accounts */}
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-[#1E2D45]">
+              <p className="text-sm font-semibold text-[#F1F5F9]">جميع حسابات الأعمال ({all.length})</p>
+            </div>
+            {all.length === 0 ? (
+              <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد حسابات أعمال بعد</div>
+            ) : all.map(biz => (
+              <div key={biz._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[#F1F5F9] font-semibold text-sm">{biz.name}</p>
+                  <p className="text-xs text-[#4A5D78] mt-0.5">{biz.email} · {biz.businessType}</p>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {Object.entries(biz.businessPermissions || {}).filter(([, v]) => v).map(([k]) => (
+                      <span key={k} className="text-[10px] bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 rounded-full px-2 py-0.5">
+                        {PERM_LABELS[k] || k}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <StatusPill status={biz.status} />
+                  <button
+                    onClick={() => openPerms(biz)}
+                    className="text-xs px-3 py-1.5 bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#818CF8] rounded-lg hover:bg-[#6366F1]/20 transition-all"
+                  >
+                    🔑 الصلاحيات
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Permissions Modal */}
+      {permsModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-[#F1F5F9] font-bold mb-1">صلاحيات {permsModal.name}</h3>
+            <p className="text-[#4A5D78] text-xs mb-5">فعّل الخدمات التي يستطيع هذا الحساب استخدامها</p>
+            <div className="flex flex-col gap-3">
+              {Object.entries(PERM_LABELS).map(([k, label]) => (
+                <label key={k} className="flex items-center justify-between cursor-pointer">
+                  <span className="text-[#94A3B8] text-sm">{label}</span>
+                  <button
+                    onClick={() => setPerms(p => ({ ...p, [k]: !p[k] }))}
+                    className={`w-10 h-5 rounded-full transition-all relative ${perms[k] ? 'bg-[#6366F1]' : 'bg-[#1E2D45]'}`}
+                  >
+                    <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 transition-all shadow-sm ${perms[k] ? 'left-5' : 'left-0.5'}`} />
+                  </button>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={savePerms}
+                disabled={actionLoading === permsModal._id}
+                className="flex-1 gradient-bg text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {actionLoading === permsModal._id ? 'جاري الحفظ...' : 'حفظ الصلاحيات'}
+              </button>
+              <button
+                onClick={() => setPermsModal(null)}
+                className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function OrdersPanel() {
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [statusFilter, setStatusFilter] = useState('')
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    setLoading(true)
+    let url = `/admin/orders?page=${page}&limit=20`
+    if (statusFilter) url += `&status=${statusFilter}`
+    api.get(url)
+      .then(data => { setOrders(data.data || []); setTotal(data.total || 0) })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [page, statusFilter])
+
+  const STATUS_STYLE = {
+    pending: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+    processing: 'bg-[#6366F1]/10 text-[#818CF8] border-[#6366F1]/20',
+    delivered: 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20',
+    cancelled: 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20',
+  }
+  const STATUS_LABELS = { pending: 'معلّق', processing: 'قيد المعالجة', delivered: 'تم التسليم', cancelled: 'ملغي' }
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <span className="section-label">الإدارة</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">📦 إدارة الطلبات</h2>
+        <p className="text-[#4A5D78] text-sm">{total} طلب إجمالاً</p>
+      </div>
+
+      <select
+        value={statusFilter}
+        onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
+        className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors"
+      >
+        <option value="">كل الحالات</option>
+        <option value="pending">معلّق</option>
+        <option value="processing">قيد المعالجة</option>
+        <option value="delivered">تم التسليم</option>
+        <option value="cancelled">ملغي</option>
+      </select>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+          {orders.length === 0 ? (
+            <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد طلبات</div>
+          ) : orders.map(o => (
+            <div key={o._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <p className="text-[#F1F5F9] font-semibold text-sm">{o.productId?.name || 'منتج'}</p>
+                <p className="text-xs text-[#4A5D78] mt-0.5">{o.studentId?.name} · {o.studentId?.email}</p>
+                <p className="text-sm font-bold gradient-text mt-1">{o.totalPrice?.toLocaleString()} SYP</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-xs px-2.5 py-1 rounded-full border ${STATUS_STYLE[o.status] || STATUS_STYLE.pending}`}>
+                  {STATUS_LABELS[o.status] || o.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {total > 20 && (
+        <div className="flex items-center justify-center gap-3">
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">السابق</button>
+          <span className="text-xs text-[#4A5D78]">صفحة {page}</span>
+          <button disabled={orders.length < 20} onClick={() => setPage(p => p + 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">التالي</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function RevenuePanel() {
+  const [revenue, setRevenue] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/admin/revenue')
+      .then(data => setRevenue(data.data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <span className="section-label">المالية</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">💰 السجل المالي</h2>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { label: 'إيرادات المتجر', val: revenue?.storeRevenue, color: '#10B981' },
+            { label: 'اشتراكات المستقلين', val: revenue?.freelanceSubRevenue, color: '#6366F1' },
+            { label: 'الإعلانات النشطة', val: revenue?.activeAdCampaigns, color: '#F59E0B', unit: 'حملة' },
+            { label: 'مبالغ Escrow محتجزة', val: revenue?.escrowHolding, color: '#F43F5E' },
+            { label: 'مبالغ Escrow محررة', val: revenue?.escrowReleased, color: '#14B8A6' },
+          ].map(item => (
+            <div key={item.label} className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
+              <p className="text-xs text-[#4A5D78] mb-2">{item.label}</p>
+              <p className="text-2xl font-black" style={{ color: item.color }}>
+                {(item.val || 0).toLocaleString()} <span className="text-sm text-[#94A3B8] font-normal">{item.unit || 'SYP'}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ConfigPanel() {
+  const [msg, setMsg] = useState('')
+  const [config, setConfig] = useState({
+    isExamSeason: false,
+    isMaintenanceMode: false,
+    freePromoActive: false,
+    subscriptionFee: 5,
+  })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    api.get('/config')
+      .then(data => setConfig(data.data || {}))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await api.patch('/config', config)
+      setMsg('تم حفظ الإعدادات بنجاح')
+      setTimeout(() => setMsg(''), 3000)
+    } catch (err) {
+      setMsg(err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const Toggle = ({ label, field }) => (
+    <div className="flex items-center justify-between py-3 border-b border-[#1E2D45] last:border-0">
+      <span className="text-[#94A3B8] text-sm">{label}</span>
+      <button
+        onClick={() => setConfig(p => ({ ...p, [field]: !p[field] }))}
+        className={`w-10 h-5 rounded-full transition-all relative ${config[field] ? 'bg-[#6366F1]' : 'bg-[#1E2D45]'}`}
+      >
+        <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 transition-all shadow-sm ${config[field] ? 'left-5' : 'left-0.5'}`} />
+      </button>
+    </div>
+  )
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <span className="section-label">الإعدادات</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">⚙️ إعدادات النظام</h2>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Spinner /></div>
+      ) : (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+          <Toggle label="موسم الامتحانات" field="isExamSeason" />
+          <Toggle label="وضع الصيانة" field="isMaintenanceMode" />
+          <Toggle label="عروض مجانية نشطة" field="freePromoActive" />
+          <div className="py-3 flex items-center justify-between">
+            <span className="text-[#94A3B8] text-sm">رسوم الاشتراك ($)</span>
+            <input
+              type="number"
+              value={config.subscriptionFee || 5}
+              onChange={e => setConfig(p => ({ ...p, subscriptionFee: Number(e.target.value) }))}
+              className="w-20 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] rounded-lg px-3 py-1.5 text-sm outline-none focus:border-[#6366F1] text-center font-mono"
+            />
+          </div>
+          {msg && (
+            <div className="mt-3 bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
+              {msg}
+            </div>
+          )}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="mt-4 w-full gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm"
+          >
+            {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -2,15 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
-const DEMO_ACCOUNTS = [
-  { role: 'student', label: '🎓 طالب', sub: 'غير مستقل', color: '#6366F1' },
-  { role: 'studentFreelancer', label: '🎓 طالب مستقل', sub: 'isFreelancer: true', color: '#8B5CF6' },
-  { role: 'vendor', label: '🛒 بائع منتجات', sub: 'حساب أعمال', color: '#14B8A6' },
-  { role: 'advertiser', label: '📢 معلن محلي', sub: 'حساب أعمال', color: '#F59E0B' },
-  { role: 'externalFreelancer', label: '💼 مستقل خارجي', sub: 'حساب أعمال', color: '#F43F5E' },
-  { role: 'admin', label: '🔐 مشرف', sub: 'وصول كامل', color: '#10B981' },
-]
-
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -32,21 +23,19 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!email || !password) {
+      setError('يرجى إدخال البريد الإلكتروني وكلمة المرور')
+      return
+    }
     setError('')
     setLoading(true)
-    await new Promise(r => setTimeout(r, 600))
-    const result = login({ email, password })
+    const result = await login({ email, password })
     setLoading(false)
     if (result.success) {
       navigate(getRedirect(result.user), { replace: true })
     } else {
       setError(result.error)
     }
-  }
-
-  const handleDemo = (role) => {
-    const result = login({ mockRole: role })
-    if (result.success) navigate(getRedirect(result.user), { replace: true })
   }
 
   return (
@@ -80,6 +69,7 @@ export default function Login() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="user@aleppo.edu.sy"
                 className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                autoComplete="email"
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -91,6 +81,7 @@ export default function Login() {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -117,32 +108,19 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="mt-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-[#1E2D45]" />
-              <span className="text-[#4A5D78] text-xs">أو جرّب حساباً تجريبياً</span>
-              <div className="flex-1 h-px bg-[#1E2D45]" />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {DEMO_ACCOUNTS.map(acc => (
-                <button
-                  key={acc.role}
-                  onClick={() => handleDemo(acc.role)}
-                  className="flex flex-col items-start gap-0.5 px-3 py-2.5 bg-[#162032] border border-[#1E2D45] rounded-xl hover:border-[#6366F1]/40 transition-all text-right group"
-                >
-                  <span className="text-[#F1F5F9] text-xs font-semibold group-hover:text-[#818CF8] transition-colors">{acc.label}</span>
-                  <span className="text-[#4A5D78] text-[10px]">{acc.sub}</span>
-                </button>
-              ))}
-            </div>
+          <div className="mt-6 flex flex-col gap-2">
+            <p className="text-center text-[#4A5D78] text-sm">
+              ليس لديك حساب؟{' '}
+              <Link to="/auth/register" className="text-[#818CF8] hover:text-[#6366F1] transition-colors font-medium">
+                إنشاء حساب جديد
+              </Link>
+            </p>
+            <p className="text-center">
+              <Link to="/auth/forgot-password" className="text-[#4A5D78] hover:text-[#94A3B8] transition-colors text-xs">
+                نسيت كلمة المرور؟
+              </Link>
+            </p>
           </div>
-
-          <p className="text-center text-[#4A5D78] text-sm mt-6">
-            ليس لديك حساب؟{' '}
-            <Link to="/auth/register" className="text-[#818CF8] hover:text-[#6366F1] transition-colors font-medium">
-              إنشاء حساب جديد
-            </Link>
-          </p>
         </div>
       </div>
     </div>

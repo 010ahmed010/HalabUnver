@@ -56,6 +56,14 @@ const userSchema = new mongoose.Schema({
     },
   },
 
+  businessPermissions: {
+    canSellProducts: { type: Boolean, default: false },
+    canRunAds: { type: Boolean, default: false },
+    canOfferFreelance: { type: Boolean, default: false },
+    canUploadCourses: { type: Boolean, default: false },
+    canUploadLibraryDocs: { type: Boolean, default: false },
+  },
+
   virtualWalletBalance: { type: Number, default: 0 },
 
   notificationSettings: {

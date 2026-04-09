@@ -85,21 +85,27 @@ exports.getLeaderboard = async (req, res, next) => {
 
 exports.getServices = async (req, res, next) => {
   try {
-    const { category, level, minPrice, maxPrice, deliveryDays, sort = '-rating', page = 1, limit = 12, type } = req.query
-    const filter = { isVisible: true }
-    if (category) filter.category = category
-    if (level) filter.level = level
-    if (minPrice || maxPrice) filter.price = {}
-    if (minPrice) filter.price.$gte = Number(minPrice)
-    if (maxPrice) filter.price.$lte = Number(maxPrice)
-    if (deliveryDays) filter.deliveryDays = { $lte: Number(deliveryDays) }
+    const { category, level, minPrice, maxPrice, deliveryDays, sort = '-rating', page = 1, limit = 12, type, own } = req.query
 
-    if (type) {
-      let userFilter = {}
-      if (type === 'student') userFilter = { accountType: 'student', isFreelancer: true }
-      else if (type === 'external') userFilter = { accountType: 'business', businessType: 'freelancer' }
-      const users = await User.find(userFilter).select('_id')
-      filter.freelancerId = { $in: users.map(u => u._id) }
+    let filter = {}
+    if (own === 'true') {
+      filter.freelancerId = req.user?._id
+    } else {
+      filter.isVisible = true
+      if (category) filter.category = category
+      if (level) filter.level = level
+      if (minPrice || maxPrice) filter.price = {}
+      if (minPrice) filter.price.$gte = Number(minPrice)
+      if (maxPrice) filter.price.$lte = Number(maxPrice)
+      if (deliveryDays) filter.deliveryDays = { $lte: Number(deliveryDays) }
+
+      if (type) {
+        let userFilter = {}
+        if (type === 'student') userFilter = { accountType: 'student', isFreelancer: true }
+        else if (type === 'external') userFilter = { accountType: 'business', businessType: 'freelancer' }
+        const users = await User.find(userFilter).select('_id')
+        filter.freelancerId = { $in: users.map(u => u._id) }
+      }
     }
 
     const total = await FreelancerService.countDocuments(filter)

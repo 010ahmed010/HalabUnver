@@ -1,161 +1,157 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { api } from '../../lib/api'
+import { useAuth } from '../../context/AuthContext'
 
-const BRANCHES = ['الكل', 'برمجة وتطوير', 'شبكات', 'أمن سيبراني', 'ذكاء اصطناعي', 'تصميم', 'هندسة معمارية', 'ميكانيك']
+const LEVEL_COLORS = {
+  beginner: { label: 'مبتدئ', color: '#10B981' },
+  intermediate: { label: 'متوسط', color: '#F59E0B' },
+  advanced: { label: 'متقدم', color: '#F43F5E' },
+}
 
-const COURSES = [
-  { id: 'mern-001', title: 'MERN Stack الشاملة', instructor: 'أحمد الجاسم', hours: 42, rating: 4.9, students: 312, price: 'مجاني للمسجلين', branch: 'برمجة وتطوير', native: true, level: 'متقدم', levelColor: '#F43F5E' },
-  { id: 'net-002', title: 'شبكات الحاسوب — من الصفر', instructor: 'محمد حسن', hours: 28, rating: 4.7, students: 189, price: '75,000 SYP', branch: 'شبكات', native: true, level: 'مبتدئ', levelColor: '#10B981' },
-  { id: 'sec-003', title: 'أساسيات الأمن السيبراني وCTF', instructor: 'سامر خالد', hours: 18, rating: 4.8, students: 97, price: '50,000 SYP', branch: 'أمن سيبراني', native: false, level: 'متوسط', levelColor: '#F59E0B' },
-  { id: 'ai-004', title: 'Python للذكاء الاصطناعي', instructor: 'رنا أحمد', hours: 35, rating: 4.6, students: 244, price: '90,000 SYP', branch: 'ذكاء اصطناعي', native: false, level: 'متوسط', levelColor: '#F59E0B' },
-  { id: 'ui-005', title: 'تصميم واجهات المستخدم — UI/UX', instructor: 'لينا مصطفى', hours: 22, rating: 4.9, students: 156, price: '60,000 SYP', branch: 'تصميم', native: false, level: 'مبتدئ', levelColor: '#10B981' },
-  { id: 'arch-006', title: 'AutoCAD للمبتدئين', instructor: 'كريم إبراهيم', hours: 16, rating: 4.5, students: 203, price: '40,000 SYP', branch: 'هندسة معمارية', native: true, level: 'مبتدئ', levelColor: '#10B981' },
-]
+function CourseCard({ course }) {
+  const lvl = LEVEL_COLORS[course.level] || LEVEL_COLORS.beginner
+  return (
+    <Link
+      to={`/academy/course/${course._id}`}
+      className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden hover:border-[#6366F1]/30 hover:-translate-y-0.5 transition-all group flex flex-col"
+    >
+      <div className="h-36 bg-gradient-to-br from-[#162032] to-[#0F1828] flex items-center justify-center relative overflow-hidden">
+        {course.thumbnail ? (
+          <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-5xl opacity-20">📚</span>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1828] to-transparent opacity-60" />
+        {course.isFree && (
+          <span className="absolute top-3 right-3 text-[10px] font-bold bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 px-2 py-0.5 rounded-full">
+            مجاني
+          </span>
+        )}
+        <span className="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: `${lvl.color}20`, color: lvl.color, border: `1px solid ${lvl.color}30` }}>
+          {lvl.label}
+        </span>
+      </div>
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className="text-[#F1F5F9] font-bold text-sm leading-snug group-hover:text-[#818CF8] transition-colors line-clamp-2">{course.title}</h3>
+        <p className="text-xs text-[#4A5D78] mt-1.5">{course.instructor}</p>
+        <div className="flex items-center gap-3 mt-2 text-xs text-[#4A5D78]">
+          <span>⭐ {course.rating?.toFixed(1) || '—'}</span>
+          <span>·</span>
+          <span>👤 {course.studentsCount || 0}</span>
+          {course.hours > 0 && <><span>·</span><span>⏱ {course.hours}h</span></>}
+        </div>
+        <div className="mt-auto pt-3 border-t border-[#1E2D45] flex items-center justify-between">
+          <span className="text-sm font-black gradient-text">
+            {course.isFree ? 'مجاني' : course.price ? `${course.price.toLocaleString()} SYP` : '—'}
+          </span>
+          <span className="text-[10px] text-[#4A5D78] border border-[#1E2D45] px-2 py-0.5 rounded-full">
+            {course.source === 'upload' ? '↗ خارجي' : '🎓 أكاديمية'}
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
 
 export default function Academy() {
-  const [activeBranch, setActiveBranch] = useState('الكل')
-  const [filterOpen, setFilterOpen] = useState(false)
-  const [filters, setFilters] = useState({ free: false, native: false, level: '' })
+  const { user } = useAuth()
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [selectedLevel, setSelectedLevel] = useState('')
+  const [isFreeOnly, setIsFreeOnly] = useState(false)
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
 
-  const filtered = COURSES.filter(c => {
-    if (activeBranch !== 'الكل' && c.branch !== activeBranch) return false
-    if (filters.free && c.price !== 'مجاني للمسجلين') return false
-    if (filters.native && !c.native) return false
-    if (filters.level && c.level !== filters.level) return false
-    return true
-  })
+  useEffect(() => {
+    setLoading(true)
+    let url = `/courses?page=${page}&limit=12`
+    if (selectedLevel) url += `&level=${selectedLevel}`
+    if (isFreeOnly) url += `&isFree=true`
+    if (search.trim()) url += `&search=${encodeURIComponent(search.trim())}`
+
+    api.get(url)
+      .then(data => {
+        setCourses(data.data || [])
+        setTotal(data.total || 0)
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [page, selectedLevel, isFreeOnly, search])
+
+  const LEVELS = ['', 'beginner', 'intermediate', 'advanced']
+  const LEVEL_LABELS = { '': 'كل المستويات', beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'متقدم' }
 
   return (
     <div className="pt-20 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <span className="section-label">التعلّم</span>
+          <h1 className="text-3xl sm:text-4xl font-black text-[#F1F5F9] mb-2">الأكاديمية 📚</h1>
+          <p className="text-[#4A5D78] text-sm">دورات تعليمية لطلاب جامعة حلب — مجانية ومدفوعة</p>
+        </div>
 
-      {/* Page Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
-        <span className="section-label">الأكاديمية</span>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#F1F5F9]">أكاديمية حلب</h1>
-        <p className="text-sm text-[#94A3B8] mt-1">دورات أكاديمية مكثفة مصمّمة لسد الفجوة بين الجامعة ومتطلبات السوق</p>
-      </div>
+        {/* Search + Filters */}
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-4 mb-6 flex flex-wrap gap-3 items-center">
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            placeholder="ابحث في الدورات..."
+            className="flex-1 min-w-48 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+          />
+          <select
+            value={selectedLevel}
+            onChange={e => { setSelectedLevel(e.target.value); setPage(1) }}
+            className="bg-[#162032] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+          >
+            {LEVELS.map(l => <option key={l} value={l}>{LEVEL_LABELS[l]}</option>)}
+          </select>
+          <label className="flex items-center gap-2 cursor-pointer px-4 py-2.5 bg-[#162032] border border-[#1E2D45] rounded-xl hover:border-[#10B981]/30 transition-colors">
+            <input type="checkbox" checked={isFreeOnly} onChange={e => { setIsFreeOnly(e.target.checked); setPage(1) }} className="accent-[#10B981]" />
+            <span className="text-sm text-[#94A3B8]">مجاني فقط</span>
+          </label>
+          <span className="text-xs text-[#4A5D78]">{total} دورة</span>
+        </div>
 
-      {/* Branch filter bar */}
-      <div className="border-b border-[#1E2D45] bg-[#070C18] sticky top-16 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 overflow-x-auto py-3 no-scrollbar">
-            {BRANCHES.map(b => (
-              <button
-                key={b}
-                onClick={() => setActiveBranch(b)}
-                className={`shrink-0 px-3.5 py-1.5 text-xs sm:text-sm rounded-full transition-all ${
-                  activeBranch === b
-                    ? 'gradient-bg text-white font-semibold shadow-md shadow-[#6366F1]/20'
-                    : 'text-[#94A3B8] hover:text-[#F1F5F9] border border-[#1E2D45] hover:border-[#6366F1]/30'
-                }`}
-              >
-                {b}
-              </button>
-            ))}
-            <button
-              onClick={() => setFilterOpen(!filterOpen)}
-              className={`shrink-0 mr-auto px-3 py-1.5 text-xs rounded-lg border transition-all ${
-                filterOpen
-                  ? 'border-[#6366F1]/40 text-[#6366F1] bg-[#6366F1]/10'
-                  : 'border-[#1E2D45] text-[#94A3B8] hover:border-[#6366F1]/40 hover:text-[#6366F1]'
-              }`}
-            >
-              ⚙ فلترة
-            </button>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-10 h-10 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
           </div>
-        </div>
-      </div>
+        ) : error ? (
+          <div className="bg-[#F43F5E]/10 border border-[#F43F5E]/25 rounded-2xl p-8 text-center text-[#F43F5E]">{error}</div>
+        ) : courses.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-5xl mb-4">📭</p>
+            <p className="text-[#F1F5F9] font-bold text-lg mb-2">لا توجد دورات بعد</p>
+            <p className="text-[#4A5D78] text-sm">كن أول من يضيف دورة للمنصة</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {courses.map(c => <CourseCard key={c._id} course={c} />)}
+          </div>
+        )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="flex gap-6">
+        {total > 12 && (
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-5 py-2 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm disabled:opacity-40 hover:border-[#6366F1]/30 transition-all">السابق</button>
+            <span className="text-sm text-[#4A5D78]">صفحة {page} من {Math.ceil(total / 12)}</span>
+            <button disabled={page >= Math.ceil(total / 12)} onClick={() => setPage(p => p + 1)} className="px-5 py-2 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm disabled:opacity-40 hover:border-[#6366F1]/30 transition-all">التالي</button>
+          </div>
+        )}
 
-          {/* Filter Sidebar */}
-          {filterOpen && (
-            <aside className="hidden md:block w-52 shrink-0">
-              <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 sticky top-32">
-                <p className="text-xs font-semibold text-[#F1F5F9] mb-4">خيارات الفلتر</p>
-                <div className="space-y-3 text-sm">
-                  <label className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9]">
-                    <input type="checkbox" checked={filters.free} onChange={e => setFilters({...filters, free: e.target.checked})} className="accent-[#6366F1] rounded" />
-                    <span className="text-xs">دورات مجانية فقط</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9]">
-                    <input type="checkbox" checked={filters.native} onChange={e => setFilters({...filters, native: e.target.checked})} className="accent-[#6366F1] rounded" />
-                    <span className="text-xs">جامعية أصيلة فقط</span>
-                  </label>
-                  <div className="pt-2 border-t border-[#1E2D45]">
-                    <p className="text-xs font-medium text-[#94A3B8] mb-2">المستوى</p>
-                    {['مبتدئ', 'متوسط', 'متقدم'].map(l => (
-                      <label key={l} className="flex items-center gap-2 cursor-pointer text-[#94A3B8] hover:text-[#F1F5F9] mb-2 text-xs">
-                        <input type="radio" name="level" value={l} checked={filters.level === l} onChange={e => setFilters({...filters, level: e.target.value})} className="accent-[#6366F1]" />
-                        {l}
-                      </label>
-                    ))}
-                    {filters.level && <button onClick={() => setFilters({...filters, level: ''})} className="text-xs text-[#6366F1] hover:underline">إلغاء الفلتر</button>}
-                  </div>
-                </div>
-              </div>
-            </aside>
-          )}
-
-          {/* Course Grid */}
-          <main className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-5">
-              <p className="text-sm text-[#94A3B8]">
-                <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> دورة — {activeBranch}
-              </p>
-              <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"
-                className="px-3 sm:px-4 py-2 text-xs rounded-lg border border-[#14B8A6]/30 text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
-                🗺 خريطة التعلم ←
-              </a>
+        {user?.businessPermissions?.canUploadCourses && (
+          <div className="mt-8 bg-[#6366F1]/8 border border-[#6366F1]/20 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-[#F1F5F9] font-bold">📤 أنت مدرب معتمد على المنصة</p>
+              <p className="text-[#4A5D78] text-sm">يمكنك رفع دوراتك وإتاحتها للطلاب</p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map(course => (
-                <Link
-                  key={course.id}
-                  to={`/academy/course/${course.id}`}
-                  className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] hover:border-[#6366F1]/30 hover:shadow-lg transition-all block group overflow-hidden"
-                >
-                  <div className="aspect-video bg-[#162032] relative flex items-center justify-center">
-                    <span className="text-3xl">🎓</span>
-                    {course.native && (
-                      <span className="absolute top-3 right-3 text-[10px] font-semibold rounded-full bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30 px-2 py-0.5">
-                        جامعي أصيل
-                      </span>
-                    )}
-                    <span
-                      className="absolute bottom-3 left-3 text-[10px] font-semibold rounded-full px-2 py-0.5"
-                      style={{ color: course.levelColor, background: course.levelColor + '18' }}
-                    >
-                      {course.level}
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-bold text-[#F1F5F9] mb-1 group-hover:text-[#6366F1] transition-colors leading-snug">{course.title}</h3>
-                    <p className="text-xs text-[#4A5D78] mb-3">{course.instructor} · {course.hours} ساعة</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-xs text-[#F59E0B]">
-                        ★ {course.rating}
-                        <span className="text-[#4A5D78] mr-1">({course.students})</span>
-                      </div>
-                      <span className="text-xs font-semibold text-[#6366F1]">{course.price}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {filtered.length === 0 && (
-              <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-12 text-center">
-                <p className="text-[#94A3B8] text-sm">لا توجد دورات تطابق الفلتر المحدد</p>
-                <button onClick={() => { setActiveBranch('الكل'); setFilters({ free: false, native: false, level: '' }) }} className="mt-4 text-xs text-[#6366F1] hover:underline">
-                  إعادة تعيين الفلتر
-                </button>
-              </div>
-            )}
-          </main>
-        </div>
+            <Link to="/business" className="gradient-bg text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity">
+              رفع دورة جديدة
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   )
