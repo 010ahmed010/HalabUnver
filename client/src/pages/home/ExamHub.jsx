@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { api } from '../../lib/api'
 
 const LIVE_RESOURCES = [
   { title: 'مراجعة شاملة — هندسة البرمجيات', duration: '2:15:00', type: 'LIVE', branch: 'معلوماتية', color: '#F43F5E' },
@@ -14,14 +16,17 @@ const LIBRARY_PICKS = [
   { title: 'مسائل رياضيات هندسية محلولة', branch: 'عامة', downloads: 1320 },
 ]
 
-const ANNOUNCEMENTS = [
-  { date: '5 أبريل', text: 'امتحانات السنة الرابعة تبدأ في 14 أبريل 2026 — جدول كامل في الموقع الرسمي', urgent: true },
-  { date: '3 أبريل', text: 'تمت إضافة 14 ملخصاً جديداً لكلية الهندسة المعمارية', urgent: false },
-  { date: '2 أبريل', text: 'Crash Course مجاني: قواعد البيانات — 5 أبريل الساعة 7م', urgent: false },
-  { date: '1 أبريل', text: 'بدء التسجيل في امتحانات اللحاق — الكلية الفنية الهندسية', urgent: false },
-]
-
 export default function ExamHub() {
+  const [announcements, setAnnouncements] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/announcements?limit=10')
+      .then(d => setAnnouncements(d.data || []))
+      .catch(() => setAnnouncements([]))
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <div className="pt-20 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -105,13 +110,27 @@ export default function ExamHub() {
                 <p className="text-sm font-semibold text-[#F1F5F9]">آخر الإعلانات</p>
               </div>
               <div className="divide-y divide-[#1E2D45]">
-                {ANNOUNCEMENTS.map((a, i) => (
-                  <div key={i} className={`px-4 sm:px-5 py-4 ${a.urgent ? 'bg-[#F43F5E]/3' : ''}`}>
+                {loading ? (
+                  <div className="p-6 flex justify-center">
+                    <div className="w-5 h-5 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : announcements.length === 0 ? (
+                  <div className="p-5 text-center text-[#4A5D78] text-sm">لا توجد إعلانات بعد</div>
+                ) : announcements.map((a) => (
+                  <div key={a._id} className={`px-4 sm:px-5 py-4 ${a.urgent ? 'bg-[#F43F5E]/3' : ''}`}>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-[10px] text-[#4A5D78]">{a.date}</span>
-                      {a.urgent && <span className="text-[10px] bg-[#F43F5E]/15 text-[#F43F5E] rounded-full px-2 py-0.5 font-medium">عاجل</span>}
+                      <span
+                        className="text-[10px] font-semibold rounded-full px-2 py-0.5"
+                        style={{ color: a.color, background: a.color + '18' }}
+                      >
+                        {a.tag}
+                      </span>
+                      {a.urgent && (
+                        <span className="text-[10px] bg-[#F43F5E]/15 text-[#F43F5E] rounded-full px-2 py-0.5 font-medium">عاجل</span>
+                      )}
                     </div>
-                    <p className="text-xs text-[#F1F5F9] leading-relaxed">{a.text}</p>
+                    <p className="text-xs text-[#F1F5F9] leading-relaxed">{a.title}</p>
                   </div>
                 ))}
               </div>

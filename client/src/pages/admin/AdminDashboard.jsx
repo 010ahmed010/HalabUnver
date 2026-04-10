@@ -28,6 +28,7 @@ const SIDEBAR_ITEMS = [
   { key: 'businesses', icon: '💼', label: 'حسابات الأعمال' },
   { key: 'orders', icon: '📦', label: 'الطلبات' },
   { key: 'revenue', icon: '💰', label: 'الإيرادات' },
+  { key: 'announcements', icon: '📢', label: 'الأخبار والإعلانات' },
   { key: 'config', icon: '⚙️', label: 'الإعدادات' },
 ]
 
@@ -111,6 +112,7 @@ export default function AdminDashboard() {
           {active === 'businesses' && <BusinessesPanel />}
           {active === 'orders' && <OrdersPanel />}
           {active === 'revenue' && <RevenuePanel />}
+          {active === 'announcements' && <AnnouncementsPanel />}
           {active === 'config' && <ConfigPanel />}
         </div>
       </main>
@@ -745,6 +747,215 @@ function ConfigPanel() {
           </button>
         </div>
       )}
+    </div>
+  )
+}
+
+const TAG_OPTIONS = ['عام', 'أكاديمية', 'مكتبة', 'متجر', 'مستقلون', 'امتحانات']
+const TAG_COLORS = {
+  'عام': '#94A3B8', 'أكاديمية': '#6366F1', 'مكتبة': '#14B8A6',
+  'متجر': '#F43F5E', 'مستقلون': '#F59E0B', 'امتحانات': '#8B5CF6',
+}
+
+const EMPTY_FORM = { title: '', tag: 'عام', urgent: false, isPublished: true }
+
+function AnnouncementsPanel() {
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [editId, setEditId] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  const load = useCallback(() => {
+    setLoading(true)
+    api.get('/announcements').then(d => setItems(d.data || [])).catch(console.error).finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  const flash = (text) => { setMsg(text); setTimeout(() => setMsg(''), 3000) }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!form.title.trim()) return
+    setSaving(true)
+    try {
+      if (editId) {
+        await api.patch(`/announcements/${editId}`, form)
+        flash('تم تحديث الإعلان')
+      } else {
+        await api.post('/announcements', form)
+        flash('تم إضافة الإعلان')
+      }
+      setForm(EMPTY_FORM)
+      setEditId(null)
+      load()
+    } catch (err) {
+      flash(err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleEdit = (item) => {
+    setEditId(item._id)
+    setForm({ title: item.title, tag: item.tag, urgent: item.urgent, isPublished: item.isPublished })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('هل أنت متأكد من حذف هذا الإعلان؟')) return
+    await api.delete(`/announcements/${id}`)
+    load()
+  }
+
+  const handleTogglePublish = async (item) => {
+    await api.patch(`/announcements/${item._id}`, { ...item, isPublished: !item.isPublished })
+    load()
+  }
+
+  const handleCancel = () => { setForm(EMPTY_FORM); setEditId(null) }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <span className="section-label">إدارة المحتوى</span>
+        <h2 className="text-xl font-black text-[#F1F5F9]">📢 الأخبار والإعلانات</h2>
+        <p className="text-sm text-[#4A5D78] mt-1">تظهر على صفحة مركز الامتحانات وقسم الأخبار في الصفحة الرئيسية</p>
+      </div>
+
+      {/* Form */}
+      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-5">
+        <p className="text-sm font-semibold text-[#F1F5F9] mb-4">{editId ? '✏️ تعديل إعلان' : '➕ إضافة إعلان جديد'}</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs text-[#94A3B8] mb-1.5 block">نص الإعلان</label>
+            <textarea
+              value={form.title}
+              onChange={e => setForm(p => ({ ...p, title: e.target.value }))}
+              rows={2}
+              placeholder="اكتب نص الخبر أو الإعلان هنا..."
+              className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors resize-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs text-[#94A3B8] mb-1.5 block">التصنيف</label>
+              <select
+                value={form.tag}
+                onChange={e => setForm(p => ({ ...p, tag: e.target.value }))}
+                className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#6366F1]"
+              >
+                {TAG_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+
+            <div className="flex items-end gap-4">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={form.urgent}
+                  onChange={e => setForm(p => ({ ...p, urgent: e.target.checked }))}
+                  className="w-4 h-4 accent-[#F43F5E]"
+                />
+                <span className="text-sm text-[#94A3B8]">عاجل</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={form.isPublished}
+                  onChange={e => setForm(p => ({ ...p, isPublished: e.target.checked }))}
+                  className="w-4 h-4 accent-[#10B981]"
+                />
+                <span className="text-sm text-[#94A3B8]">منشور</span>
+              </label>
+            </div>
+          </div>
+
+          {msg && (
+            <div className="bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
+              {msg}
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={saving || !form.title.trim()}
+              className="gradient-bg text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {saving ? 'جاري الحفظ...' : editId ? 'حفظ التعديل' : 'إضافة'}
+            </button>
+            {editId && (
+              <button type="button" onClick={handleCancel} className="px-5 py-2.5 rounded-xl text-sm border border-[#1E2D45] text-[#94A3B8] hover:text-[#F1F5F9] transition-colors">
+                إلغاء
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+
+      {/* List */}
+      <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-[#1E2D45] flex items-center justify-between">
+          <p className="text-sm font-semibold text-[#F1F5F9]">جميع الإعلانات ({items.length})</p>
+        </div>
+
+        {loading ? (
+          <div className="p-8 flex justify-center"><Spinner /></div>
+        ) : items.length === 0 ? (
+          <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد إعلانات بعد — أضف أول إعلان أعلاه</div>
+        ) : (
+          <div className="divide-y divide-[#1E2D45]">
+            {items.map(item => (
+              <div key={item._id} className={`px-5 py-4 flex items-start gap-4 ${!item.isPublished ? 'opacity-50' : ''}`}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span
+                      className="text-[10px] font-bold rounded-full px-2.5 py-0.5"
+                      style={{ color: TAG_COLORS[item.tag], background: TAG_COLORS[item.tag] + '18' }}
+                    >
+                      {item.tag}
+                    </span>
+                    {item.urgent && (
+                      <span className="text-[10px] bg-[#F43F5E]/15 text-[#F43F5E] rounded-full px-2 py-0.5 font-medium">عاجل</span>
+                    )}
+                    {!item.isPublished && (
+                      <span className="text-[10px] bg-[#4A5D78]/20 text-[#4A5D78] rounded-full px-2 py-0.5">مخفي</span>
+                    )}
+                    <span className="text-[10px] text-[#4A5D78]">{item.date}</span>
+                  </div>
+                  <p className="text-sm text-[#F1F5F9] leading-relaxed">{item.title}</p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => handleTogglePublish(item)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs border border-[#1E2D45] text-[#94A3B8] hover:text-[#10B981] hover:border-[#10B981]/30 transition-all"
+                    title={item.isPublished ? 'إخفاء' : 'نشر'}
+                  >
+                    {item.isPublished ? '👁 إخفاء' : '👁 نشر'}
+                  </button>
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs border border-[#1E2D45] text-[#94A3B8] hover:text-[#6366F1] hover:border-[#6366F1]/30 transition-all"
+                  >
+                    تعديل
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs border border-[#1E2D45] text-[#94A3B8] hover:text-[#F43F5E] hover:border-[#F43F5E]/30 transition-all"
+                  >
+                    حذف
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

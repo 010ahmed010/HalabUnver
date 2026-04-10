@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
+import { api } from '../../lib/api'
 
 const STATS = [
   { value: '1,240+', label: 'طالب مسجّل', icon: '👥', color: '#6366F1' },
@@ -32,12 +33,6 @@ const PILLARS = [
   },
 ]
 
-const NEWS = [
-  { date: '3 أبريل', title: 'إضافة 14 ملخصاً جديداً لكلية الهندسة المعلوماتية', tag: 'مكتبة', color: '#14B8A6' },
-  { date: '1 أبريل', title: 'بدء التسجيل في دورة MERN Stack الشاملة للمستوى المتقدم', tag: 'أكاديمية', color: '#6366F1' },
-  { date: '28 مارس', title: 'إطلاق نظام المستقلين الجديد مع بروتوكول الضمان المحسّن', tag: 'مستقلون', color: '#F59E0B' },
-  { date: '25 مارس', title: 'وصول شحنة أجهزة Huion وRaspberry Pi — متوفرة الآن في المتجر', tag: 'متجر', color: '#F43F5E' },
-]
 
 function AnimatedCounter({ target }) {
   const [count, setCount] = useState(0)
@@ -64,6 +59,14 @@ function AnimatedCounter({ target }) {
 }
 
 export default function HomePage() {
+  const [news, setNews] = useState([])
+
+  useEffect(() => {
+    api.get('/announcements?limit=4')
+      .then(d => setNews(d.data || []))
+      .catch(() => setNews([]))
+  }, [])
+
   return (
     <div className="pt-20">
 
@@ -257,21 +260,30 @@ export default function HomePage() {
             </p>
           </div>
           <div className="space-y-4 mb-8">
-            {NEWS.map((n, i) => (
+            {news.length === 0 ? (
+              <div className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] px-6 py-8 text-center text-[#4A5D78] text-sm">
+                لا توجد أخبار أو إعلانات بعد
+              </div>
+            ) : news.map((n) => (
               <div
-                key={i}
+                key={n._id}
                 className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] px-6 sm:px-8 py-5 flex items-center justify-between gap-5 hover:border-[#6366F1]/30 transition-all"
               >
                 <div className="flex items-center gap-4 sm:gap-6 min-w-0">
                   <span className="text-sm text-[#4A5D78] shrink-0 font-medium">{n.date}</span>
                   <span className="text-sm sm:text-base text-[#F1F5F9] truncate">{n.title}</span>
                 </div>
-                <span
-                  className="text-xs font-semibold rounded-full px-3.5 py-1.5 shrink-0"
-                  style={{ color: n.color, background: n.color + '18' }}
-                >
-                  {n.tag}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  {n.urgent && (
+                    <span className="text-xs bg-[#F43F5E]/15 text-[#F43F5E] rounded-full px-3 py-1 font-medium">عاجل</span>
+                  )}
+                  <span
+                    className="text-xs font-semibold rounded-full px-3.5 py-1.5"
+                    style={{ color: n.color, background: n.color + '18' }}
+                  >
+                    {n.tag}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

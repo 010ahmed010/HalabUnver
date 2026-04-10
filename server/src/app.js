@@ -16,6 +16,7 @@ const notificationRoutes = require('./routes/notification.routes')
 const adRoutes = require('./routes/ad.routes')
 const adminRoutes = require('./routes/admin.routes')
 const configRoutes = require('./routes/config.routes')
+const announcementRoutes = require('./routes/announcement.routes')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path')
 
@@ -71,6 +72,7 @@ app.use('/api/notifications', notificationRoutes)
 app.use('/api/ads', adRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/config', configRoutes)
+app.use('/api/announcements', announcementRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../public')))
