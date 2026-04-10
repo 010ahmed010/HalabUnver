@@ -12,7 +12,7 @@ router.post('/register', [
 ], register)
 
 router.post('/login', [
-  body('email').isEmail().withMessage('البريد الإلكتروني غير صالح'),
+  body('identifier').trim().notEmpty().withMessage('اسم المستخدم أو البريد الإلكتروني مطلوب'),
   body('password').notEmpty().withMessage('كلمة المرور مطلوبة'),
 ], login)
 

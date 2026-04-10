@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  username: { type: String, unique: true, sparse: true, lowercase: true, trim: true, default: null },
+  email: { type: String, unique: true, sparse: true, lowercase: true, trim: true, default: null },
   password: { type: String, required: true, minlength: 6, select: false },
 
   accountType: {
@@ -92,6 +93,5 @@ userSchema.methods.toPublicJSON = function () {
 }
 
 userSchema.index({ accountType: 1, status: 1 })
-userSchema.index({ email: 1 })
 
 module.exports = mongoose.model('User', userSchema)

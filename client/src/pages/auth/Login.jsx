@@ -8,7 +8,7 @@ export default function Login() {
   const location = useLocation()
   const from = location.state?.from?.pathname
 
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
@@ -23,13 +23,13 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!email || !password) {
-      setError('يرجى إدخال البريد الإلكتروني وكلمة المرور')
+    if (!identifier || !password) {
+      setError('يرجى إدخال اسم المستخدم أو البريد الإلكتروني وكلمة المرور')
       return
     }
     setError('')
     setLoading(true)
-    const result = await login({ email, password })
+    const result = await login({ identifier, password })
     setLoading(false)
     if (result.success) {
       navigate(getRedirect(result.user), { replace: true })
@@ -62,14 +62,15 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[#94A3B8] text-sm font-medium">البريد الإلكتروني</label>
+              <label className="text-[#94A3B8] text-sm font-medium">اسم المستخدم أو البريد الإلكتروني</label>
               <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="user@aleppo.edu.sy"
+                type="text"
+                value={identifier}
+                onChange={e => setIdentifier(e.target.value)}
+                placeholder="admin  أو  user@aleppo.edu.sy"
                 className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors"
-                autoComplete="email"
+                autoComplete="username"
+                dir="ltr"
               />
             </div>
             <div className="flex flex-col gap-1.5">
