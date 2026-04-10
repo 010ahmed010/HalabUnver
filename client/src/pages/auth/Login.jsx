@@ -70,7 +70,6 @@ export default function Login() {
                 placeholder="admin  أو  user@aleppo.edu.sy"
                 className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-3 text-sm outline-none focus:border-[#6366F1] transition-colors"
                 autoComplete="username"
-                dir="ltr"
               />
             </div>
             <div className="flex flex-col gap-1.5">

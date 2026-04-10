@@ -60,7 +60,7 @@ export default function App() {
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
 
-            {/* Business dashboard — no Layout wrapper */}
+            {/* Dashboard pages — NO Layout (no header/footer) */}
             <Route
               path="/business"
               element={
@@ -70,7 +70,31 @@ export default function App() {
               }
             />
 
-            {/* Main site with Layout */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+
+            <Route
+              path="/dashboard"
+              element={
+                <StudentRoute>
+                  <DashboardLayout />
+                </StudentRoute>
+              }
+            >
+              <Route index element={<AcademicProfile />} />
+              <Route path="learning" element={<EnrolledCourses />} />
+              <Route path="wallet" element={<WalletOverview />} />
+              <Route path="orders" element={<OrderHistory />} />
+              <Route path="inbox" element={<SystemInbox />} />
+            </Route>
+
+            {/* Main public site — WITH Layout (header + footer) */}
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
               <Route path="search" element={<SearchResults />} />
@@ -92,32 +116,6 @@ export default function App() {
 
               <Route path="store" element={<Store />} />
               <Route path="store/product/:id" element={<ProductDetail />} />
-
-              {/* Protected: Student only */}
-              <Route
-                path="dashboard"
-                element={
-                  <StudentRoute>
-                    <DashboardLayout />
-                  </StudentRoute>
-                }
-              >
-                <Route index element={<AcademicProfile />} />
-                <Route path="learning" element={<EnrolledCourses />} />
-                <Route path="wallet" element={<WalletOverview />} />
-                <Route path="orders" element={<OrderHistory />} />
-                <Route path="inbox" element={<SystemInbox />} />
-              </Route>
-
-              {/* Protected: Admin only */}
-              <Route
-                path="admin"
-                element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                }
-              />
             </Route>
           </Routes>
         </Suspense>
