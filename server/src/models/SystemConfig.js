@@ -12,6 +12,14 @@ const systemConfigSchema = new mongoose.Schema({
 
   isExamSeason: { type: Boolean, default: false },
   examSeasonMessage: { type: String, default: '' },
+  seasonAdvice: { type: String, default: 'حمّل الملخصات، شاهد المراجعات، ونظّم وقتك.' },
+  reviewSessions: [{
+    title: { type: String, required: true },
+    branch: { type: String, default: 'عامة' },
+    duration: { type: String, default: '' },
+    type: { type: String, enum: ['LIVE', 'VIDEO', 'PDF'], default: 'VIDEO' },
+    url: { type: String, default: '' },
+  }],
 
   isMaintenanceMode: { type: Boolean, default: false },
   maintenanceMessage: { type: String, default: 'الموقع قيد الصيانة — نعود قريباً.' },

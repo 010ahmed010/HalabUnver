@@ -3,18 +3,7 @@ const mongoose = require('mongoose')
 let _memServer = null
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI
-
-  if (!uri) {
-    console.log('[DB] No MONGODB_URI found — starting in-memory MongoDB for development...')
-    const { MongoMemoryServer } = require('mongodb-memory-server')
-    _memServer = await MongoMemoryServer.create()
-    const memUri = _memServer.getUri()
-    await mongoose.connect(memUri)
-    console.log('[DB] In-memory MongoDB connected (DEV mode). Data resets on restart.')
-    await seedDefaultConfig()
-    return
-  }
+  const uri = process.env.MONGODB_URI || 'mongodb+srv://newcloudstuff_db_user:BjvBgakv7204v0CT@halabunver.ngclrak.mongodb.net/halabUnver?appName=HalabUnver'
 
   let retries = 5
   while (retries) {
