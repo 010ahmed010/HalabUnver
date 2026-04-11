@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { api } from '../../lib/api'
 
 const footerLinks = {
   apps: [
@@ -15,28 +17,37 @@ const footerLinks = {
   ],
 }
 
-const SOCIAL = [
-  {
-    letter: 'T',
-    title: 'Telegram',
-    href: 'https://t.me/HalabUnver',
-    hoverColor: '#229ED9',
+const DEFAULT_CONTACT = {
+  contactEmail: 'support@halabunver.sy',
+  contactPhone: '+963 999 000 111',
+  contactLocation: 'جامعة حلب — سوريا',
+  socialLinks: {
+    whatsapp: 'https://wa.me/963999000111',
+    whatsappDisplay: '+963 999 000 111',
+    telegram: 'https://t.me/HalabUnver',
+    telegramUsername: '@HalabUnver',
+    facebook: 'https://facebook.com/HalabUnver',
   },
-  {
-    letter: 'W',
-    title: 'WhatsApp',
-    href: 'https://wa.me/963999000111',
-    hoverColor: '#25D366',
-  },
-  {
-    letter: 'F',
-    title: 'Facebook',
-    href: 'https://facebook.com/HalabUnver',
-    hoverColor: '#1877F2',
-  },
-]
+}
 
 export default function Footer() {
+  const [contact, setContact] = useState(DEFAULT_CONTACT)
+
+  useEffect(() => {
+    api.get('/config')
+      .then(data => {
+        if (data?.data) setContact(data.data)
+      })
+      .catch(() => {})
+  }, [])
+
+  const social = contact.socialLinks || DEFAULT_CONTACT.socialLinks
+  const SOCIAL = [
+    { letter: 'T', title: 'Telegram', href: social.telegram || DEFAULT_CONTACT.socialLinks.telegram, hoverColor: '#229ED9' },
+    { letter: 'W', title: 'WhatsApp', href: social.whatsapp || DEFAULT_CONTACT.socialLinks.whatsapp, hoverColor: '#25D366' },
+    { letter: 'F', title: 'Facebook', href: social.facebook || DEFAULT_CONTACT.socialLinks.facebook, hoverColor: '#1877F2' },
+  ]
+
   return (
     <footer className="bg-[#070C18] border-t border-[#1E2D45] w-full">
       <div className="w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
@@ -92,26 +103,32 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-bold text-[#F1F5F9] mb-6 uppercase tracking-widest">تواصل معنا</h4>
             <ul className="space-y-3 text-[15px] text-[#94A3B8] mb-5">
-              <li>
-                <a
-                  href="mailto:support@halabunver.sy"
-                  className="hover:text-[#6366F1] transition-colors"
-                >
-                  support@halabunver.sy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://wa.me/963999000111"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-[#25D366] transition-colors"
-                >
-                  <span className="text-sm">💬</span>
-                  WhatsApp: +963 999 000 111
-                </a>
-              </li>
-              <li className="text-sm">جامعة حلب — سوريا</li>
+              {contact.contactEmail && (
+                <li>
+                  <a
+                    href={`mailto:${contact.contactEmail}`}
+                    className="hover:text-[#6366F1] transition-colors"
+                  >
+                    {contact.contactEmail}
+                  </a>
+                </li>
+              )}
+              {(social.whatsapp || contact.contactPhone) && (
+                <li>
+                  <a
+                    href={social.whatsapp || `https://wa.me/${(contact.contactPhone || '').replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-[#25D366] transition-colors"
+                  >
+                    <span className="text-sm">💬</span>
+                    WhatsApp: {social.whatsappDisplay || contact.contactPhone}
+                  </a>
+                </li>
+              )}
+              {contact.contactLocation && (
+                <li className="text-sm">{contact.contactLocation}</li>
+              )}
             </ul>
             <div className="flex gap-3">
               {SOCIAL.map(s => (

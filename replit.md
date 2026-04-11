@@ -3,6 +3,12 @@
 ## نظرة عامة
 منصة MERN Stack أكاديمية وتجارية متكاملة لطلاب جامعة حلب. ثلاثة أنواع حسابات: Admin (تحكم كامل), Business (بائع/معلن/مستقل خارجي), Student (طالب).
 
+## التحديثات الأخيرة
+- **بيانات التواصل الديناميكية:** SystemConfig يحتوي على `contactEmail`, `contactPhone`, `contactLocation`, `socialLinks` (whatsapp/telegram/facebook مع روابط وأسماء عرض). Footer وصفحة التواصل يقرآن البيانات من API تلقائياً.
+- **إعدادات التواصل في لوحة الإدارة:** قسم جديد "بيانات التواصل" في صفحة الإعدادات يتيح تعديل كل بيانات التواصل.
+- **تغيير كلمة مرور المدير:** قسم جديد في الإعدادات مع إظهار/إخفاء لكل حقل. endpoint: `PATCH /api/users/me/password`.
+- **إحصائيات حقيقية في الصفحة الرئيسية:** قسم "بالأرقام" يجلب الأرقام من `GET /api/stats` (public) بدلاً من القيم الثابتة.
+
 ## التقنيات المستخدمة
 - **Frontend:** React 19 + Vite 8 + React Router DOM — يعمل على port 5000
 - **Styling:** Tailwind CSS v4 (`@tailwindcss/vite`) — استخدم `@import "tailwindcss"` + `@theme {}` (ليس v3 directives)

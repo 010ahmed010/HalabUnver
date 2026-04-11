@@ -674,13 +674,32 @@ function ConfigPanel() {
     isMaintenanceMode: false,
     freePromoActive: false,
     subscriptionFee: 5,
+    contactEmail: '',
+    contactPhone: '',
+    contactLocation: '',
+    socialLinks: {
+      whatsapp: '',
+      whatsappDisplay: '',
+      telegram: '',
+      telegramUsername: '',
+      facebook: '',
+    },
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [contactMsg, setContactMsg] = useState('')
+  const [savingContact, setSavingContact] = useState(false)
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [pwMsg, setPwMsg] = useState('')
+  const [pwError, setPwError] = useState('')
+  const [savingPw, setSavingPw] = useState(false)
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   useEffect(() => {
     api.get('/config')
-      .then(data => setConfig(data.data || {}))
+      .then(data => setConfig(c => ({ ...c, ...(data.data || {}) })))
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
@@ -688,7 +707,12 @@ function ConfigPanel() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await api.patch('/config', config)
+      await api.patch('/config', {
+        isExamSeason: config.isExamSeason,
+        isMaintenanceMode: config.isMaintenanceMode,
+        freePromoActive: config.freePromoActive,
+        subscriptionFee: config.subscriptionFee,
+      })
       setMsg('تم حفظ الإعدادات بنجاح')
       setTimeout(() => setMsg(''), 3000)
     } catch (err) {
@@ -697,6 +721,55 @@ function ConfigPanel() {
       setSaving(false)
     }
   }
+
+  const handleSaveContact = async () => {
+    setSavingContact(true)
+    try {
+      await api.patch('/config', {
+        contactEmail: config.contactEmail,
+        contactPhone: config.contactPhone,
+        contactLocation: config.contactLocation,
+        socialLinks: config.socialLinks,
+      })
+      setContactMsg('تم حفظ بيانات التواصل بنجاح')
+      setTimeout(() => setContactMsg(''), 3000)
+    } catch (err) {
+      setContactMsg(err.message)
+    } finally {
+      setSavingContact(false)
+    }
+  }
+
+  const handleChangePassword = async () => {
+    setPwError('')
+    setPwMsg('')
+    if (!pwForm.currentPassword || !pwForm.newPassword || !pwForm.confirmPassword) {
+      return setPwError('يرجى تعبئة جميع الحقول.')
+    }
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      return setPwError('كلمة المرور الجديدة وتأكيدها غير متطابقتين.')
+    }
+    if (pwForm.newPassword.length < 6) {
+      return setPwError('كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.')
+    }
+    setSavingPw(true)
+    try {
+      const res = await api.patch('/users/me/password', {
+        currentPassword: pwForm.currentPassword,
+        newPassword: pwForm.newPassword,
+      })
+      setPwMsg(res.message || 'تم تغيير كلمة المرور بنجاح.')
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      setTimeout(() => setPwMsg(''), 4000)
+    } catch (err) {
+      setPwError(err.message || 'حدث خطأ، حاول مجدداً.')
+    } finally {
+      setSavingPw(false)
+    }
+  }
+
+  const setSocial = (field, val) =>
+    setConfig(p => ({ ...p, socialLinks: { ...(p.socialLinks || {}), [field]: val } }))
 
   const Toggle = ({ label, field }) => (
     <div className="flex items-center justify-between py-3 border-b border-[#1E2D45] last:border-0">
@@ -710,8 +783,30 @@ function ConfigPanel() {
     </div>
   )
 
+  const PasswordInput = ({ label, field, show, setShow }) => (
+    <div>
+      <label className="text-xs text-[#94A3B8] mb-1.5 block">{label}</label>
+      <div className="relative">
+        <input
+          type={show ? 'text' : 'password'}
+          value={pwForm[field]}
+          onChange={e => setPwForm(p => ({ ...p, [field]: e.target.value }))}
+          placeholder="••••••••"
+          className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors pr-12"
+        />
+        <button
+          type="button"
+          onClick={() => setShow(v => !v)}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A5D78] hover:text-[#94A3B8] transition-colors text-xs select-none"
+        >
+          {show ? 'إخفاء' : 'إظهار'}
+        </button>
+      </div>
+    </div>
+  )
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <span className="section-label">الإعدادات</span>
         <h2 className="text-xl font-black text-[#F1F5F9]">⚙️ إعدادات النظام</h2>
@@ -720,32 +815,157 @@ function ConfigPanel() {
       {loading ? (
         <div className="flex items-center justify-center py-12"><Spinner /></div>
       ) : (
-        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
-          <Toggle label="موسم الامتحانات" field="isExamSeason" />
-          <Toggle label="وضع الصيانة" field="isMaintenanceMode" />
-          <Toggle label="عروض مجانية نشطة" field="freePromoActive" />
-          <div className="py-3 flex items-center justify-between">
-            <span className="text-[#94A3B8] text-sm">رسوم الاشتراك ($)</span>
-            <input
-              type="number"
-              value={config.subscriptionFee || 5}
-              onChange={e => setConfig(p => ({ ...p, subscriptionFee: Number(e.target.value) }))}
-              className="w-20 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] rounded-lg px-3 py-1.5 text-sm outline-none focus:border-[#6366F1] text-center font-mono"
-            />
-          </div>
-          {msg && (
-            <div className="mt-3 bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
-              {msg}
+        <>
+          {/* General Settings */}
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+            <p className="text-sm font-semibold text-[#F1F5F9] mb-4">🔧 الإعدادات العامة</p>
+            <Toggle label="موسم الامتحانات" field="isExamSeason" />
+            <Toggle label="وضع الصيانة" field="isMaintenanceMode" />
+            <Toggle label="عروض مجانية نشطة" field="freePromoActive" />
+            <div className="py-3 flex items-center justify-between">
+              <span className="text-[#94A3B8] text-sm">رسوم الاشتراك ($)</span>
+              <input
+                type="number"
+                value={config.subscriptionFee || 5}
+                onChange={e => setConfig(p => ({ ...p, subscriptionFee: Number(e.target.value) }))}
+                className="w-20 bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] rounded-lg px-3 py-1.5 text-sm outline-none focus:border-[#6366F1] text-center font-mono"
+              />
             </div>
-          )}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="mt-4 w-full gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm"
-          >
-            {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
-          </button>
-        </div>
+            {msg && (
+              <div className="mt-3 bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
+                {msg}
+              </div>
+            )}
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="mt-4 w-full gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm"
+            >
+              {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+            </button>
+          </div>
+
+          {/* Contact Details */}
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+            <p className="text-sm font-semibold text-[#F1F5F9] mb-1">📬 بيانات التواصل</p>
+            <p className="text-xs text-[#4A5D78] mb-5">تظهر في الفوتر وصفحة تواصل معنا تلقائياً</p>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">البريد الإلكتروني</label>
+                <input
+                  type="email"
+                  value={config.contactEmail || ''}
+                  onChange={e => setConfig(p => ({ ...p, contactEmail: e.target.value }))}
+                  placeholder="support@example.com"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">رقم الهاتف (WhatsApp)</label>
+                <input
+                  type="text"
+                  value={(config.socialLinks || {}).whatsappDisplay || config.contactPhone || ''}
+                  onChange={e => {
+                    setSocial('whatsappDisplay', e.target.value)
+                    setConfig(p => ({ ...p, contactPhone: e.target.value }))
+                  }}
+                  placeholder="+963 999 000 111"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">رابط WhatsApp</label>
+                <input
+                  type="url"
+                  value={(config.socialLinks || {}).whatsapp || ''}
+                  onChange={e => setSocial('whatsapp', e.target.value)}
+                  placeholder="https://wa.me/963999000111"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">اسم مستخدم Telegram</label>
+                <input
+                  type="text"
+                  value={(config.socialLinks || {}).telegramUsername || ''}
+                  onChange={e => setSocial('telegramUsername', e.target.value)}
+                  placeholder="@HalabUnver"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">رابط Telegram</label>
+                <input
+                  type="url"
+                  value={(config.socialLinks || {}).telegram || ''}
+                  onChange={e => setSocial('telegram', e.target.value)}
+                  placeholder="https://t.me/HalabUnver"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">رابط Facebook</label>
+                <input
+                  type="url"
+                  value={(config.socialLinks || {}).facebook || ''}
+                  onChange={e => setSocial('facebook', e.target.value)}
+                  placeholder="https://facebook.com/HalabUnver"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">الموقع الجغرافي (نص)</label>
+                <input
+                  type="text"
+                  value={config.contactLocation || ''}
+                  onChange={e => setConfig(p => ({ ...p, contactLocation: e.target.value }))}
+                  placeholder="جامعة حلب — سوريا"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                />
+              </div>
+            </div>
+            {contactMsg && (
+              <div className="mt-4 bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
+                {contactMsg}
+              </div>
+            )}
+            <button
+              onClick={handleSaveContact}
+              disabled={savingContact}
+              className="mt-5 w-full gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm"
+            >
+              {savingContact ? 'جاري الحفظ...' : 'حفظ بيانات التواصل'}
+            </button>
+          </div>
+
+          {/* Change Password */}
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+            <p className="text-sm font-semibold text-[#F1F5F9] mb-1">🔑 تغيير كلمة مرور المدير</p>
+            <p className="text-xs text-[#4A5D78] mb-5">يجب إدخال كلمة المرور الحالية للتأكيد</p>
+            <div className="space-y-4">
+              <PasswordInput label="كلمة المرور الحالية" field="currentPassword" show={showCurrent} setShow={setShowCurrent} />
+              <PasswordInput label="كلمة المرور الجديدة" field="newPassword" show={showNew} setShow={setShowNew} />
+              <PasswordInput label="تأكيد كلمة المرور الجديدة" field="confirmPassword" show={showConfirm} setShow={setShowConfirm} />
+            </div>
+            {pwError && (
+              <div className="mt-4 bg-[#F43F5E]/10 border border-[#F43F5E]/25 rounded-xl px-4 py-2 text-[#F43F5E] text-sm">
+                {pwError}
+              </div>
+            )}
+            {pwMsg && (
+              <div className="mt-4 bg-[#10B981]/10 border border-[#10B981]/25 rounded-xl px-4 py-2 text-[#10B981] text-sm">
+                {pwMsg}
+              </div>
+            )}
+            <button
+              onClick={handleChangePassword}
+              disabled={savingPw}
+              className="mt-5 w-full bg-[#F43F5E]/10 border border-[#F43F5E]/20 text-[#F43F5E] font-bold py-3 rounded-xl hover:bg-[#F43F5E]/20 transition-all disabled:opacity-50 text-sm"
+            >
+              {savingPw ? 'جاري التغيير...' : 'تغيير كلمة المرور'}
+            </button>
+          </div>
+        </>
       )}
     </div>
   )

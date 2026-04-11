@@ -38,10 +38,16 @@ const systemConfigSchema = new mongoose.Schema({
   accentColor2: { type: String, default: '#8B5CF6' },
   glassmorphismIntensity: { type: Number, default: 20, min: 0, max: 40 },
 
+  contactEmail: { type: String, default: 'support@halabunver.sy' },
+  contactPhone: { type: String, default: '+963 999 000 111' },
+  contactLocation: { type: String, default: 'جامعة حلب — سوريا' },
+
   socialLinks: {
-    whatsapp: { type: String, default: '' },
-    telegram: { type: String, default: '' },
-    facebook: { type: String, default: '' },
+    whatsapp: { type: String, default: 'https://wa.me/963999000111' },
+    whatsappDisplay: { type: String, default: '+963 999 000 111' },
+    telegram: { type: String, default: 'https://t.me/HalabUnver' },
+    telegramUsername: { type: String, default: '@HalabUnver' },
+    facebook: { type: String, default: 'https://facebook.com/HalabUnver' },
   },
   shamCashQrUrl: { type: String, default: '' },
   shamCashPaymentNote: { type: String, default: 'أرسل المبلغ وأرفق رقم المعاملة مع طلبك.' },
