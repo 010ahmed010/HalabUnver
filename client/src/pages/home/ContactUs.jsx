@@ -47,36 +47,56 @@ export default function ContactUs() {
 
   const CONTACT_CHANNELS = [
     contact.contactEmail && {
-      icon: '📧',
+      iconBg: '#1E3A5F',
+      iconColor: '#3B82F6',
+      iconSvg: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+      ),
       label: contact.contactEmail,
-      sub: 'راسلنا بريدياً',
+      sub: 'البريد الإلكتروني',
       href: `mailto:${contact.contactEmail}`,
       external: false,
-      hoverColor: '#6366F1',
     },
     (social.telegram || social.telegramUsername) && {
-      icon: '✈️',
+      iconBg: '#1A3A4A',
+      iconColor: '#229ED9',
+      iconSvg: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+      ),
       label: social.telegramUsername || '@HalabUnver',
       sub: 'Telegram — رد فوري',
       href: social.telegram || 'https://t.me/HalabUnver',
       external: true,
-      hoverColor: '#229ED9',
     },
     (social.whatsapp || contact.contactPhone) && {
-      icon: '💬',
+      iconBg: '#1A3A2A',
+      iconColor: '#25D366',
+      iconSvg: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+        </svg>
+      ),
       label: social.whatsappDisplay || contact.contactPhone || '+963 999 000 111',
-      sub: 'WhatsApp · 9ص – 5م',
+      sub: 'واتساب · 9ص – 5م',
       href: social.whatsapp || `https://wa.me/${(contact.contactPhone || '').replace(/\D/g, '')}`,
       external: true,
-      hoverColor: '#25D366',
     },
     contact.contactPhone && !social.whatsapp && {
-      icon: '📞',
+      iconBg: '#2A1A3A',
+      iconColor: '#A855F7',
+      iconSvg: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      ),
       label: contact.contactPhone,
-      sub: 'اتصل بنا مباشرة',
+      sub: 'اتصال هاتفي مباشر',
       href: `tel:${contact.contactPhone}`,
       external: false,
-      hoverColor: '#10B981',
     },
   ].filter(Boolean)
 
@@ -191,12 +211,15 @@ export default function ContactUs() {
                     rel={c.external ? 'noopener noreferrer' : undefined}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl border border-[#1E2D45] hover:border-[#6366F1]/30 hover:bg-[#162032] transition-all group"
                   >
-                    <span className="text-xl shrink-0 w-9 h-9 flex items-center justify-center bg-[#162032] group-hover:bg-[#1E2D45] rounded-lg transition-colors">
-                      {c.icon}
+                    <span
+                      className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-colors"
+                      style={{ background: c.iconBg, color: c.iconColor }}
+                    >
+                      {c.iconSvg}
                     </span>
                     <div className="min-w-0">
+                      <div className="text-[#4A5D78] text-[11px] mb-0.5">{c.sub}</div>
                       <div className="text-[#F1F5F9] text-sm font-medium truncate group-hover:text-[#818CF8] transition-colors">{c.label}</div>
-                      <div className="text-[#4A5D78] text-xs">{c.sub}</div>
                     </div>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#4A5D78] group-hover:text-[#6366F1] transition-colors mr-auto shrink-0">
                       <path d="m9 18 6-6-6-6" />

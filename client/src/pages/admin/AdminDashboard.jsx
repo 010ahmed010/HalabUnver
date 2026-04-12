@@ -667,6 +667,30 @@ function RevenuePanel() {
   )
 }
 
+function PasswordInput({ label, value, onChange, show, setShow }) {
+  return (
+    <div>
+      <label className="text-xs text-[#94A3B8] mb-1.5 block">{label}</label>
+      <div className="relative">
+        <input
+          type={show ? 'text' : 'password'}
+          value={value}
+          onChange={onChange}
+          placeholder="••••••••"
+          className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors pr-12"
+        />
+        <button
+          type="button"
+          onClick={() => setShow(v => !v)}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A5D78] hover:text-[#94A3B8] transition-colors text-xs select-none"
+        >
+          {show ? 'إخفاء' : 'إظهار'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function ConfigPanel() {
   const [msg, setMsg] = useState('')
   const [config, setConfig] = useState({
@@ -783,28 +807,6 @@ function ConfigPanel() {
     </div>
   )
 
-  const PasswordInput = ({ label, field, show, setShow }) => (
-    <div>
-      <label className="text-xs text-[#94A3B8] mb-1.5 block">{label}</label>
-      <div className="relative">
-        <input
-          type={show ? 'text' : 'password'}
-          value={pwForm[field]}
-          onChange={e => setPwForm(p => ({ ...p, [field]: e.target.value }))}
-          placeholder="••••••••"
-          className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors pr-12"
-        />
-        <button
-          type="button"
-          onClick={() => setShow(v => !v)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A5D78] hover:text-[#94A3B8] transition-colors text-xs select-none"
-        >
-          {show ? 'إخفاء' : 'إظهار'}
-        </button>
-      </div>
-    </div>
-  )
-
   return (
     <div className="space-y-6">
       <div>
@@ -815,9 +817,9 @@ function ConfigPanel() {
       {loading ? (
         <div className="flex items-center justify-center py-12"><Spinner /></div>
       ) : (
-        <>
+        <div className="flex flex-wrap gap-6 items-start">
           {/* General Settings */}
-          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 flex-1 min-w-72 max-w-lg">
             <p className="text-sm font-semibold text-[#F1F5F9] mb-4">🔧 الإعدادات العامة</p>
             <Toggle label="موسم الامتحانات" field="isExamSeason" />
             <Toggle label="وضع الصيانة" field="isMaintenanceMode" />
@@ -846,7 +848,7 @@ function ConfigPanel() {
           </div>
 
           {/* Contact Details */}
-          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 flex-1 min-w-72 max-w-lg">
             <p className="text-sm font-semibold text-[#F1F5F9] mb-1">📬 بيانات التواصل</p>
             <p className="text-xs text-[#4A5D78] mb-5">تظهر في الفوتر وصفحة تواصل معنا تلقائياً</p>
             <div className="space-y-4">
@@ -939,13 +941,13 @@ function ConfigPanel() {
           </div>
 
           {/* Change Password */}
-          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 max-w-lg">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 flex-1 min-w-72 max-w-lg">
             <p className="text-sm font-semibold text-[#F1F5F9] mb-1">🔑 تغيير كلمة مرور المدير</p>
             <p className="text-xs text-[#4A5D78] mb-5">يجب إدخال كلمة المرور الحالية للتأكيد</p>
             <div className="space-y-4">
-              <PasswordInput label="كلمة المرور الحالية" field="currentPassword" show={showCurrent} setShow={setShowCurrent} />
-              <PasswordInput label="كلمة المرور الجديدة" field="newPassword" show={showNew} setShow={setShowNew} />
-              <PasswordInput label="تأكيد كلمة المرور الجديدة" field="confirmPassword" show={showConfirm} setShow={setShowConfirm} />
+              <PasswordInput label="كلمة المرور الحالية" value={pwForm.currentPassword} onChange={e => setPwForm(p => ({ ...p, currentPassword: e.target.value }))} show={showCurrent} setShow={setShowCurrent} />
+              <PasswordInput label="كلمة المرور الجديدة" value={pwForm.newPassword} onChange={e => setPwForm(p => ({ ...p, newPassword: e.target.value }))} show={showNew} setShow={setShowNew} />
+              <PasswordInput label="تأكيد كلمة المرور الجديدة" value={pwForm.confirmPassword} onChange={e => setPwForm(p => ({ ...p, confirmPassword: e.target.value }))} show={showConfirm} setShow={setShowConfirm} />
             </div>
             {pwError && (
               <div className="mt-4 bg-[#F43F5E]/10 border border-[#F43F5E]/25 rounded-xl px-4 py-2 text-[#F43F5E] text-sm">
@@ -965,7 +967,7 @@ function ConfigPanel() {
               {savingPw ? 'جاري التغيير...' : 'تغيير كلمة المرور'}
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
