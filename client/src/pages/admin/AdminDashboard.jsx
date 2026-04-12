@@ -749,11 +749,16 @@ function ConfigPanel() {
   const handleSaveContact = async () => {
     setSavingContact(true)
     try {
+      const phoneDigits = ((config.socialLinks || {}).whatsappDisplay || config.contactPhone || '').replace(/\D/g, '')
+      const autoWhatsappUrl = phoneDigits ? `https://wa.me/${phoneDigits}` : ''
       await api.patch('/config', {
         contactEmail: config.contactEmail,
-        contactPhone: config.contactPhone,
+        contactPhone: (config.socialLinks || {}).whatsappDisplay || config.contactPhone,
         contactLocation: config.contactLocation,
-        socialLinks: config.socialLinks,
+        socialLinks: {
+          ...(config.socialLinks || {}),
+          whatsapp: autoWhatsappUrl,
+        },
       })
       setContactMsg('تم حفظ بيانات التواصل بنجاح')
       setTimeout(() => setContactMsg(''), 3000)
@@ -872,16 +877,6 @@ function ConfigPanel() {
                     setConfig(p => ({ ...p, contactPhone: e.target.value }))
                   }}
                   placeholder="+963 999 000 111"
-                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-[#94A3B8] mb-1.5 block">رابط WhatsApp</label>
-                <input
-                  type="url"
-                  value={(config.socialLinks || {}).whatsapp || ''}
-                  onChange={e => setSocial('whatsapp', e.target.value)}
-                  placeholder="https://wa.me/963999000111"
                   className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
                 />
               </div>
