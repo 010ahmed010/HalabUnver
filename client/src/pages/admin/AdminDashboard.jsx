@@ -368,6 +368,10 @@ function BusinessesPanel() {
   const [actionLoading, setActionLoading] = useState(null)
   const [permsModal, setPermsModal] = useState(null)
   const [perms, setPerms] = useState({})
+  const [creditModal, setCreditModal] = useState(null)
+  const [creditForm, setCreditForm] = useState({ credit: '', note: '' })
+  const [creditMsg, setCreditMsg] = useState('')
+  const [creditSaving, setCreditSaving] = useState(false)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -415,6 +419,31 @@ function BusinessesPanel() {
       console.error(err)
     } finally {
       setActionLoading(null)
+    }
+  }
+
+  const openCredit = (user) => {
+    setCreditModal(user)
+    setCreditForm({ credit: (user.vendorCredit || 0).toString(), note: '' })
+    setCreditMsg('')
+  }
+
+  const saveCredit = async () => {
+    if (!creditModal) return
+    setCreditSaving(true)
+    setCreditMsg('')
+    try {
+      await api.patch(`/admin/users/${creditModal._id}/credit`, {
+        credit: parseFloat(creditForm.credit) || 0,
+        note: creditForm.note,
+      })
+      setCreditMsg('تم تحديث الرصيد بنجاح ✅')
+      await fetchData()
+      setTimeout(() => { setCreditModal(null); setCreditMsg('') }, 1500)
+    } catch (err) {
+      setCreditMsg(err.message)
+    } finally {
+      setCreditSaving(false)
     }
   }
 
@@ -490,8 +519,21 @@ function BusinessesPanel() {
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
                   <StatusPill status={biz.status} />
+                  {biz.businessType === 'vendor' && (
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${(biz.vendorCredit || 0) > 0 ? 'text-[#10B981] border-[#10B981]/20 bg-[#10B981]/8' : 'text-[#F43F5E] border-[#F43F5E]/20 bg-[#F43F5E]/8'}`}>
+                      💳 {(biz.vendorCredit || 0).toFixed(2)}$
+                    </span>
+                  )}
+                  {biz.businessType === 'vendor' && (
+                    <button
+                      onClick={() => openCredit(biz)}
+                      className="text-xs px-3 py-1.5 bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition-all"
+                    >
+                      💳 الرصيد
+                    </button>
+                  )}
                   <button
                     onClick={() => openPerms(biz)}
                     className="text-xs px-3 py-1.5 bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#818CF8] rounded-lg hover:bg-[#6366F1]/20 transition-all"
@@ -534,6 +576,61 @@ function BusinessesPanel() {
               </button>
               <button
                 onClick={() => setPermsModal(null)}
+                className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Credit Management Modal */}
+      {creditModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-[#F1F5F9] font-bold mb-1">💳 إدارة رصيد النشر</h3>
+            <p className="text-[#4A5D78] text-xs mb-1">{creditModal.name}</p>
+            <p className="text-xs text-[#10B981] mb-4">الرصيد الحالي: <strong>{(creditModal.vendorCredit || 0).toFixed(2)}$</strong></p>
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">الرصيد الجديد ($)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={creditForm.credit}
+                  onChange={e => setCreditForm(p => ({ ...p, credit: e.target.value }))}
+                  placeholder="0.00"
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#10B981] transition-colors"
+                />
+                <p className="text-[10px] text-[#4A5D78] mt-1">
+                  {creditForm.credit > 0 ? `سيتمكن من نشر منتجات بقيمة إجمالية تصل إلى ${(parseFloat(creditForm.credit || 0) * 100).toFixed(0)}$` : ''}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs text-[#94A3B8] mb-1.5 block">ملاحظة للبائع (اختياري)</label>
+                <input
+                  value={creditForm.note}
+                  onChange={e => setCreditForm(p => ({ ...p, note: e.target.value }))}
+                  placeholder="سبب التحديث أو رسالة..."
+                  className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#10B981] transition-colors"
+                />
+              </div>
+              {creditMsg && (
+                <p className={`text-xs text-center ${creditMsg.includes('✅') ? 'text-[#10B981]' : 'text-[#F43F5E]'}`}>{creditMsg}</p>
+              )}
+            </div>
+            <div className="flex gap-3 mt-5">
+              <button
+                onClick={saveCredit}
+                disabled={creditSaving}
+                className="flex-1 bg-[#10B981] text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                {creditSaving ? 'جاري الحفظ...' : '💾 حفظ الرصيد'}
+              </button>
+              <button
+                onClick={() => setCreditModal(null)}
                 className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
               >
                 إلغاء

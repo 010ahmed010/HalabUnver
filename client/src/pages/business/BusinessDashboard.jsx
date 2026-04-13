@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { api } from '../../lib/api'
 
+const SHAMCASH_ID = '5f496120d855e48bca1ea14348463267'
+
 function Spinner() {
   return <div className="w-6 h-6 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto" />
 }
@@ -156,12 +158,92 @@ export default function BusinessDashboard() {
 }
 
 function OverviewTab({ user, config }) {
+  const { refreshUser } = useAuth()
+  const isVendor = user?.businessType === 'vendor'
+  const credit = user?.vendorCredit ?? 0
+
+  const [copied, setCopied] = useState(false)
+  const [depositForm, setDepositForm] = useState({ amount: '', note: '' })
+  const [depositOpen, setDepositOpen] = useState(false)
+  const [depositLoading, setDepositLoading] = useState(false)
+  const [depositMsg, setDepositMsg] = useState('')
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(SHAMCASH_ID)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleDepositRequest = async (e) => {
+    e.preventDefault()
+    setDepositLoading(true)
+    setDepositMsg('')
+    try {
+      const res = await api.post('/users/me/deposit-request', {
+        amount: Number(depositForm.amount) || 0,
+        note: depositForm.note,
+      })
+      setDepositMsg(res.message)
+      setDepositForm({ amount: '', note: '' })
+      setTimeout(() => { setDepositOpen(false); setDepositMsg('') }, 3000)
+      await refreshUser()
+    } catch (err) {
+      setDepositMsg(err.message)
+    } finally {
+      setDepositLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-5">
       <div>
         <span className="section-label">لوحة الأعمال</span>
         <h1 className="text-2xl font-black text-[#F1F5F9]">{config.icon} نظرة عامة</h1>
       </div>
+
+      {/* Credit Section (vendors only) */}
+      {isVendor && (
+        <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6">
+          <p className="text-sm font-semibold text-[#F1F5F9] mb-4">💳 رصيد النشر</p>
+          <div className="flex flex-col sm:flex-row gap-5">
+            {/* Credit balance */}
+            <div className="flex-1 bg-[#162032] rounded-xl p-4 flex flex-col gap-2">
+              <p className="text-xs text-[#4A5D78]">رصيدك الحالي</p>
+              <p className={`text-3xl font-black ${credit > 0 ? 'text-[#10B981]' : 'text-[#F43F5E]'}`}>
+                {credit.toFixed(2)}<span className="text-base text-[#94A3B8] font-normal ml-1">$</span>
+              </p>
+              <p className="text-[10px] text-[#4A5D78]">1$ = قدرة نشر 100$ من قيمة المنتجات</p>
+              {credit <= 0 && (
+                <div className="bg-[#F43F5E]/8 border border-[#F43F5E]/20 rounded-lg px-3 py-2 text-[#F43F5E] text-xs mt-1">
+                  ⚠️ رصيدك صفر — لا يمكنك نشر منتجات جديدة
+                </div>
+              )}
+              <button
+                onClick={() => setDepositOpen(true)}
+                className="mt-2 w-full text-center text-xs font-bold px-4 py-2 rounded-xl gradient-bg text-white hover:opacity-90 transition-opacity"
+              >
+                💰 طلب شحن رصيد
+              </button>
+            </div>
+
+            {/* Shamcash QR */}
+            <div className="flex flex-col items-center gap-3 bg-[#162032] rounded-xl p-4">
+              <p className="text-xs text-[#94A3B8] font-semibold">ادفع عبر شام كاش</p>
+              <img src="/shamcashQR.jpeg" alt="Shamcash QR" className="w-28 h-28 rounded-lg object-cover border border-[#1E2D45]" />
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-[#4A5D78] font-mono">{SHAMCASH_ID.slice(0, 12)}…</span>
+                <button
+                  onClick={handleCopy}
+                  className="text-[10px] px-2.5 py-1 rounded-lg bg-[#6366F1]/15 text-[#818CF8] border border-[#6366F1]/20 hover:bg-[#6366F1]/25 transition-all font-medium"
+                >
+                  {copied ? '✓ تم النسخ' : 'نسخ ID'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6">
         <p className="text-sm font-semibold text-[#F1F5F9] mb-4">الخدمات المتاحة</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -186,6 +268,47 @@ function OverviewTab({ user, config }) {
           })}
         </div>
       </div>
+
+      {/* Deposit Request Modal */}
+      {depositOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-[#F1F5F9] font-bold mb-1">💰 طلب شحن رصيد</h3>
+            <p className="text-[#4A5D78] text-xs mb-4">أرسل طلبك للإدارة — سيتم التواصل معك لإتمام عملية الدفع</p>
+            <form onSubmit={handleDepositRequest} className="flex flex-col gap-3">
+              <input
+                type="number"
+                min="1"
+                step="0.01"
+                value={depositForm.amount}
+                onChange={e => setDepositForm(p => ({ ...p, amount: e.target.value }))}
+                placeholder="المبلغ المطلوب ($)"
+                required
+                className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+              />
+              <textarea
+                value={depositForm.note}
+                onChange={e => setDepositForm(p => ({ ...p, note: e.target.value }))}
+                placeholder="ملاحظة إضافية (اختياري)..."
+                rows={2}
+                className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors resize-none"
+              />
+              <div className="bg-[#6366F1]/8 border border-[#6366F1]/20 rounded-xl px-3 py-2 text-[#818CF8] text-xs">
+                ادفع عبر شام كاش للـ ID: <span className="font-mono select-all">{SHAMCASH_ID}</span>
+              </div>
+              {depositMsg && <p className={`text-xs text-center ${depositMsg.includes('تم') ? 'text-[#10B981]' : 'text-[#F43F5E]'}`}>{depositMsg}</p>}
+              <div className="flex gap-3 mt-2">
+                <button type="submit" disabled={depositLoading} className="flex-1 gradient-bg text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50">
+                  {depositLoading ? 'جاري الإرسال...' : '📤 إرسال الطلب'}
+                </button>
+                <button type="button" onClick={() => setDepositOpen(false)} className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm">
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -197,8 +320,13 @@ function ProductsTab({ user }) {
   const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [msg, setMsg] = useState('')
+  const [msgType, setMsgType] = useState('success')
 
   const canSell = user?.businessPermissions?.canSellProducts
+  const credit = user?.vendorCredit ?? 0
+  const priceNum = Number(form.price) || 0
+  const requiredCredit = priceNum > 0 ? priceNum / 100 : 0
+  const creditSufficient = credit >= requiredCredit && credit > 0
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -212,6 +340,13 @@ function ProductsTab({ user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!creditSufficient) {
+      setMsg(credit <= 0
+        ? 'رصيدك صفر — لا يمكنك إضافة منتجات.'
+        : `رصيدك (${credit.toFixed(2)}$) غير كافٍ. مطلوب ${requiredCredit.toFixed(2)}$ لهذا السعر.`)
+      setMsgType('error')
+      return
+    }
     setSubmitting(true)
     try {
       await api.post('/store/products', {
@@ -223,11 +358,13 @@ function ProductsTab({ user }) {
         stock: Number(form.stock),
       })
       setMsg('تم إرسال المنتج للمراجعة')
+      setMsgType('success')
       setShowForm(false)
       setForm({ name: '', description: '', price: '', category: '', imageUrl: '', stock: 1 })
       await fetchProducts()
     } catch (err) {
       setMsg(err.message)
+      setMsgType('error')
     } finally {
       setSubmitting(false)
     }
@@ -238,11 +375,26 @@ function ProductsTab({ user }) {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-[#F1F5F9]">📦 منتجاتي</h2>
-        <button onClick={() => setShowForm(!showForm)} className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+        <div>
+          <h2 className="text-xl font-black text-[#F1F5F9]">📦 منتجاتي</h2>
+          <p className="text-xs text-[#4A5D78] mt-0.5">رصيد النشر: <span className={credit > 0 ? 'text-[#10B981] font-bold' : 'text-[#F43F5E] font-bold'}>{credit.toFixed(2)}$</span></p>
+        </div>
+        <button
+          onClick={() => { setShowForm(!showForm); setMsg('') }}
+          disabled={credit <= 0 && !showForm}
+          className="gradient-bg text-white text-sm font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+          title={credit <= 0 ? 'رصيدك صفر — اشحن رصيدك أولاً' : ''}
+        >
           {showForm ? 'إلغاء' : '+ إضافة منتج'}
         </button>
       </div>
+
+      {credit <= 0 && !showForm && (
+        <div className="bg-[#F43F5E]/8 border border-[#F43F5E]/20 rounded-2xl p-4 text-center">
+          <p className="text-[#F43F5E] text-sm font-bold">💳 رصيدك صفر</p>
+          <p className="text-[#4A5D78] text-xs mt-1">اذهب إلى <strong className="text-[#94A3B8]">نظرة عامة</strong> واطلب شحن الرصيد من الإدارة</p>
+        </div>
+      )}
 
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-[#0F1828] border border-[#6366F1]/20 rounded-2xl p-5 flex flex-col gap-3">
@@ -250,16 +402,32 @@ function ProductsTab({ user }) {
           <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="اسم المنتج" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
           <textarea value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="وصف المنتج..." rows={3} className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors resize-none" />
           <div className="grid grid-cols-2 gap-3">
-            <input type="number" value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} placeholder="السعر (SYP)" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+            <div className="flex flex-col gap-1">
+              <input type="number" value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} placeholder="السعر ($)" required min="1" className={`bg-[#162032] border ${!creditSufficient && priceNum > 0 ? 'border-[#F43F5E]/50' : 'border-[#1E2D45]'} text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors`} />
+              {priceNum > 0 && (
+                <p className={`text-[10px] px-1 ${creditSufficient ? 'text-[#10B981]' : 'text-[#F43F5E]'}`}>
+                  {creditSufficient
+                    ? `✓ رصيد كافٍ (${credit.toFixed(2)}$ ≥ ${requiredCredit.toFixed(2)}$)`
+                    : `✗ مطلوب ${requiredCredit.toFixed(2)}$ — لديك ${credit.toFixed(2)}$`}
+                </p>
+              )}
+            </div>
             <input type="number" value={form.stock} onChange={e => setForm(p => ({...p, stock: e.target.value}))} placeholder="الكمية" required className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
           </div>
           <input value={form.imageUrl} onChange={e => setForm(p => ({...p, imageUrl: e.target.value}))} placeholder="رابط صورة المنتج (URL)..." className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
-          <input value={form.category} onChange={e => setForm(p => ({...p, category: e.target.value}))} placeholder="الفئة (مثال: إلكترونيات)" className="bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors" />
+          <select value={form.category} onChange={e => setForm(p => ({...p, category: e.target.value}))} required className="bg-[#162032] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors">
+            <option value="">اختر الفئة</option>
+            <option value="إلكترونيات">إلكترونيات</option>
+            <option value="أدوات هندسية">أدوات هندسية</option>
+            <option value="قرطاسية">قرطاسية</option>
+            <option value="ملابس المنصة">ملابس المنصة</option>
+            <option value="أخرى">أخرى</option>
+          </select>
           <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/20 rounded-xl px-4 py-2.5 text-[#F59E0B] text-xs">
-            سيتم مراجعة المنتج من قِبل الإدارة قبل النشر
+            سيتم مراجعة المنتج من قِبل الإدارة قبل النشر — وسيُخصم الرصيد عند الموافقة
           </div>
-          {msg && <p className="text-xs text-[#10B981]">{msg}</p>}
-          <button type="submit" disabled={submitting} className="gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm">
+          {msg && <p className={`text-xs ${msgType === 'error' ? 'text-[#F43F5E]' : 'text-[#10B981]'}`}>{msg}</p>}
+          <button type="submit" disabled={submitting || !creditSufficient} className="gradient-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 text-sm">
             {submitting ? 'جاري الإرسال...' : '📤 إرسال للمراجعة'}
           </button>
         </form>

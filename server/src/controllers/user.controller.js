@@ -173,3 +173,24 @@ exports.changePassword = async (req, res, next) => {
     res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح.' })
   } catch (err) { next(err) }
 }
+
+exports.requestDeposit = async (req, res, next) => {
+  try {
+    const { amount, note } = req.body
+    const vendor = req.user
+
+    const admins = await User.find({ accountType: 'admin' }).select('_id')
+    const notifPromises = admins.map(admin =>
+      sendNotification({
+        recipientId: admin._id,
+        senderType: 'system',
+        category: 'financial',
+        title: `💳 طلب شحن رصيد من ${vendor.name}`,
+        body: `يطلب البائع "${vendor.name}" (${vendor.email}) شحن رصيد بمقدار ${amount || '؟'}$${note ? `. ملاحظة: ${note}` : ''}. رصيده الحالي: ${(vendor.vendorCredit || 0).toFixed(2)}$.`,
+      })
+    )
+    await Promise.all(notifPromises)
+
+    res.json({ success: true, message: 'تم إرسال طلب الشحن للإدارة. سيتواصلون معك قريباً.' })
+  } catch (err) { next(err) }
+}

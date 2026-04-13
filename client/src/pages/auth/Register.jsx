@@ -22,7 +22,7 @@ export default function Register() {
   const [step, setStep] = useState(1)
   const [accountType, setAccountType] = useState('')
   const [businessType, setBusinessType] = useState('')
-  const [form, setForm] = useState({ name: '', email: '', faculty: '', year: '', businessName: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ name: '', username: '', email: '', faculty: '', year: '', businessName: '', password: '', confirm: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -34,6 +34,9 @@ export default function Register() {
     const e = {}
     const displayName = accountType === 'business' ? form.businessName : form.name
     if (!displayName?.trim()) e.name = 'الاسم مطلوب'
+    if (!form.username.trim()) e.username = 'اسم المستخدم مطلوب'
+    else if (form.username.length < 3) e.username = 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل'
+    else if (!/^[a-zA-Z0-9_]+$/.test(form.username)) e.username = 'أحرف إنجليزية وأرقام وشرطة سفلية فقط'
     if (!form.email.trim()) e.email = 'البريد مطلوب'
     if (accountType === 'student' && !form.faculty) e.faculty = 'الكلية مطلوبة'
     if (!form.password) e.password = 'كلمة المرور مطلوبة'
@@ -65,6 +68,7 @@ export default function Register() {
     const name = accountType === 'business' ? (form.businessName || form.name) : form.name
     const result = await register({
       name,
+      username: form.username.toLowerCase(),
       email: form.email,
       password: form.password,
       accountType,
@@ -207,6 +211,20 @@ export default function Register() {
                   <input value={form.businessName} onChange={e => set('businessName', e.target.value)} placeholder="اسم المتجر أو الشركة" className={inp(errors.name)} />
                 </Field>
               )}
+
+              <Field label="اسم المستخدم (username)" error={errors.username}>
+                <div className="relative">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A5D78] text-sm select-none">@</span>
+                  <input
+                    value={form.username}
+                    onChange={e => set('username', e.target.value.replace(/\s/g, ''))}
+                    placeholder="ahmed123"
+                    className={`${inp(errors.username)} pr-8`}
+                    autoComplete="username"
+                    dir="ltr"
+                  />
+                </div>
+              </Field>
 
               <Field label="البريد الإلكتروني" error={errors.email}>
                 <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="user@example.com" className={inp(errors.email)} autoComplete="email" />

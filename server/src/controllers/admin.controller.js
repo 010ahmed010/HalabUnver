@@ -10,6 +10,25 @@ const Product = require('../models/Product')
 const { sendNotification } = require('../utils/sendNotification')
 const logActivity = require('../utils/logActivity')
 
+exports.updateVendorCredit = async (req, res, next) => {
+  try {
+    const { credit, note } = req.body
+    if (typeof credit !== 'number' || credit < 0) {
+      return res.status(400).json({ success: false, message: 'قيمة الرصيد غير صالحة.' })
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, { vendorCredit: credit }, { new: true }).select('-password')
+    if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود.' })
+
+    await sendNotification({
+      recipientId: user._id, senderType: 'admin', category: 'financial',
+      title: '💳 تم تحديث رصيدك',
+      body: `رصيدك الحالي الآن: ${credit.toFixed(2)}$${note ? `. ملاحظة: ${note}` : ''}`,
+    })
+    await logActivity({ adminId: req.user._id, action: `set vendor credit to ${credit}$`, targetType: 'user', targetId: user._id, targetName: user.name })
+    res.json({ success: true, data: { vendorCredit: user.vendorCredit } })
+  } catch (err) { next(err) }
+}
+
 exports.getStats = async (req, res, next) => {
   try {
     const [

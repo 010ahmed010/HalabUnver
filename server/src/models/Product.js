@@ -35,6 +35,7 @@ const productSchema = new mongoose.Schema({
   },
   rejectionReason: { type: String, default: null },
   totalSales: { type: Number, default: 0 },
+  listingFee: { type: Number, default: 0 },
 }, { timestamps: true })
 
 productSchema.index({ category: 1, isVisible: 1, approvalStatus: 1 })

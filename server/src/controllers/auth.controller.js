@@ -10,17 +10,21 @@ exports.register = async (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(400).json({ success: false, message: errors.array()[0].msg })
 
-    const { name, email, password, accountType, businessType, faculty, year } = req.body
+    const { name, username, email, password, accountType, businessType, faculty, year } = req.body
 
-    const existing = await User.findOne({ email })
-    if (existing) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مستخدم مسبقاً.' })
+    const [existingEmail, existingUsername] = await Promise.all([
+      User.findOne({ email }),
+      User.findOne({ username: username.toLowerCase() }),
+    ])
+    if (existingEmail) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مستخدم مسبقاً.' })
+    if (existingUsername) return res.status(400).json({ success: false, message: 'اسم المستخدم مستخدم مسبقاً، يرجى اختيار اسم آخر.' })
 
     if (accountType === 'admin') {
       return res.status(403).json({ success: false, message: 'لا يمكن إنشاء حسابات مشرف عبر التسجيل العام.' })
     }
 
     const userData = {
-      name, email, password, accountType,
+      name, username: username.toLowerCase(), email, password, accountType,
       businessType: accountType === 'business' ? businessType : null,
       faculty: accountType === 'student' ? faculty : null,
       year: accountType === 'student' ? year : null,

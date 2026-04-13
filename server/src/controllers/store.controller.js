@@ -55,10 +55,26 @@ exports.createProduct = async (req, res, next) => {
 
     const productData = { ...req.body }
     if (isVendor) {
+      const vendor = await User.findById(req.user._id)
+      const credit = vendor.vendorCredit || 0
+      const price = Number(req.body.price) || 0
+      const requiredCredit = price / 100
+
+      if (credit <= 0) {
+        return res.status(400).json({ success: false, message: 'رصيدك صفر — لا يمكنك إضافة منتجات. تواصل مع الإدارة لشحن رصيدك.' })
+      }
+      if (credit < requiredCredit) {
+        return res.status(400).json({
+          success: false,
+          message: `رصيدك الحالي (${credit.toFixed(2)}$) غير كافٍ. سعر هذا المنتج يتطلب رصيداً لا يقل عن ${requiredCredit.toFixed(2)}$.`,
+        })
+      }
+
       productData.source = 'vendor'
       productData.vendorId = req.user._id
       productData.approvalStatus = 'pending'
       productData.isVisible = false
+      productData.listingFee = requiredCredit
     }
 
     const product = await Product.create(productData)
@@ -101,11 +117,22 @@ exports.approveProduct = async (req, res, next) => {
     }, { new: true })
     if (!product) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
 
+    if (approved && product.vendorId && product.listingFee > 0) {
+      const vendor = await User.findById(product.vendorId)
+      if (vendor) {
+        const newCredit = Math.max(0, (vendor.vendorCredit || 0) - product.listingFee)
+        await User.findByIdAndUpdate(product.vendorId, { vendorCredit: newCredit })
+      }
+    }
+
     if (product.vendorId) {
+      const feeMsg = approved && product.listingFee > 0 ? ` تم خصم ${product.listingFee.toFixed(2)}$ من رصيدك.` : ''
       await sendNotification({
         recipientId: product.vendorId, senderType: 'admin', category: 'general',
         title: approved ? `تم نشر منتجك ✅` : `تم رفض منتجك ❌`,
-        body: approved ? `منتج "${product.name}" أصبح مرئياً في المتجر.` : `منتج "${product.name}" مرفوض. السبب: ${reason || 'لم يُحدد.'}`,
+        body: approved
+          ? `منتج "${product.name}" أصبح مرئياً في المتجر.${feeMsg}`
+          : `منتج "${product.name}" مرفوض. السبب: ${reason || 'لم يُحدد.'}`,
       })
     }
 

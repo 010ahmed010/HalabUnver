@@ -66,6 +66,7 @@ const userSchema = new mongoose.Schema({
   },
 
   virtualWalletBalance: { type: Number, default: 0 },
+  vendorCredit: { type: Number, default: 0 },
 
   notificationSettings: {
     pushEnabled: { type: Boolean, default: true },

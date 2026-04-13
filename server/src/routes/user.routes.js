@@ -3,7 +3,7 @@ const router = express.Router()
 const { protect, requireAdmin } = require('../middleware/auth')
 const {
   getAllUsers, getUserById, updateProfile, verifyStudent,
-  updateUserStatus, manualXpOverride, deleteUser, bulkNotify, uploadUniversityId, changePassword,
+  updateUserStatus, manualXpOverride, deleteUser, bulkNotify, uploadUniversityId, changePassword, requestDeposit,
 } = require('../controllers/user.controller')
 
 router.get('/', protect, requireAdmin, getAllUsers)
@@ -16,5 +16,6 @@ router.patch('/:id/status', protect, requireAdmin, updateUserStatus)
 router.patch('/:id/xp', protect, requireAdmin, manualXpOverride)
 router.delete('/:id', protect, requireAdmin, deleteUser)
 router.post('/bulk-notify', protect, requireAdmin, bulkNotify)
+router.post('/me/deposit-request', protect, requestDeposit)
 
 module.exports = router
