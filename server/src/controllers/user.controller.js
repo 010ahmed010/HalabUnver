@@ -151,3 +151,25 @@ exports.uploadUniversityId = async (req, res, next) => {
     res.json({ success: true, data: user })
   } catch (err) { next(err) }
 }
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'يرجى إدخال كلمة المرور الحالية والجديدة.' })
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.' })
+    }
+    const bcrypt = require('bcryptjs')
+    const user = await User.findById(req.user._id)
+    const isMatch = await bcrypt.compare(currentPassword, user.password)
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: 'كلمة المرور الحالية غير صحيحة.' })
+    }
+    const hashed = await bcrypt.hash(newPassword, 10)
+    user.password = hashed
+    await user.save()
+    res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح.' })
+  } catch (err) { next(err) }
+}

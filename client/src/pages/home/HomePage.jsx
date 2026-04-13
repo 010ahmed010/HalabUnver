@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { api } from '../../lib/api'
 
-const STATS = [
-  { value: '1,240+', label: 'طالب مسجّل', icon: '👥', color: '#6366F1' },
-  { value: '380+', label: 'مصدر في المكتبة', icon: '📚', color: '#14B8A6' },
-  { value: '64+', label: 'دورة أكاديمية', icon: '🎓', color: '#8B5CF6' },
-  { value: '97+', label: 'مستقل نشط', icon: '💼', color: '#F59E0B' },
-  { value: '210+', label: 'منتج في المتجر', icon: '🛒', color: '#F43F5E' },
+const STATS_META = [
+  { key: 'registeredStudents', label: 'طالب مسجّل', icon: '👥', color: '#6366F1' },
+  { key: 'libraryDocuments', label: 'مصدر في المكتبة', icon: '📚', color: '#14B8A6' },
+  { key: 'courses', label: 'دورة أكاديمية', icon: '🎓', color: '#8B5CF6' },
+  { key: 'activeFreelancers', label: 'مستقل نشط', icon: '💼', color: '#F59E0B' },
+  { key: 'storeProducts', label: 'منتج في المتجر', icon: '🛒', color: '#F43F5E' },
 ]
 
 const PILLARS = [
@@ -60,11 +60,16 @@ function AnimatedCounter({ target }) {
 
 export default function HomePage() {
   const [news, setNews] = useState([])
+  const [liveStats, setLiveStats] = useState(null)
 
   useEffect(() => {
     api.get('/announcements?limit=4')
       .then(d => setNews(d.data || []))
       .catch(() => setNews([]))
+
+    api.get('/stats')
+      .then(d => { if (d?.data) setLiveStats(d.data) })
+      .catch(() => {})
   }, [])
 
   return (
@@ -143,18 +148,22 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 sm:gap-7">
-            {STATS.map((s) => (
-              <div
-                key={s.label}
-                className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 sm:p-7 text-center hover:border-[#6366F1]/30 hover:shadow-lg hover:shadow-black/20 transition-all"
-              >
-                <div className="text-2xl sm:text-3xl mb-3">{s.icon}</div>
-                <div className="text-2xl sm:text-3xl font-black mb-1.5" style={{ color: s.color }}>
-                  <AnimatedCounter target={s.value} />
+            {STATS_META.map((s) => {
+              const rawVal = liveStats ? liveStats[s.key] : null
+              const displayVal = rawVal !== null && rawVal !== undefined ? String(rawVal) + '+' : '...'
+              return (
+                <div
+                  key={s.label}
+                  className="bg-[#0F1828] rounded-2xl border border-[#1E2D45] p-5 sm:p-7 text-center hover:border-[#6366F1]/30 hover:shadow-lg hover:shadow-black/20 transition-all"
+                >
+                  <div className="text-2xl sm:text-3xl mb-3">{s.icon}</div>
+                  <div className="text-2xl sm:text-3xl font-black mb-1.5" style={{ color: s.color }}>
+                    {liveStats ? <AnimatedCounter target={displayVal} /> : <span className="text-[#4A5D78]">...</span>}
+                  </div>
+                  <div className="text-xs sm:text-sm text-[#94A3B8] leading-snug">{s.label}</div>
                 </div>
-                <div className="text-xs sm:text-sm text-[#94A3B8] leading-snug">{s.label}</div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
