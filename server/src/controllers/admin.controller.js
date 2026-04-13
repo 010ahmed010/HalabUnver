@@ -7,6 +7,7 @@ const ActivityLog = require('../models/ActivityLog')
 const Course = require('../models/Course')
 const LibraryDocument = require('../models/LibraryDocument')
 const Product = require('../models/Product')
+const DepositRequest = require('../models/DepositRequest')
 const { sendNotification } = require('../utils/sendNotification')
 const logActivity = require('../utils/logActivity')
 
@@ -221,5 +222,55 @@ exports.getAllOrders = async (req, res, next) => {
       .populate('vendorId', 'name')
 
     res.json({ success: true, total, page: Number(page), data: orders })
+  } catch (err) { next(err) }
+}
+
+exports.getDepositRequests = async (req, res, next) => {
+  try {
+    const { status } = req.query
+    const filter = {}
+    if (status) filter.status = status
+    const requests = await DepositRequest.find(filter)
+      .sort('-createdAt')
+      .populate('vendorId', 'name email vendorCredit')
+    res.json({ success: true, total: requests.length, data: requests })
+  } catch (err) { next(err) }
+}
+
+exports.approveDepositRequest = async (req, res, next) => {
+  try {
+    const { approved, adminNote, creditAmount } = req.body
+    const depReq = await DepositRequest.findById(req.params.id).populate('vendorId', 'name email vendorCredit')
+    if (!depReq) return res.status(404).json({ success: false, message: 'الطلب غير موجود.' })
+    if (depReq.status !== 'pending') return res.status(400).json({ success: false, message: 'تم معالجة هذا الطلب مسبقاً.' })
+
+    depReq.status = approved ? 'approved' : 'rejected'
+    depReq.adminNote = adminNote || ''
+    depReq.reviewedBy = req.user._id
+    depReq.reviewedAt = new Date()
+    await depReq.save()
+
+    if (approved && depReq.vendorId) {
+      const addAmount = Number(creditAmount) || depReq.amount
+      const vendor = await User.findById(depReq.vendorId._id)
+      if (vendor) {
+        const newCredit = (vendor.vendorCredit || 0) + addAmount
+        await User.findByIdAndUpdate(depReq.vendorId._id, { vendorCredit: newCredit })
+        await sendNotification({
+          recipientId: depReq.vendorId._id, senderType: 'admin', category: 'financial',
+          title: '💳 تم شحن رصيدك ✅',
+          body: `تمت الموافقة على طلب الشحن. تم إضافة ${addAmount.toFixed(2)}$ إلى رصيدك. رصيدك الجديد: ${newCredit.toFixed(2)}$.${adminNote ? ` ملاحظة: ${adminNote}` : ''}`,
+        })
+      }
+    } else if (!approved && depReq.vendorId) {
+      await sendNotification({
+        recipientId: depReq.vendorId._id, senderType: 'admin', category: 'financial',
+        title: '💳 طلب الشحن مرفوض ❌',
+        body: `تم رفض طلب شحن الرصيد (${depReq.amount.toFixed(2)}$).${adminNote ? ` السبب: ${adminNote}` : ''}`,
+      })
+    }
+
+    await logActivity({ adminId: req.user._id, action: approved ? 'approved deposit request' : 'rejected deposit request', targetType: 'user', targetId: depReq.vendorId?._id, targetName: depReq.vendorId?.name })
+    res.json({ success: true, data: depReq })
   } catch (err) { next(err) }
 }

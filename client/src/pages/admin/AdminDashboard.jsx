@@ -455,6 +455,12 @@ function BusinessesPanel() {
     canUploadLibraryDocs: '📄 رفع وثائق مكتبة',
   }
 
+  const BUSINESS_TYPE_PERM = {
+    vendor: 'canSellProducts',
+    advertiser: 'canRunAds',
+    freelancer: 'canOfferFreelance',
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -548,42 +554,49 @@ function BusinessesPanel() {
       )}
 
       {/* Permissions Modal */}
-      {permsModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
-          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="text-[#F1F5F9] font-bold mb-1">صلاحيات {permsModal.name}</h3>
-            <p className="text-[#4A5D78] text-xs mb-5">فعّل الخدمات التي يستطيع هذا الحساب استخدامها</p>
-            <div className="flex flex-col gap-3">
-              {Object.entries(PERM_LABELS).map(([k, label]) => (
-                <label key={k} className="flex items-center justify-between cursor-pointer">
-                  <span className="text-[#94A3B8] text-sm">{label}</span>
+      {permsModal && (() => {
+        const permKey = BUSINESS_TYPE_PERM[permsModal.businessType]
+        const permLabel = permKey ? PERM_LABELS[permKey] : null
+        return (
+          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+            <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
+              <h3 className="text-[#F1F5F9] font-bold mb-1">صلاحيات {permsModal.name}</h3>
+              <p className="text-[#4A5D78] text-xs mb-5">فعّل أو أوقف الخدمة المرتبطة بهذا الحساب</p>
+              {permKey && permLabel ? (
+                <div className="bg-[#162032] rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-[#F1F5F9] text-sm font-semibold">{permLabel}</p>
+                    <p className="text-[10px] text-[#4A5D78] mt-0.5">{perms[permKey] ? 'مفعّلة حالياً' : 'موقوفة حالياً'}</p>
+                  </div>
                   <button
-                    onClick={() => setPerms(p => ({ ...p, [k]: !p[k] }))}
-                    className={`w-10 h-5 rounded-full transition-all relative ${perms[k] ? 'bg-[#6366F1]' : 'bg-[#1E2D45]'}`}
+                    onClick={() => setPerms(p => ({ ...p, [permKey]: !p[permKey] }))}
+                    className={`w-12 h-6 rounded-full transition-all relative shrink-0 ${perms[permKey] ? 'bg-[#6366F1]' : 'bg-[#1E2D45]'}`}
                   >
-                    <div className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.5 transition-all shadow-sm ${perms[k] ? 'left-5' : 'left-0.5'}`} />
+                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${perms[permKey] ? 'left-7' : 'left-1'}`} />
                   </button>
-                </label>
-              ))}
-            </div>
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={savePerms}
-                disabled={actionLoading === permsModal._id}
-                className="flex-1 gradient-bg text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
-                {actionLoading === permsModal._id ? 'جاري الحفظ...' : 'حفظ الصلاحيات'}
-              </button>
-              <button
-                onClick={() => setPermsModal(null)}
-                className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
-              >
-                إلغاء
-              </button>
+                </div>
+              ) : (
+                <p className="text-xs text-[#4A5D78] text-center py-4">لا توجد صلاحية محددة لهذا النوع من الحسابات.</p>
+              )}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={savePerms}
+                  disabled={actionLoading === permsModal._id}
+                  className="flex-1 gradient-bg text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {actionLoading === permsModal._id ? 'جاري الحفظ...' : 'حفظ الصلاحيات'}
+                </button>
+                <button
+                  onClick={() => setPermsModal(null)}
+                  className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
+                >
+                  إلغاء
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* Credit Management Modal */}
       {creditModal && (
@@ -644,79 +657,303 @@ function BusinessesPanel() {
 }
 
 function OrdersPanel() {
+  const [tab, setTab] = useState('products')
+
   const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [statusFilter, setStatusFilter] = useState('')
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
+  const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersTotal, setOrdersTotal] = useState(0)
+  const [ordersPage, setOrdersPage] = useState(1)
+  const [ordersFilter, setOrdersFilter] = useState('')
 
-  useEffect(() => {
-    setLoading(true)
-    let url = `/admin/orders?page=${page}&limit=20`
-    if (statusFilter) url += `&status=${statusFilter}`
+  const [products, setProducts] = useState([])
+  const [productsLoading, setProductsLoading] = useState(false)
+  const [productAction, setProductAction] = useState(null)
+
+  const [deposits, setDeposits] = useState([])
+  const [depositsLoading, setDepositsLoading] = useState(false)
+  const [depositModal, setDepositModal] = useState(null)
+  const [depositNote, setDepositNote] = useState('')
+  const [depositCreditAmount, setDepositCreditAmount] = useState('')
+  const [depositSaving, setDepositSaving] = useState(false)
+
+  const fetchOrders = useCallback(() => {
+    setOrdersLoading(true)
+    let url = `/admin/orders?page=${ordersPage}&limit=20`
+    if (ordersFilter) url += `&status=${ordersFilter}`
     api.get(url)
-      .then(data => { setOrders(data.data || []); setTotal(data.total || 0) })
+      .then(data => { setOrders(data.data || []); setOrdersTotal(data.total || 0) })
       .catch(console.error)
-      .finally(() => setLoading(false))
-  }, [page, statusFilter])
+      .finally(() => setOrdersLoading(false))
+  }, [ordersPage, ordersFilter])
 
-  const STATUS_STYLE = {
+  const fetchProducts = useCallback(() => {
+    setProductsLoading(true)
+    api.get('/admin/pending-products')
+      .then(data => setProducts(data.data || []))
+      .catch(console.error)
+      .finally(() => setProductsLoading(false))
+  }, [])
+
+  const fetchDeposits = useCallback(() => {
+    setDepositsLoading(true)
+    api.get('/admin/deposit-requests')
+      .then(data => setDeposits(data.data || []))
+      .catch(console.error)
+      .finally(() => setDepositsLoading(false))
+  }, [])
+
+  useEffect(() => { fetchOrders() }, [fetchOrders])
+  useEffect(() => { fetchProducts() }, [fetchProducts])
+  useEffect(() => { fetchDeposits() }, [fetchDeposits])
+
+  const handleProductAction = async (productId, approved) => {
+    setProductAction(productId)
+    try {
+      await api.patch(`/store/products/${productId}/approve`, { approved })
+      await fetchProducts()
+    } catch (err) { console.error(err) }
+    finally { setProductAction(null) }
+  }
+
+  const openDepositModal = (dep) => {
+    setDepositModal(dep)
+    setDepositNote('')
+    setDepositCreditAmount(dep.amount.toFixed(2))
+  }
+
+  const handleDepositAction = async (approved) => {
+    if (!depositModal) return
+    setDepositSaving(true)
+    try {
+      await api.patch(`/admin/deposit-requests/${depositModal._id}/review`, {
+        approved,
+        adminNote: depositNote,
+        creditAmount: approved ? parseFloat(depositCreditAmount) || depositModal.amount : 0,
+      })
+      setDepositModal(null)
+      await fetchDeposits()
+    } catch (err) { console.error(err) }
+    finally { setDepositSaving(false) }
+  }
+
+  const ORDER_STATUS_STYLE = {
     pending: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
     processing: 'bg-[#6366F1]/10 text-[#818CF8] border-[#6366F1]/20',
     delivered: 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20',
     cancelled: 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20',
   }
-  const STATUS_LABELS = { pending: 'معلّق', processing: 'قيد المعالجة', delivered: 'تم التسليم', cancelled: 'ملغي' }
+  const ORDER_STATUS_LABELS = { pending: 'معلّق', processing: 'قيد المعالجة', delivered: 'تم التسليم', cancelled: 'ملغي' }
+  const DEP_STATUS_STYLE = { pending: 'text-[#F59E0B]', approved: 'text-[#10B981]', rejected: 'text-[#F43F5E]' }
+  const DEP_STATUS_LABEL = { pending: 'معلّق', approved: 'مقبول', rejected: 'مرفوض' }
+
+  const pendingProducts = products.filter(p => p.approvalStatus === 'pending')
+  const pendingDeposits = deposits.filter(d => d.status === 'pending')
+
+  const TABS = [
+    { key: 'products', label: `🛒 منتجات بانتظار الموافقة`, badge: pendingProducts.length },
+    { key: 'deposits', label: `💳 طلبات شحن الرصيد`, badge: pendingDeposits.length },
+    { key: 'orders', label: `📦 طلبات العملاء`, badge: ordersTotal },
+  ]
 
   return (
     <div className="space-y-5">
       <div>
         <span className="section-label">الإدارة</span>
-        <h2 className="text-xl font-black text-[#F1F5F9]">📦 إدارة الطلبات</h2>
-        <p className="text-[#4A5D78] text-sm">{total} طلب إجمالاً</p>
+        <h2 className="text-xl font-black text-[#F1F5F9]">📋 إدارة الطلبات</h2>
       </div>
 
-      <select
-        value={statusFilter}
-        onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
-        className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors"
-      >
-        <option value="">كل الحالات</option>
-        <option value="pending">معلّق</option>
-        <option value="processing">قيد المعالجة</option>
-        <option value="delivered">تم التسليم</option>
-        <option value="cancelled">ملغي</option>
-      </select>
+      <div className="flex gap-2 flex-wrap">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
+              tab === t.key
+                ? 'gradient-bg text-white border-transparent'
+                : 'bg-[#0F1828] border-[#1E2D45] text-[#94A3B8] hover:text-[#F1F5F9]'
+            }`}
+          >
+            {t.label}
+            {t.badge > 0 && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                tab === t.key ? 'bg-white/20 text-white' : 'bg-[#F43F5E]/15 text-[#F43F5E]'
+              }`}>{t.badge}</span>
+            )}
+          </button>
+        ))}
+      </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-12"><Spinner /></div>
-      ) : (
+      {tab === 'products' && (
         <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
-          {orders.length === 0 ? (
-            <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد طلبات</div>
-          ) : orders.map(o => (
-            <div key={o._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+          {productsLoading ? (
+            <div className="flex justify-center py-12"><Spinner /></div>
+          ) : pendingProducts.length === 0 ? (
+            <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد منتجات بانتظار المراجعة ✅</div>
+          ) : pendingProducts.map(p => (
+            <div key={p._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+              {p.images?.[0] && (
+                <img src={p.images[0]} alt={p.name} className="w-12 h-12 rounded-xl object-cover border border-[#1E2D45] shrink-0" />
+              )}
               <div className="flex-1 min-w-0">
-                <p className="text-[#F1F5F9] font-semibold text-sm">{o.productId?.name || 'منتج'}</p>
-                <p className="text-xs text-[#4A5D78] mt-0.5">{o.studentId?.name} · {o.studentId?.email}</p>
-                <p className="text-sm font-bold gradient-text mt-1">{o.totalPrice?.toLocaleString()} SYP</p>
+                <p className="text-[#F1F5F9] font-semibold text-sm">{p.name}</p>
+                <p className="text-xs text-[#4A5D78] mt-0.5">{p.vendorId?.name} · {p.vendorId?.email}</p>
+                <p className="text-xs font-bold text-[#10B981] mt-0.5">${Number(p.price).toLocaleString()} · رسوم النشر: ${(p.listingFee || 0).toFixed(2)}</p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={`text-xs px-2.5 py-1 rounded-full border ${STATUS_STYLE[o.status] || STATUS_STYLE.pending}`}>
-                  {STATUS_LABELS[o.status] || o.status}
-                </span>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  disabled={productAction === p._id}
+                  onClick={() => handleProductAction(p._id, true)}
+                  className="text-xs px-3 py-1.5 bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition-all disabled:opacity-50"
+                >
+                  ✅ نشر
+                </button>
+                <button
+                  disabled={productAction === p._id}
+                  onClick={() => handleProductAction(p._id, false)}
+                  className="text-xs px-3 py-1.5 bg-[#F43F5E]/10 border border-[#F43F5E]/20 text-[#F43F5E] rounded-lg hover:bg-[#F43F5E]/20 transition-all disabled:opacity-50"
+                >
+                  ❌ رفض
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {total > 20 && (
-        <div className="flex items-center justify-center gap-3">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">السابق</button>
-          <span className="text-xs text-[#4A5D78]">صفحة {page}</span>
-          <button disabled={orders.length < 20} onClick={() => setPage(p => p + 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">التالي</button>
-        </div>
+      {tab === 'deposits' && (
+        <>
+          <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+            {depositsLoading ? (
+              <div className="flex justify-center py-12"><Spinner /></div>
+            ) : deposits.length === 0 ? (
+              <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد طلبات شحن رصيد</div>
+            ) : deposits.map(d => (
+              <div key={d._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[#F1F5F9] font-semibold text-sm">{d.vendorId?.name}</p>
+                  <p className="text-xs text-[#4A5D78] mt-0.5">{d.vendorId?.email} · رصيده الحالي: {(d.vendorId?.vendorCredit || 0).toFixed(2)}$</p>
+                  <p className="text-xs mt-1">
+                    <span className="text-[#F1F5F9] font-bold">{d.amount.toFixed(2)}$</span>
+                    {d.note && <span className="text-[#4A5D78] mr-2">· {d.note}</span>}
+                  </p>
+                  <p className="text-[10px] text-[#4A5D78] mt-0.5">{new Date(d.createdAt).toLocaleDateString('ar-SY')}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`text-xs font-semibold ${DEP_STATUS_STYLE[d.status]}`}>{DEP_STATUS_LABEL[d.status]}</span>
+                  {d.status === 'pending' && (
+                    <button
+                      onClick={() => openDepositModal(d)}
+                      className="text-xs px-3 py-1.5 bg-[#6366F1]/10 border border-[#6366F1]/20 text-[#818CF8] rounded-lg hover:bg-[#6366F1]/20 transition-all"
+                    >
+                      مراجعة
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {depositModal && (
+            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+              <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl p-6 w-full max-w-sm">
+                <h3 className="text-[#F1F5F9] font-bold mb-1">💳 مراجعة طلب الشحن</h3>
+                <p className="text-xs text-[#4A5D78] mb-1">{depositModal.vendorId?.name}</p>
+                <p className="text-xs text-[#94A3B8] mb-4">طلب شحن: <strong className="text-[#10B981]">{depositModal.amount.toFixed(2)}$</strong></p>
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="text-xs text-[#94A3B8] mb-1.5 block">المبلغ الفعلي للإضافة ($)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={depositCreditAmount}
+                      onChange={e => setDepositCreditAmount(e.target.value)}
+                      className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#10B981] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-[#94A3B8] mb-1.5 block">ملاحظة للبائع (اختياري)</label>
+                    <input
+                      value={depositNote}
+                      onChange={e => setDepositNote(e.target.value)}
+                      placeholder="رسالة أو سبب..."
+                      className="w-full bg-[#162032] border border-[#1E2D45] text-[#F1F5F9] placeholder-[#4A5D78] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#6366F1] transition-colors"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-5">
+                  <button
+                    onClick={() => handleDepositAction(true)}
+                    disabled={depositSaving}
+                    className="flex-1 bg-[#10B981] text-white font-bold py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {depositSaving ? '...' : '✅ قبول وشحن'}
+                  </button>
+                  <button
+                    onClick={() => handleDepositAction(false)}
+                    disabled={depositSaving}
+                    className="flex-1 bg-[#F43F5E]/10 border border-[#F43F5E]/20 text-[#F43F5E] font-bold py-2.5 rounded-xl text-sm hover:bg-[#F43F5E]/20 transition-all disabled:opacity-50"
+                  >
+                    {depositSaving ? '...' : '❌ رفض'}
+                  </button>
+                  <button
+                    onClick={() => setDepositModal(null)}
+                    className="px-4 py-2.5 border border-[#1E2D45] text-[#94A3B8] rounded-xl text-sm hover:border-[#6366F1]/30 transition-all"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {tab === 'orders' && (
+        <>
+          <select
+            value={ordersFilter}
+            onChange={e => { setOrdersFilter(e.target.value); setOrdersPage(1) }}
+            className="bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#6366F1] transition-colors"
+          >
+            <option value="">كل الحالات</option>
+            <option value="pending">معلّق</option>
+            <option value="processing">قيد المعالجة</option>
+            <option value="delivered">تم التسليم</option>
+            <option value="cancelled">ملغي</option>
+          </select>
+
+          {ordersLoading ? (
+            <div className="flex items-center justify-center py-12"><Spinner /></div>
+          ) : (
+            <div className="bg-[#0F1828] border border-[#1E2D45] rounded-2xl overflow-hidden">
+              {orders.length === 0 ? (
+                <div className="p-8 text-center text-[#4A5D78] text-sm">لا توجد طلبات</div>
+              ) : orders.map(o => (
+                <div key={o._id} className="px-5 py-4 border-b border-[#1E2D45] last:border-0 flex items-center gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[#F1F5F9] font-semibold text-sm">{o.productId?.name || 'منتج'}</p>
+                    <p className="text-xs text-[#4A5D78] mt-0.5">{o.customerId?.name} · {o.customerId?.email}</p>
+                    <p className="text-sm font-bold gradient-text mt-1">${Number(o.totalPrice || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-xs px-2.5 py-1 rounded-full border ${ORDER_STATUS_STYLE[o.status] || ORDER_STATUS_STYLE.pending}`}>
+                      {ORDER_STATUS_LABELS[o.status] || o.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {ordersTotal > 20 && (
+            <div className="flex items-center justify-center gap-3">
+              <button disabled={ordersPage === 1} onClick={() => setOrdersPage(p => p - 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">السابق</button>
+              <span className="text-xs text-[#4A5D78]">صفحة {ordersPage}</span>
+              <button disabled={orders.length < 20} onClick={() => setOrdersPage(p => p + 1)} className="px-4 py-1.5 bg-[#0F1828] border border-[#1E2D45] text-[#94A3B8] rounded-lg text-sm disabled:opacity-40">التالي</button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

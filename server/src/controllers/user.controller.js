@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const FreelancerProfile = require('../models/FreelancerProfile')
 const Notification = require('../models/Notification')
+const DepositRequest = require('../models/DepositRequest')
 const { awardXP, calculateLevel } = require('../utils/xp')
 const { sendNotification, sendBulkNotification } = require('../utils/sendNotification')
 const logActivity = require('../utils/logActivity')
@@ -179,6 +180,16 @@ exports.requestDeposit = async (req, res, next) => {
     const { amount, note } = req.body
     const vendor = req.user
 
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      return res.status(400).json({ success: false, message: 'يرجى إدخال مبلغ صحيح.' })
+    }
+
+    const depositReq = await DepositRequest.create({
+      vendorId: vendor._id,
+      amount: Number(amount),
+      note: note || '',
+    })
+
     const admins = await User.find({ accountType: 'admin' }).select('_id')
     const notifPromises = admins.map(admin =>
       sendNotification({
@@ -186,11 +197,11 @@ exports.requestDeposit = async (req, res, next) => {
         senderType: 'system',
         category: 'financial',
         title: `💳 طلب شحن رصيد من ${vendor.name}`,
-        body: `يطلب البائع "${vendor.name}" (${vendor.email}) شحن رصيد بمقدار ${amount || '؟'}$${note ? `. ملاحظة: ${note}` : ''}. رصيده الحالي: ${(vendor.vendorCredit || 0).toFixed(2)}$.`,
+        body: `يطلب البائع "${vendor.name}" (${vendor.email}) شحن رصيد بمقدار ${Number(amount).toFixed(2)}$${note ? `. ملاحظة: ${note}` : ''}. رصيده الحالي: ${(vendor.vendorCredit || 0).toFixed(2)}$.`,
       })
     )
     await Promise.all(notifPromises)
 
-    res.json({ success: true, message: 'تم إرسال طلب الشحن للإدارة. سيتواصلون معك قريباً.' })
+    res.json({ success: true, message: 'تم إرسال طلب الشحن للإدارة. سيتواصلون معك قريباً.', data: depositReq })
   } catch (err) { next(err) }
 }
