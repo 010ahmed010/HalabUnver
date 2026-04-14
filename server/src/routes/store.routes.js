@@ -4,7 +4,7 @@ const { protect, optionalAuth, requireAdmin } = require('../middleware/auth')
 const {
   getProducts, getProductById, createProduct, updateProduct, deleteProduct,
   approveProduct, toggleVisibility, placeOrder, getOrders,
-  updateOrderStatus, confirmPickup, cancelOrder,
+  updateOrderStatus, confirmPickup, cancelOrder, getVendorContacts, rateVendor,
 } = require('../controllers/store.controller')
 
 router.get('/products', optionalAuth, getProducts)
@@ -13,7 +13,9 @@ router.post('/products', protect, createProduct)
 router.patch('/products/:id', protect, updateProduct)
 router.delete('/products/:id', protect, requireAdmin, deleteProduct)
 router.patch('/products/:id/approve', protect, requireAdmin, approveProduct)
-router.patch('/products/:id/visibility', protect, requireAdmin, toggleVisibility)
+router.patch('/products/:id/visibility', protect, toggleVisibility)
+router.get('/products/:id/vendor-contacts', optionalAuth, getVendorContacts)
+router.post('/products/:id/rate-vendor', protect, rateVendor)
 
 router.get('/orders', protect, getOrders)
 router.post('/orders', protect, placeOrder)

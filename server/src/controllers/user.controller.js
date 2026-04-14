@@ -175,6 +175,19 @@ exports.changePassword = async (req, res, next) => {
   } catch (err) { next(err) }
 }
 
+exports.updateVendorContacts = async (req, res, next) => {
+  try {
+    const { whatsapp, phone, telegram, other } = req.body
+    const update = {}
+    if (whatsapp !== undefined) update['vendorContacts.whatsapp'] = whatsapp
+    if (phone !== undefined) update['vendorContacts.phone'] = phone
+    if (telegram !== undefined) update['vendorContacts.telegram'] = telegram
+    if (other !== undefined) update['vendorContacts.other'] = other
+    const user = await User.findByIdAndUpdate(req.user._id, { $set: update }, { new: true }).select('-password')
+    res.json({ success: true, data: user })
+  } catch (err) { next(err) }
+}
+
 exports.requestDeposit = async (req, res, next) => {
   try {
     const { amount, note } = req.body

@@ -68,6 +68,18 @@ const userSchema = new mongoose.Schema({
   virtualWalletBalance: { type: Number, default: 0 },
   vendorCredit: { type: Number, default: 0 },
 
+  vendorContacts: {
+    whatsapp: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    telegram: { type: String, default: '' },
+    other: { type: String, default: '' },
+  },
+
+  vendorRating: {
+    total: { type: Number, default: 0 },
+    count: { type: Number, default: 0 },
+  },
+
   notificationSettings: {
     pushEnabled: { type: Boolean, default: true },
     whatsappEnabled: { type: Boolean, default: false },

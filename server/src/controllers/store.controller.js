@@ -35,7 +35,7 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id).populate('vendorId', 'name')
+    const product = await Product.findById(req.params.id).populate('vendorId', 'name vendorRating vendorContacts')
     if (!product) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
     const related = await Product.find({
       category: product.category,
@@ -58,7 +58,8 @@ exports.createProduct = async (req, res, next) => {
       const vendor = await User.findById(req.user._id)
       const credit = vendor.vendorCredit || 0
       const price = Number(req.body.price) || 0
-      const requiredCredit = price / 100
+      const months = Math.max(1, Number(req.body.publishingMonths) || 1)
+      const requiredCredit = (price / 100) * months
 
       if (credit <= 0) {
         return res.status(400).json({ success: false, message: 'رصيدك صفر — لا يمكنك إضافة منتجات. تواصل مع الإدارة لشحن رصيدك.' })
@@ -66,7 +67,7 @@ exports.createProduct = async (req, res, next) => {
       if (credit < requiredCredit) {
         return res.status(400).json({
           success: false,
-          message: `رصيدك الحالي (${credit.toFixed(2)}$) غير كافٍ. سعر هذا المنتج يتطلب رصيداً لا يقل عن ${requiredCredit.toFixed(2)}$.`,
+          message: `رصيدك الحالي (${credit.toFixed(2)}$) غير كافٍ. سعر هذا المنتج لمدة ${months} شهر(أشهر) يتطلب رصيداً لا يقل عن ${requiredCredit.toFixed(2)}$.`,
         })
       }
 
@@ -75,6 +76,7 @@ exports.createProduct = async (req, res, next) => {
       productData.approvalStatus = 'pending'
       productData.isVisible = false
       productData.listingFee = requiredCredit
+      productData.publishingMonths = months
     }
 
     const product = await Product.create(productData)
@@ -92,7 +94,18 @@ exports.updateProduct = async (req, res, next) => {
     const isOwner = product.vendorId && product.vendorId.equals(req.user._id)
     if (!isAdmin && !isOwner) return res.status(403).json({ success: false, message: 'غير مسموح.' })
 
-    Object.assign(product, req.body)
+    if (!isAdmin && isOwner) {
+      if (product.approvalStatus === 'approved' && product.expiresAt && new Date() > product.expiresAt) {
+        return res.status(403).json({ success: false, message: 'انتهت فترة النشر المدفوعة — لا يمكن تعديل المنتج.' })
+      }
+      const allowedVendorFields = ['description', 'subtitle', 'images', 'stock', 'deliveryTimeline', 'pickupLocation', 'warrantyNote', 'specs', 'condition']
+      const filteredBody = {}
+      allowedVendorFields.forEach(k => { if (req.body[k] !== undefined) filteredBody[k] = req.body[k] })
+      Object.assign(product, filteredBody)
+    } else {
+      Object.assign(product, req.body)
+    }
+
     await product.save()
     res.json({ success: true, data: product })
   } catch (err) { next(err) }
@@ -110,12 +123,18 @@ exports.deleteProduct = async (req, res, next) => {
 exports.approveProduct = async (req, res, next) => {
   try {
     const { approved, reason } = req.body
-    const product = await Product.findByIdAndUpdate(req.params.id, {
-      approvalStatus: approved ? 'approved' : 'rejected',
-      isVisible: approved,
-      rejectionReason: approved ? null : reason,
-    }, { new: true })
+    const now = new Date()
+    const product = await Product.findById(req.params.id)
     if (!product) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
+
+    const months = product.publishingMonths || 1
+    const expiresAt = approved ? new Date(now.getTime() + months * 30 * 24 * 60 * 60 * 1000) : null
+
+    product.approvalStatus = approved ? 'approved' : 'rejected'
+    product.isVisible = !!approved
+    product.rejectionReason = approved ? null : (reason || null)
+    if (approved) { product.publishedAt = now; product.expiresAt = expiresAt }
+    await product.save()
 
     if (approved && product.vendorId && product.listingFee > 0) {
       const vendor = await User.findById(product.vendorId)
@@ -127,11 +146,12 @@ exports.approveProduct = async (req, res, next) => {
 
     if (product.vendorId) {
       const feeMsg = approved && product.listingFee > 0 ? ` تم خصم ${product.listingFee.toFixed(2)}$ من رصيدك.` : ''
+      const expireMsg = approved ? ` المنتج سيظهر حتى تاريخ: ${expiresAt.toLocaleDateString('ar-SY')}.` : ''
       await sendNotification({
         recipientId: product.vendorId, senderType: 'admin', category: 'general',
         title: approved ? `تم نشر منتجك ✅` : `تم رفض منتجك ❌`,
         body: approved
-          ? `منتج "${product.name}" أصبح مرئياً في المتجر.${feeMsg}`
+          ? `منتج "${product.name}" أصبح مرئياً في المتجر.${feeMsg}${expireMsg}`
           : `منتج "${product.name}" مرفوض. السبب: ${reason || 'لم يُحدد.'}`,
       })
     }
@@ -145,9 +165,44 @@ exports.toggleVisibility = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id)
     if (!product) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
+
+    const isAdmin = req.user.accountType === 'admin'
+    const isOwner = product.vendorId && product.vendorId.equals(req.user._id)
+    if (!isAdmin && !isOwner) return res.status(403).json({ success: false, message: 'غير مسموح.' })
+
+    if (isOwner && !isAdmin && product.approvalStatus !== 'approved') {
+      return res.status(400).json({ success: false, message: 'لا يمكن تغيير ظهور منتج لم يُوافَق عليه بعد.' })
+    }
+
     product.isVisible = !product.isVisible
     await product.save()
     res.json({ success: true, isVisible: product.isVisible })
+  } catch (err) { next(err) }
+}
+
+exports.getVendorContacts = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.id)
+    if (!product || !product.vendorId) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
+    const vendor = await User.findById(product.vendorId).select('name vendorContacts')
+    if (!vendor) return res.status(404).json({ success: false, message: 'البائع غير موجود.' })
+    res.json({ success: true, data: { vendorName: vendor.name, contacts: vendor.vendorContacts || {} } })
+  } catch (err) { next(err) }
+}
+
+exports.rateVendor = async (req, res, next) => {
+  try {
+    const { rating } = req.body
+    if (!rating || rating < 1 || rating > 5) return res.status(400).json({ success: false, message: 'التقييم يجب أن يكون بين 1 و5.' })
+    const product = await Product.findById(req.params.id)
+    if (!product || !product.vendorId) return res.status(404).json({ success: false, message: 'المنتج غير موجود.' })
+    await User.findByIdAndUpdate(product.vendorId, {
+      $inc: { 'vendorRating.total': Number(rating), 'vendorRating.count': 1 },
+    })
+    await Product.findByIdAndUpdate(req.params.id, {
+      $inc: { ratingTotal: Number(rating), ratingCount: 1 },
+    })
+    res.json({ success: true, message: 'تم تسجيل تقييمك.' })
   } catch (err) { next(err) }
 }
 
