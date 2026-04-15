@@ -59,7 +59,7 @@ export default function BusinessDashboard() {
         <div className="p-6 border-b border-[#1E2D45]">
           <Link to="/" className="flex items-center gap-2.5 group mb-4">
             <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-white font-black text-sm">ح</span>
+              <img src="/HUlogo.png" alt="HalabUnver" className="w-full h-full object-contain" />
             </div>
             <span className="text-[#F1F5F9] font-bold">حلب <span className="gradient-text">يونيفر</span></span>
           </Link>

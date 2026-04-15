@@ -74,7 +74,7 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-4 lg:col-span-1 flex flex-col gap-4">
             <Link to="/" className="inline-flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shrink-0 shadow-lg shadow-[#6366F1]/30">
-                <span className="text-white font-black text-base">ح</span>
+                <img src="/HUlogo.png" alt="HalabUnver" className="w-full h-full object-contain" />
               </div>
               <span className="text-xl font-bold text-[#F1F5F9]">
                 حلب <span className="gradient-text">يونيفر</span>

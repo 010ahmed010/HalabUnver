@@ -115,7 +115,7 @@ export default function Register() {
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2.5 mb-6 group">
               <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-lg shadow-[#6366F1]/30">
-                <span className="text-white font-black text-lg">ح</span>
+                <img src="/HUlogo.png" alt="HalabUnver" className="w-full h-full object-contain" />
               </div>
               <span className="text-[#F1F5F9] font-bold text-xl">
                 حلب <span className="gradient-text">يونيفر</span>

@@ -126,7 +126,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0 group">
             <div className="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shrink-0 shadow-lg shadow-[#6366F1]/30 group-hover:shadow-[#6366F1]/50 transition-shadow">
-              <span className="text-white font-black text-base">ح</span>
+              <img src="/HUlogo.png" alt="HalabUnver" className="w-full h-full object-contain" />
             </div>
             <span className="text-[#F1F5F9] font-bold text-lg tracking-tight">
               حلب <span className="gradient-text">يونيفر</span>
